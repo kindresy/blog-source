@@ -1,0 +1,8100 @@
+DesignWare DW_axi_dmac Databook
+
+Parameter Descriptions
+
+Table 3-1
+
+Top Level Parameters (Continued)
+
+Label
+
+Description
+
+Interrupt Pins to Appear as
+Outputs?
+
+Selects which interrupt-related signals appear as outputs on the design.
+■
+
+COMBINED_ONLY: Only "intr" output exist.
+Bitwise OR of all bits of DMAC_IntStatusReg register is driven onto "intr" output.
+
+■
+
+CHANNEL_AND_COMMONREG: "intr_ch" and "intr_cmnreg" outputs exist.
+Bitwise OR of all the corresponding channel bits of DMAC_IntStatusReg register
+is driven onto the respective "intr_ch" output.
+Bitwise OR of all the bits of DMAC_CommonReg_IntStatusReg register is driven
+onto the respective "intr_cmnreg" output.
+
+■
+
+ALL_INTERRUPT_OUTPUTS: "intr", "intr_ch" and "intr_cmnreg" outputs exist.
+
+Bitwise OR of all bits of DMAC_IntStatusReg register is driven onto "intr" output.
+Bitwise OR of all the corresponding channel bits of DMAC_IntStatusReg register
+is driven onto the respective "intr_ch" output.
+Bitwise OR of all the bits of DMAC_CommonReg_IntStatusReg register is driven
+onto the respective "intr_cmnreg" output.
+Values:
+■
+
+COMBINED ONLY (0)
+
+■
+
+CHANNEL AND COMMONREG (1)
+
+■
+
+ALL INTERRUPTS OUTPUTS (2)
+
+Default Value: COMBINED ONLY
+Enabled: Always
+Parameter Name: DMAX_INTR_IO_TYPE
+Include Status Indication
+By default, this option creates a slave interface status indication (Busy/Idle) signals
+Output on Slave Bus Interface? on the I/O, which is synchronous to the slave interface clock. When you set this
+option to False (0), the signal is not included on the I/O.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: Always
+Parameter Name: DMAX_SLVIF_STATUS_OP_EN
+Include DMAC Internal Status
+Indication Output?
+
+By default, this option creates a DMAC internal status indication (Busy/Idle) signal
+on the I/O, which is synchronous to dmac_core_clock. When you set this option to
+False (0), the signal is not included on the I/O.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: Always
+Parameter Name: DMAX_CORE_STATUS_OP_EN
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+101
+
+Parameter Descriptions
+
+DesignWare DW_axi_dmac Databook
+
+Table 3-1
+
+Top Level Parameters (Continued)
+
+Label
+
+Description
+
+Include DMAC Hold Request
+Input & Hold
+Acknowledgement Output?
+
+When set to Yes (1), this option creates a DMAC Hold Request Input signal
+(dmac_hold_req) and DMAC Hold Acknowledgement Output signal (dmac_hol_ack)
+on the I/O, which are synchronous to dmac_core_clock. When you set this option to
+False (0), this signal is not included on the I/O.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: Always
+Parameter Name: DMAX_HOLD_IO_EN
+Enable Unaligned Transfer
+Support?
+
+When set to Yes (1), this parameter enables the unaligned transfer support on
+CHx_SAR and CHx_DAR. This reduces the software overhead of converting the
+unaligned address to aligned address.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: Always
+Parameter Name: DMAX_UNALIGNED_XFER_EN
+Enable Multi-Arbiter Feature?
+
+When set to Yes (1), Multi-arbiter feature is enabled. This feature implements the
+Multiple Stage Arbiter Architecture (Multi-Arbiter) to arbitrate the requests from
+source, destination, and LLI state machine to access an AXI Master interface.
+Enabling this feature helps to improve the QoR for the implemented design.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: (DMAX_NUM_CHANNELS>8) ? 1 : 0
+Enabled: DMAX_NUM_CHANNELS>8
+Parameter Name: DMAX_MULT_ARB_EN
+Include Channel Abort
+Feature?
+
+When set to Yes (1), enables logic to support Channel Abort feature in
+DW_axi_dmac.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: Always
+Parameter Name: DMAX_CH_ABORT_EN
+
+102
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Parameter Descriptions
+
+Table 3-1
+
+Top Level Parameters (Continued)
+
+Label
+
+Description
+
+Include Transfer Completion
+Indication Signal on Master
+Interface?
+
+When set to Yes (1), enables the additional handshaking signal last_write_mi on all
+AXI master interfaces.
+The last_write_mi signal is asserted on last data phase of every destination block
+transfer and remains asserted until the last data phase completes.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: Always
+Parameter Name: DMAX_ENABLE_LAST_WRITE
+Include Debug Ports?
+
+When set to Yes (1), enables debug_* ports in DW_axi_dmac.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: DMAX_CSLP_EN == 1 ? 1 : 0
+Enabled: Always
+Parameter Name: DMAX_DEBUG_PORTS_EN
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+103
+
+Parameter Descriptions
+
+3.2
+
+DesignWare DW_axi_dmac Databook
+
+Master Interface Configuration Parameters
+
+Table 3-2
+
+Master Interface Configuration Parameters
+
+Label
+
+Description
+Master Interface Configuration
+
+DW_axi_dmac Master
+Interface Protocol
+
+The protocol used for the AXI Master Interface.
+Values:
+■
+
+AXI3 (0)
+
+■
+
+AXI4 (1)
+
+Default Value: AXI3
+Enabled: Always
+Parameter Name: DMAX_MSTIF_MODE
+Enable QoS feature?
+
+When set to Yes (1), enables the QoS signals in the AXI4 interface.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: DMAX_MSTIF_MODE==1
+Parameter Name: DMAX_HAS_QOS
+
+104
+
+Number of AXI Master
+Interfaces
+
+Creates the specified number of AXI master interfaces. A channel source or
+destination device can be programmed to be on any of the configured AXI layers
+attached to the AXI master interface. This setting determines if AXI master 2
+interface signal set is present on the I/O. AXI master interface signals are always
+present.
+Values: 1, 2
+Default Value: 1
+Enabled: Always
+Parameter Name: DMAX_NUM_MASTER_IF
+
+Master Interface i Outstanding
+Request Limit
+(for i = 1; i <=
+DMAX_NUM_MASTER_IF)
+
+The maximum number of active write requests that can be generated by an AXI
+Master interface (i) without sending the respective write data. This parameter is
+used to select the depth of a FIFO, which tracks the write data transferred on AXI
+Master interface for the active AXI write requests.
+Note: AXI outstanding write/read requests are controlled through the programming
+registers CHx_CFG.SRC_OSR_LMT and CHx_CFG.DST_OSR_LMT.
+Values: 16, 32, 48, 64, 80, 96, 112, 128
+Default Value: 16
+Enabled: Always
+Parameter Name: DMAX_MSTIF(i)_OSR_LMT
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 3-2
+
+Parameter Descriptions
+
+Master Interface Configuration Parameters (Continued)
+
+Label
+
+Description
+
+Statically Configure Endian
+Scheme of Master Interfaces?
+
+The endian scheme of the DW_axi_dmac master interfaces can be configured
+statically through coreConsultant or dynamically through pins on the I/O.
+■
+
+For the static case, there is a single coreConsultant parameter that controls the
+endianness of all AXI master interfaces.
+
+■
+
+For the dynamic case, there is an individual pin for each of the AXI master
+interfaces.
+
+When set to Yes (1), the endianness is configured based on the value of
+DMAX_ENDIAN_FORMAT_MSTIF; otherwise it is configured based on the
+value of input pin, dmac_endian_format_mstif_m(i).
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: Yes
+Enabled: Always
+Parameter Name: DMAX_STATIC_ENDIAN_SELECT_MSTIF
+Include Little Endian Scheme When set to Yes (1), enables additional inputs are enabled to control the endian
+Selection Pin for LLI Access on scheme used for LLI access. An individual pin is added for each AXI Master
+AXI Master Interfaces?
+interface. LLI access on each AXI Master interface can be independently configured
+to support Big Endian scheme (BE-8) based on the endian scheme selected for that
+particular master interface or Little Endian scheme irrespective of the endian
+scheme selected for that particular master interface.
+■
+
+0: Endian scheme used for LLI access is the same as that used for data access
+for M1/M2 interfaces.
+
+■
+
+1: Endian scheme used for LLI access is the same as that used for data access
+for M1/M2 interfaces.
+
+or
+■
+
+Little Endian method is used for LLI access irrespective of the endian scheme
+used for data access depending on the value of dmac_le_select_lli_mstif_m(i)
+input.
+
+Values: 0, 1
+Default Value: 0
+Enabled: !((DMAX_STATIC_ENDIAN_SELECT_MSTIF == 1) &&
+(DMAX_ENDIAN_FORMAT_MSTIF ==0))
+Parameter Name: DMAX_LLI_ENDIAN_SELECTION_PIN_EN
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+105
+
+Parameter Descriptions
+
+Table 3-2
+
+DesignWare DW_axi_dmac Databook
+
+Master Interface Configuration Parameters (Continued)
+
+Label
+
+Description
+
+Master Interface Endian
+Format?
+
+DMAX_ENDIAN_FORMAT_MSTIF values for different AXI master interface endian
+formats are as follows.
+■
+
+0: Little Endian
+
+■
+
+1: Big Endian BE-8
+
+Values:
+■
+
+Little Endian (0)
+
+■
+
+Big Endian BE-8 (1)
+
+Default Value: Little Endian
+Enabled: DMAX_STATIC_ENDIAN_SELECT_MSTIF == 1
+Parameter Name: DMAX_ENDIAN_FORMAT_MSTIF
+Master Interface Adddress Bus AXI Master 1 interface address bus width.
+Width
+Values: 32, ..., 64
+Default Value: 32
+Enabled: Always
+Parameter Name: DMAX_M_ADDR_WIDTH
+
+106
+
+Master Interface Data Bus
+Width
+
+AXI Master interface data bus width.
+Values: 32, 64, 128, 256, 512
+Default Value: 32
+Enabled: Always
+Parameter Name: DMAX_M_DATA_WIDTH
+
+Master Interface ID Bus Width
+
+AXI master interface ID bus width (common for awid_m(i), arid_m(i), wid_m(i),
+bid_m(i) and rid_m(i)).
+Note: The Minimum value of DMAC_M_ID_WIDTH is equal to
+log2(DMAX_NUM_CHANNELS) if multi-block transfer type is hardcoded to nonlinked-list-based schemes, otherwise [log2(DMAX_NUM_CHANNELS)] + 1.
+Values: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+Default Value: 6
+Enabled: Always
+Parameter Name: DMAX_M_ID_WIDTH
+
+Master Interface Burst Length
+Width
+
+AXI master interface Burst Length (arlen(i)/awlen(i)) width.
+Values: 4, 5, 6, 7, 8
+Default Value: 4
+Enabled: Always
+Parameter Name: DMAX_M_BURSTLEN_WIDTH
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+3.3
+
+Parameter Descriptions
+
+Slave Interface Configuration Parameters
+
+Table 3-3
+
+Slave Interface Configuration Parameters
+
+Label
+
+Description
+Slave Interface Configuration
+
+DW_axi_dmac Slave Interface
+Protocol
+
+The protocol is used for Slave Bus Interface.
+Only AHB is supported in this version.
+Values:
+■
+
+AHB (0)
+
+■
+
+AXI4-Lite (1)
+
+■
+
+APB3 (2)
+
+Default Value: AHB
+Enabled: 0
+Parameter Name: DMAX_SLVIF_MODE
+Synchronize Interrupt Outputs
+to Slave Interface Clock?
+
+By default, interrupt output is synchronous to dmac_core_clock. When this
+parameter is set to Yes (1), the interrupt output pins are synchronous to slave
+Interface clock. In this case, additional synchronizers are added inside
+DW_axi_dmac.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: DMAX_SLVIF_CLOCK_MODE!=0
+Parameter Name: DMAX_INTR_SYNC2SLVCLK
+Slave Interface Data Bus Width Specifies the data bus width for the AHB/APB3/AXI4-Lite slave interface.
+Values: 32, 64
+Default Value: 32
+Enabled: Always
+Parameter Name: DMAX_S_DATA_WIDTH
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+107
+
+Parameter Descriptions
+
+3.4
+
+DesignWare DW_axi_dmac Databook
+
+Clocking Parameters
+
+Table 3-4
+
+Clocking Parameters
+
+Label
+
+Description
+Synchronization options
+
+DW_axi_dmac Slave Interface
+Clocking Mode
+
+Selects the relationship between the slave interface clock (AHB/AXI4-Lite/APB3)
+and the Core clock.
+■
+
+0: Slave interface clock is synchronous to the core clock.
+
+■
+
+1: Slave interface clock is asynchronous to the core clock.
+
+Values:
+■
+
+Synchronous (0)
+
+■
+
+Asynchronous (1)
+
+Default Value: Synchronous
+Enabled: Always
+Parameter Name: DMAX_SLVIF_CLOCK_MODE
+Slave to Core Synchronization
+Depth
+
+Defines the number of synchronization register stages for signals passing from the
+DW_axi_dmac Slave clock domain to the DW_axi_dmac Core Clock domain.
+■
+
+1: Two-stage synchronization. First stage - negative edge; Second stage positive edge.
+
+■
+
+2: Two-stage synchronization, both stages positive edge.
+
+■
+
+3: Three-stage synchronization, all stages positive edge.
+
+■
+
+4: Four-stage synchronization, all stages positive edge.
+
+Values: 1, 2, 3, 4
+Default Value: 2
+Enabled: DMAX_SLVIF_CLOCK_MODE==1
+Parameter Name: DMAX_S_2_C_SYNC_DEPTH
+Core to Slave Synchronization
+Depth
+
+Defines the number of synchronization register stages for signals passing from the
+DW_axi_dmac Core Clock Domain to the Slave clock domain.
+■
+
+1: Two-stage synchronization. First stage - negative edge; Second stage positive edge.
+
+■
+
+2: Two-stage synchronization, both stages positive edge.
+
+■
+
+3: Three-stage synchronization, all stages positive edge.
+
+■
+
+4: Four-stage synchronization, all stages positive edge.
+
+Values: 1, 2, 3, 4
+Default Value: 2
+Enabled: DMAX_SLVIF_CLOCK_MODE==1
+Parameter Name: DMAX_C_2_S_SYNC_DEPTH
+
+108
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Parameter Descriptions
+
+Table 3-4
+
+Clocking Parameters (Continued)
+
+Label
+
+Description
+
+DW_axi_dmac Master i
+Interface Clocking Mode
+(for i = 1; i <=
+DMAX_NUM_MASTER_IF)
+
+Selects the relationship between the Master i Interface clock (aclk_m(i)) and the
+Core clock.
+■
+
+0: Master i interface clock is synchronous to the core clock.
+
+■
+
+1: Master i interface clock is asynchronous to the core clock.
+
+Values:
+■
+
+Synchronous (0)
+
+■
+
+Asynchronous (1)
+
+Default Value: Synchronous
+Enabled: Always
+Parameter Name: DMAX_MSTIF(i)_CLOCK_MODE
+Master i to Core
+Synchronization Depth
+(for i = 1; i <=
+DMAX_NUM_MASTER_IF)
+
+Defines the number of synchronization register stages for signals passing from the
+DW_axi_dmac Master i clock domain to the DW_axi_dmac Core Clock domain.
+■
+
+1: Two-stage synchronization: First stage - negative edge; Second stage positive edge.
+
+■
+
+2: Two-stage synchronization, both stages positive edge.
+
+■
+
+3: Three-stage synchronization, all stages positive edge.
+
+■
+
+4: Four-stage synchronization, all stages positive edge.
+
+Values: 1, 2, 3, 4
+Default Value: 2
+Enabled: DMAX_MSTIF(i)_CLOCK_MODE == 1
+Parameter Name: DMAX_M(i)_2_C_SYNC_DEPTH
+Core to Master i
+Synchronization Depth
+(for i = 1; i <=
+DMAX_NUM_MASTER_IF)
+
+Defines the number of synchronization register stages for signals passing from the
+DW_axi_dmac Core Clock domain to the Master i clock domain.
+■
+
+1: Two-stage synchronization: First stage - negative edge; Second stage positive edge.
+
+■
+
+2: Two-stage synchronization, both stages positive edge.
+
+■
+
+3: Three-stage synchronization, all stages positive edge.
+
+■
+
+4: Four-stage synchronization, all stages positive edge.
+
+Values: 1, 2, 3, 4
+Default Value: 2
+Enabled: DMAX_MSTIF(i)_CLOCK_MODE == 1
+Parameter Name: DMAX_C_2_M(i)_SYNC_DEPTH
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+109
+
+Parameter Descriptions
+
+DesignWare DW_axi_dmac Databook
+
+Table 3-4
+
+Clocking Parameters (Continued)
+
+Label
+
+Description
+Synchronizer FIFO Depths of Master Interface
+
+Master Interface Read/Write
+Address Channel FIFO Depth
+
+AXI master interface read/write address channel FIFO depth. Setting appropriate
+value based on the system requirement allows some logic optimization of the
+implementation.
+Values: 4, 8
+Default Value: 4
+Enabled: DMAX_MSTIF1_CLOCK_MODE == 1 || DMAX_MSTIF2_CLOCK_MODE
+== 1
+Parameter Name: DMAX_M_ADDR_FIFO_DEPTH
+
+Master Interface Read/Write
+Data Channel FIFO Depth
+
+AXI master interface read/write data channel FIFO depth. Setting appropriate value
+based on the system requirement allows some logic optimization of the
+implementation.
+Values: 4, 8
+Default Value: 4
+Enabled: DMAX_MSTIF1_CLOCK_MODE == 1 || DMAX_MSTIF2_CLOCK_MODE
+== 1
+Parameter Name: DMAX_M_DATA_FIFO_DEPTH
+
+Master Interface Write
+Response Channel FIFO
+Depth
+
+AXI master interface write response channel FIFO depth. Setting appropriate value
+based on the system requirement allows some logic optimization of the
+implementation.
+Values: 4, 8
+Default Value: 4
+Enabled: DMAX_MSTIF1_CLOCK_MODE == 1 || DMAX_MSTIF2_CLOCK_MODE
+== 1
+Parameter Name: DMAX_M_BRESP_FIFO_DEPTH
+Asynchronous Handshake Synchronization Options
+
+Include Asynchronous DMA
+Handshake Support?
+
+When set to Yes (1), allows you to include or exclude asynchronous DMA
+handshake support.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: DMAX_NUM_HS_IF > 0
+Parameter Name: DMAX_ASYNC_HS_EN
+
+110
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Parameter Descriptions
+
+Table 3-4
+
+Clocking Parameters (Continued)
+
+Label
+
+Description
+
+All DMA Handshake Interface
+has Same Asynchronous
+Clock?
+
+When set to Yes (1), configures whether all DMA handshake interface has the same
+asynchronous clock.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: Yes
+Enabled: DMAX_ASYNC_HS_EN == 1
+Parameter Name: DMAX_HS_SAME_ASYNC_CLK
+Handshake to Core
+Synchronization Depth
+
+Defines the number of synchronization register stages for signals passing from the
+DW_axi_dmac handshake interface clock domain to the DW_axi_dmac Core Clock
+Domain.
+■
+
+1: Two-stage synchronization: First stage - negative edge; Second stage positive edge.
+
+■
+
+2: Two-stage synchronization, both stages positive edge.
+
+■
+
+3: Three-stage synchronization, all stages positive edge.
+
+■
+
+4: Four-stage synchronization, all stages positive edge
+
+Values: 1, 2, 3, 4
+Default Value: 2
+Enabled: DMAX_ASYNC_HS_EN==1
+Parameter Name: DMAX_HS_2_C_SYNC_DEPTH
+Core to Handshake
+Synchronization Depth
+
+Defines the number of synchronization register stages for signals passing from the
+DW_axi_dmac Core Clock domain to handshake interface clock domain.
+■
+
+1: Two-stage synchronization: First stage - negative edge; Second stage positive edge.
+
+■
+
+2: Two-stage synchronization, both stages positive edge.
+
+■
+
+3: Three-stage synchronization, all stages positive edge.
+
+■
+
+4: Four-stage synchronization, all stages positive edge
+
+Values: 1, 2, 3, 4
+Default Value: 2
+Enabled: DMAX_ASYNC_HS_EN==1
+Parameter Name: DMAX_C_2_HS_SYNC_DEPTH
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+111
+
+Parameter Descriptions
+
+DesignWare DW_axi_dmac Databook
+
+Table 3-4
+
+Clocking Parameters (Continued)
+
+Label
+
+Description
+DMAX_HS(y)_ASYNC_CLK
+
+DMA Handshake interface y
+has asynchronous clock?
+(for y = 1; y <=
+DMAX_NUM_HS_IF)
+
+The DMA handshake interface y has asynchronous clock.
+Values:
+■
+
+false (0)
+
+■
+
+true (1)
+
+Default Value: (DMAX_HS_SAME_ASYNC_CLK==1) ? 1 : 0
+Enabled: (DMAX_ASYNC_HS_EN == 1) && (DMAX_HS_SAME_ASYNC_CLK ==
+0) && (DMAX_NUM_HS_IF >= y)
+Parameter Name: DMAX_HS(y)_ASYNC_CLK
+
+112
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+3.5
+
+Parameter Descriptions
+
+Low Power Configuration Parameters
+
+Table 3-5
+
+Low Power Configuration Parameters
+
+Label
+
+Description
+Low Power Configuration
+
+Include Context Sensitive Low
+Power Feature?
+
+When set to Yes (1), allows you to include Context Sensitive Low Power feature. If
+enabled, it includes Global Context Sensitive Low Power feature and allows other
+Context Sensitive Low Power feature to be implemented optionally. Enabling this
+feature saves significant amount of power, with minimal area consumption.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: Always
+Parameter Name: DMAX_CSLP_EN
+Include Context Sensitive Low
+Power Feature in DMA
+Channels?
+
+When set to Yes (1), includes the logic that implements Context Sensitive Low
+Power feature in DMA Channels.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: DMAX_CSLP_EN == 1
+Parameter Name: DMAX_CHNL_CSLP_EN
+Include Context Sensitive Low
+Power Feature in Slave Bus
+Interface?
+
+When set to Yes (1), includes the logic that implements Context Sensitive Low
+Power feature in Slave Bus Interface.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: DMAX_CSLP_EN == 1
+Parameter Name: DMAX_SBIU_CSLP_EN
+Include Context Sensitive Low
+Power Feature in AXI Master
+Interface?
+
+Include or exclude logic that implements Context Sensitive Low Power feature in
+Master Bus Interface.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: DMAX_CSLP_EN == 1
+Parameter Name: DMAX_MXIF_CSLP_EN
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+113
+
+Parameter Descriptions
+
+Table 3-5
+
+DesignWare DW_axi_dmac Databook
+
+Low Power Configuration Parameters (Continued)
+
+Label
+
+Description
+
+Width of Global and DMA
+Channel Low Power Delay
+Counter
+
+Defines the width of the Global and DMA Channel Low Power Delay Counter.
+Values: 4, 5, 6, 7, 8
+Default Value: 4
+Enabled: DMAX_CSLP_EN == 1 || DMAX_CHNL_CSLP_EN == 1
+Parameter Name: DMAX_GLCH_LPDLY_WIDTH
+
+Width of SBIU Low Power
+Delay Counter
+
+Defines the width of the SBIU Low Power Delay Counter.
+Values: 4, 5, 6, 7, 8
+Default Value: 4
+Enabled: DMAX_SBIU_CSLP_EN == 1
+Parameter Name: DMAX_SBIU_LPDLY_WIDTH
+
+Width of AXI Master Interface
+Low Power Delay Counter
+
+Defines the width of the AXI Master Interface Low Power Delay Counter.
+Values: 4, 5, 6, 7, 8
+Default Value: 4
+Enabled: DMAX_MXIF_CSLP_EN == 1
+Parameter Name: DMAX_MXIF_LPDLY_WIDTH
+
+Default load value of Global
+and DMA Channel Low Power
+Delay Counter
+
+Defines the default load value of the Global and DMA Channel Low Power Delay
+Counter.
+Values: 4, ..., 255
+Default Value: 4
+Enabled: DMAX_CSLP_EN == 1 || DMAX_CHNL_CSLP_EN == 1
+Parameter Name: DMAX_GLCH_LPDLY
+
+Default load value of SBIU Low Defines the default load value of the SBIU Low Power Delay Counter.
+Power Delay Counter
+Values: 4, ..., 255
+Default Value: 4
+Enabled: DMAX_SBIU_CSLP_EN == 1
+Parameter Name: DMAX_SBIU_LPDLY
+Default load value of AXI
+Master Interface Low Power
+Delay Counter
+
+114
+
+SolvNet
+DesignWare.com
+
+Defines the default load value of the AXI Master Interface Low Power Delay
+Counter.
+Values: 4, ..., 255
+Default Value: 4
+Enabled: DMAX_MXIF_CSLP_EN == 1
+Parameter Name: DMAX_MXIF_LPDLY
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+3.6
+
+Parameter Descriptions
+
+Channel x Configuration Parameters
+
+Table 3-6
+
+Channel x Configuration Parameters
+
+Label
+
+Description
+Channel x Configuration
+
+Channel x FIFO Depth
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Channel x FIFO depth. Setting appropriate value based on the system requirement
+allows some logic optimization of the implementation.
+Values: 4, 8, 16, 32, 64, 128, 256
+Default Value: 8
+Enabled: Always
+Parameter Name: DMAX_CH(x)_FIFO_DEPTH
+
+Maximum Value of Burst
+Transaction Size
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Maximum value of burst transaction size that can be programmed for channel x
+(CH(x)_CTL.SRC_MSIZE and CH(x)_CTL.DST_MSIZE).
+Setting appropriate value based on the system requirement allows some logic
+optimization of the implementation.
+Values: 1, 4, 8, 16, 32, 64, 128, 256, 512, 1024
+Default Value: 8
+Enabled: Always
+Parameter Name: DMAX_CH(x)_MAX_MSIZE
+
+Maximum Value of Block Size
+in Source Transfer Width
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+The description of this parameter is dependent on what is assigned as the flow
+controller.
+■
+
+If DW_axi_dmac is the flow controller: Maximum block size, in multiples of
+source transfer width (CH(x)_BLOCK_TS.BLOCK_TS), that can be programmed
+for channel x. A programmed value greater than this results in inconsistent
+behavior.
+
+■
+
+If source/destination peripheral assigned as flow controller: In this case, the
+blocks can be greater than DMAX_CH(x)_MAX_BLOCK_TS in size, but the logic
+that keeps track of the size of a block saturates at
+DMAX_CH(x)_MAX_BLOCK_TS. This does not result in erroneous behavior, but
+a read back by software of the block size is incorrect when the block size
+exceeds the saturated value.
+
+Setting appropriate value based on the system requirement allows some logic
+optimization of the implementation.
+Values: 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767,
+65535, 131071, 262143, 524287, 1048575, 2097151, 4194303
+Default Value: 31
+Enabled: Always
+Parameter Name: DMAX_CH(x)_MAX_BLOCK_TS
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+115
+
+Parameter Descriptions
+
+Table 3-6
+
+DesignWare DW_axi_dmac Databook
+
+Channel x Configuration Parameters (Continued)
+
+Label
+
+Description
+
+Maximum Value of AMBA
+Burst Length
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Maximum AMBA Burst Length for Channel x. Setting appropriate value based on
+the system requirement allows some logic optimization of the implementation by
+reducing the internal FIFO depth requirement.
+Dependencies:
+■
+
+DMAX_CH(x)_MAX_AMBA_BURST_LENGTH <=
+DMAX_CH(x)_MAX_BLOCK_TS
+
+■
+
+DMAX_CH(x)_MAX_AMBA_BURST_LENGTH <= DMAX_CH(x)_MAX_MSIZE
+
+Values: 1, 4, 8, 16, 32, 64, 128, 256
+Default Value: 8
+Enabled: Always
+Parameter Name: DMAX_CH(x)_MAX_AMBA_BURST_LENGTH
+Include Logic to Enable
+Channel Locking on Channel
+x?
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+When set to Yes (1), includes logic to enable channel locking on channel x. When
+set to 1, the software can program the DW_axi_dmac to lock the arbitration for the
+master bus interface over the DMA transfer, block transfer, or transaction. When set
+to No (0), this option allows some logic optimization of the implementation.
+Values:
+■
+
+No (0)
+
+■
+
+Yes (1)
+
+Default Value: No
+Enabled: Always
+Parameter Name: DMAX_CH(x)_LOCK_EN
+Hardcode Channel x's transfer
+Type and Flow Control Device
+to Allow for Logic Optimization
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Hardcodes the transfer type and flow control peripheral for the channel x. If
+NO_HARDCODE is selected, then the transfer type and flow control device is not
+hardcoded, and software selects the transfer type and flow control device for a DMA
+transfer.
+Hardcoding the transfer type and flow control device allows some logic optimization
+of the implementation.
+TT_FC Flow Controller Transfer Type
+0x0 DMAC
+Memory to Memory
+0x1 DMAC
+Memory to Peripheral
+0x2 DMAC
+Peripheral to Memory
+0x3 DMAC
+Peripheral to Peripheral
+0x4 Source
+Peripheral to Memory
+0x5 Source
+Peripheral to Peripheral
+0x6 Destination Memory to Peripheral
+0x7 Destination Peripheral to Peripheral
+0x8 No Hardcode No Hardcode
+Values: 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8
+Default Value: 0x8
+Enabled: Always
+Parameter Name: DMAX_CH(x)_TT_FC
+
+116
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 3-6
+
+Parameter Descriptions
+
+Channel x Configuration Parameters (Continued)
+
+Label
+
+Description
+
+Hardcode the Master Interface
+Attached to the Source of
+Channel x
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Hardcode the AXI master interface attached to the source of channel x. If this is not
+hardcoded, software can program the source of channel x to be attached to any of
+the configured layers. Hardcoding this value allows some logic optimization of the
+implementation.
+Values:
+■
+
+Master 1 (0x0)
+
+■
+
+Master 2 (0x1)
+
+■
+
+No Hardcode (0x2)
+
+Default Value: DMAX_NUM_MASTER_IF == 1 ? 0 : 2
+Enabled: DMAX_NUM_MASTER_IF > 1
+Parameter Name: DMAX_CH(x)_SMS
+Hardcode the Master Interface
+Attached to the Destination of
+Channel x
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Hardcode the AXI master interface attached to the channel x destination. If this is
+not hardcoded, then software can program the destination of channel x to be
+attached to any of the configured layers. Hardcoding this value allows some logic
+optimization of the implementation.
+Values:
+■
+
+Master 1 (0x0)
+
+■
+
+Master 2 (0x1)
+
+■
+
+No Hardcode (0x2)
+
+Default Value: DMAX_NUM_MASTER_IF == 1 ? 0 : 2
+Enabled: DMAX_NUM_MASTER_IF > 1
+Parameter Name: DMAX_CH(x)_DMS
+Hardcode Channel x's Source
+Transfer Width
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Hardcode the source transfer width for transfers from the source of channel x. If this
+is not hardcoded, then software can program the source transfer width. Hardcoding
+the source transfer width allows some logic optimization of the implementation.
+Values:
+■
+
+No Hardcode (0)
+
+■
+
+Byte (8)
+
+■
+
+Half Word (16)
+
+■
+
+Word (32)
+
+■
+
+Two Word (64)
+
+■
+
+Four Word (128)
+
+■
+
+Eight Word (256)
+
+■
+
+Sixteen Word (512)
+
+Default Value: Word
+Enabled: Always
+Parameter Name: DMAX_CH(x)_STW
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+117
+
+Parameter Descriptions
+
+Table 3-6
+
+DesignWare DW_axi_dmac Databook
+
+Channel x Configuration Parameters (Continued)
+
+Label
+
+Description
+
+Hardcode Channel x's
+Destination Transfer Width
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Hardcode the destination transfer width for transfers to the destination of channel x.
+If this is not hardcoded, then software can program the destination transfer width.
+Hardcoding the destination transfer width allows some logic optimization of the
+implementation.
+Values:
+■
+
+No Hardcode (0)
+
+■
+
+Byte (8)
+
+■
+
+Half Word (16)
+
+■
+
+Word (32)
+
+■
+
+Two Word (64)
+
+■
+
+Four Word (128)
+
+■
+
+Eight Word (256)
+
+■
+
+Sixteen Word (512)
+
+Default Value: Word
+Enabled: Always
+Parameter Name: DMAX_CH(x)_DTW
+Include Logic to Enable
+Multiblock DMA Transfers on
+Channel x?
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Includes or excludes logic to enable multi-block DMA transfers on channel x. If this
+option is set to 0, then hardware hardwires channel x to perform only single block
+transfers. Setting this parameter to 0 allows some logic optimization of the
+implementation.
+Values:
+■
+
+false (0)
+
+■
+
+true (1)
+
+Default Value: false
+Enabled: Always
+Parameter Name: DMAX_CH(x)_MULTI_BLK_EN
+
+118
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 3-6
+
+Parameter Descriptions
+
+Channel x Configuration Parameters (Continued)
+
+Label
+
+Description
+
+Hardcode Multi-block Transfer
+Type?
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+This parameter allows to hardcode the type of multi-block transfers DW_axi_dmac
+can perform on channel x. This results in some logic optimization of the
+implementation.
+MULTI_BLK_TYPE Source Multi Block Type Destination Multi Block Type
+0x0
+No Hardcode
+No Hardcode
+0x1
+Contiguous
+Auto Reloading
+0x2
+Contiguous
+Shadow Register
+0x3
+Auto Reloading
+Contiguous
+0x4
+Auto Reloading
+Auto Reloading
+0x5
+Auto Reloading
+Shadow Register
+0x6
+Shadow Register
+Contiguous
+0x7
+Shadow Register
+Auto Reloading
+0x8
+Shadow Register
+Shadow Register
+0x9
+Contiguous
+Linked List
+0xa
+Auto Reloading
+Linked List
+0xb
+Linked List
+Contiguous
+0xc
+Linked List
+Auto Reloading
+0xd
+Linked List
+Linked List
+Values: 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd
+Default Value: 0x0
+Enabled: DMAX_CH(x)_MULTI_BLK_EN==1
+Parameter Name: DMAX_CH(x)_MULTI_BLK_TYPE
+
+Enable LLI Prefetching on
+Channel x?
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Set this parameter to 1 to enable the LLI prefetching logic on channel x. If this
+parameter is enabled, DW_axi_dmac tries to fetch one LLI in advance (while the
+data transfer corresponding to the previous LLI is in progress) and store internally
+and thus increases bus utilization. Enabling this parameter doesn't guarantee that
+LLI will be always pre-fetched. This parameter needs to be enabled only if linkedlist-based multi-block transfer is used. Setting this parameter to 0 allows some logic
+optimization of the implementation.
+Values:
+■
+
+false (0)
+
+■
+
+true (1)
+
+Default Value: false
+Enabled: Disabled if DMAX_CH(x)_MULTI_BLK_EN = 0 or If
+DMAX_CH(x)_MULTI_BLK_TYPE is hardcoded to a value that does not use LLI
+Parameter Name: DMAX_CH(x)_LLI_PREFETCH_EN
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+119
+
+Parameter Descriptions
+
+Table 3-6
+
+DesignWare DW_axi_dmac Databook
+
+Channel x Configuration Parameters (Continued)
+
+Label
+
+Description
+
+Include Shadow Registers on
+Channel x?
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Set this parameter to 1 to include shadow registers on channel x. This parameter
+needs to be enabled only if shadow register based multi-block transfer is used.
+Setting this parameter to 0 allows some logic optimization of the implementation.
+Values:
+■
+
+false (0)
+
+■
+
+true (1)
+
+Default Value: false
+Enabled: Not enabled if DMAX_CH(x)_MULTI_BLK_EN = 0 and
+DMAX_CH(x)_MULTI_BLK_TYPE is hardcoded to a value that does not use
+shadow
+Parameter Name: DMAX_CH(x)_SHADOW_REG_EN
+Hardcode the Master Interface
+Attached to the LLP peripheral
+of channel x
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Hardcode the AXI master interface attached to the peripheral that stores the LLI
+information (Linked List Item) for channel x. If this is not hardcoded, then software
+can program the peripheral that stores the LLI information of channel x to be
+attached to any of the configured layers. Hardcoding this value allows some logic
+optimization of the implementation.
+LLI access always uses the burst size (arsize/awsize) that is same as the data bus
+width. LLI access cannot be changed or programmed to anything other than this
+value. Burst length (awlen/arlen) is chosen based on the data bus width so that the
+access does not cross one complete LLI structure of 64 bytes. DW_axi_dmac
+fetches the entire LLI (40 bytes) in one AXI burst if the burst length is not limited by
+other settings.
+Values:
+■
+
+Master 1 (0x0)
+
+■
+
+Master 2 (0x1)
+
+■
+
+No Hardcode (0x2)
+
+Default Value: DMAX_NUM_MASTER_IF == 1 ? 0 : 2
+Enabled: Enabled only when channel has LLI multi-block transfers enabled
+Parameter Name: DMAX_CH(x)_LMS
+Fetch Status From Source of
+Channel x
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Include or exclude logic to fetch status from source peripheral of channel x pointed
+to by the content of CH(x)_SSTATAR register and store it in CHx_SSTAT register if
+CH(x)_CTL.SRC_STAT_EN bit is set to 1. This value is written back to the
+CH(x)_SSTAT location of linked list at end of each block transfer if
+DMAX_CH(x)_LLI_WB_EN is set to 1 and if linked-list-based multiblock transfer is
+used by either source or destination peripheral. Setting this parameter to 0 allows
+some logic optimization of the implementation.
+Values:
+■
+
+false (0)
+
+■
+
+true (1)
+
+Default Value: false
+Enabled: Always
+Parameter Name: DMAX_CH(x)_SRC_STAT_EN
+
+120
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 3-6
+
+Parameter Descriptions
+
+Channel x Configuration Parameters (Continued)
+
+Label
+
+Description
+
+Fetch Status From Destination
+of Channel x
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Include or exclude logic to fetch status from destination peripheral of channel x
+pointed to by the content of CHx_DSTATAR register and store it in CH(x)_DSTAT
+register if CH(x)_CTL.DST_STAT_EN bit is set to 1. This value is written back to the
+CH(x)_DSTAT location of linked list at end of each block transfer if
+DMAX_CH(x)_LLI_WB_EN is set to 1 and if linked-list-based multiblock transfer is
+used by either source or destination peripheral. Setting this parameter to 0 allows
+some logic optimization of the implementation.
+Values:
+■
+
+false (0)
+
+■
+
+true (1)
+
+Default Value: false
+Enabled: Always
+Parameter Name: DMAX_CH(x)_DST_STAT_EN
+Include Logic to Enable
+Register Write-back After Each
+Block Transfer?
+(for x = 1; x <=
+DMAX_NUM_CHANNELS)
+
+Includes or excludes logic to enable write-back of the CH(x)_CTL,
+CH(x)_LLP_STATUS, CH(x)_SSTAT and CHx_DSTAT registers at the end of every
+block transfer. Write back happens only if linked-list-based multi-block transfer is
+used by either source or destination peripheral. Setting this parameter to 0 allows
+some logic optimization of the implementation.
+Values:
+■
+
+false (0)
+
+■
+
+true (1)
+
+Default Value: false
+Enabled: DMAX_CH(x)_MULTI_BLK_TYPE == 0 or
+DMAX_CH(x)_MULTI_BLK_TYPE >8
+Parameter Name: DMAX_CH(x)_LLI_WB_EN
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+121
+
+Parameter Descriptions
+
+122
+
+SolvNet
+DesignWare.com
+
+DesignWare DW_axi_dmac Databook
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+4
+Signal Descriptions
+This chapter details all possible I/O signals in the core. For configurable IP titles, your actual configuration
+might not contain all of these signals.
+Inputs are on the left of the signal diagrams; outputs are on the right.
+Attention: For configurable IP titles, do not use this document to determine the exact I/O footprint of the
+core. It is for reference purposes only.
+When you configure the core in coreConsultant, you must access the I/O signals for your actual
+configuration at workspace/report/IO.html or workspace/report/IO.xml after you have completed the
+report creation activity. That report comes from the exact same source as this chapter but removes all the
+I/O signals that are not in your actual configuration. This does not apply to non-configurable IP titles. In
+addition, all parameter expressions are evaluated to actual values. Therefore, the widths might change
+depending on your actual configuration.
+Some expressions might refer to TCL functions or procedures (sometimes identified as <functionof>) that
+coreConsultant uses to make calculations. The exact formula used by these TCL functions is not provided in
+this chapter. However, when you configure the core in coreConsultant, all TCL functions and parameters
+are evaluated completely; and the resulting values are displayed where appropriate in the coreConsultant
+GUI reports.
+In addition to describing the function of each signal, the signal descriptions in this chapter include the
+following information:
+Active State: Indicates whether the signal is active high or active low. When a signal is not intended to be
+used in a particular application, then this signal needs to be tied or driven to the in-active state (opposite of
+the active state).
+Registered: Indicates whether or not the signal is registered directly inside the IP boundary without
+intervening logic (excluding simple buffers). A value of No does not imply that the signal is not
+synchronous, only that there is some combinatorial logic between the signal's origin or destination register
+and the boundary of the controller. A value of N/A indicates that this information is not provided for this IP
+title.
+Synchronous to: Indicates which clock(s) in the IP sample this input (drive for an output) when considering
+all possible configurations. A particular configuration might not have all of the clocks listed. This clock
+might not be the same as the clock that your application logic should use to clock (sample/drive) this pin.
+For more details, consult the clock section in the databook.
+Exists: Name of configuration parameter(s) that populates this signal in your configuration.
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+123
+
+Signal Descriptions
+
+DesignWare DW_axi_dmac Databook
+
+Validated by: Assertion or de-assertion of signal(s) that validates the signal being described.
+The I/O signals are grouped as follows:
+
+124
+
+■
+
+Core Clock and Reset on page 125
+
+■
+
+Test Interface on page 126
+
+■
+
+AHB Signals on page 127
+
+■
+
+Master Interface on page 130
+
+■
+
+Hardware Handshaking Signals on page 141
+
+■
+
+Debug Interface Signals on page 144
+
+■
+
+Interrupt Interface Signals on page 153
+
+■
+
+Low Power Interface Signals on page 154
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+4.1
+
+Signal Descriptions
+
+Core Clock and Reset Signals
+
+dmac_core_resetn dmac_core_clock -
+
+Table 4-1
+
+Core Clock and Reset Signals
+
+Port Name
+
+I/O Description
+
+dmac_core_resetn
+
+I
+
+DW_axi_dmac core reset. Active low input that asynchronously
+resets the DW_axi_dmac. The reset must be synchronously deasserted after the rising edge of dmac_core_clock. DW_axi_dmac
+does not contain logic to perform this synchronization, so it must be
+provided externally.
+Exists: Always
+Synchronous To: None
+Registered: N/A
+Power Domain: SINGLE_DOMAIN
+Active State: Low
+
+dmac_core_clock
+
+I
+
+DW_axi_dmac core clock.
+Exists: Always
+Synchronous To: None
+Registered: N/A
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+125
+
+Signal Descriptions
+
+4.2
+
+DesignWare DW_axi_dmac Databook
+
+Test Interface Signals
+
+scan_mode -
+
+Table 4-2
+
+126
+
+Test Interface Signals
+
+Port Name
+
+I/O Description
+
+scan_mode
+
+I
+
+SolvNet
+DesignWare.com
+
+Scan Mode. This signal should be asserted during scan testing and
+should be de-asserted (tied to logic 0) at all the other times.
+Exists: (DMAX_CSLP_EN == 1)
+Synchronous To: None
+Registered: N/A
+Power Domain: SINGLE_DOMAIN
+Active State: High.
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+4.3
+
+Signal Descriptions
+
+AHB Signals
+
+hclk hresetn hsel haddr hsize htrans hready hwrite hwdata -
+
+Table 4-3
+
+- hrdata
+- hresp
+- hready_resp
+
+AHB Signals
+
+Port Name
+
+I/O Description
+
+hclk
+
+I
+
+AHB slave interface clock.
+Exists: (DMAX_SLVIF_CLOCK_MODE == 1)
+Synchronous To: None
+Registered: N/A
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+hresetn
+
+I
+
+AHB slave interface reset. Asynchronous assertion, synchronous deassertion. The reset must be synchronously de-asserted after the
+rising edge of hclk. DW_axi_dmac does not contain logic to perform
+this synchronization, so it must be provided externally.
+Exists: (DMAX_SLVIF_CLOCK_MODE == 1)
+Synchronous To: None
+Registered: N/A
+Power Domain: SINGLE_DOMAIN
+Active State: Low
+
+hsel
+
+I
+
+Slave select. Asserted when the current transfer to the AHB bus is
+intended for the DW_axi_dmac.
+Exists: Always
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+127
+
+Signal Descriptions
+
+Table 4-3
+
+128
+
+DesignWare DW_axi_dmac Databook
+
+AHB Signals (Continued)
+
+Port Name
+
+I/O Description
+
+haddr[31:0]
+
+I
+
+Address.
+Exists: Always
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+hsize[2:0]
+
+I
+
+Transfer size.
+Exists: Always
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+htrans[1:0]
+
+I
+
+Transfer type.
+Exists: Always
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+hready
+
+I
+
+Current transfer is complete.
+Exists: Always
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+hwrite
+
+I
+
+Transfer direction. When high, this signal indicates a write transfer.
+When low, this signal indicates a read transfer.
+Exists: Always
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: 1 for Write, 0 for Read
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-3
+
+Signal Descriptions
+
+AHB Signals (Continued)
+
+Port Name
+
+I/O Description
+
+hwdata[(DMAX_S_DATA_WIDTH-1):0]
+
+I
+
+Write data to slave.
+Exists: Always
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+hrdata[(DMAX_S_DATA_WIDTH-1):0]
+
+O
+
+Read data from slave.
+Exists: Always
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: Yes
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+hresp[1:0]
+
+O
+
+Response type from slave. When the DW_axi_dmac is configured for
+the AHB Lite mode and instantiated in an AHB Lite system, the
+hresp[0] signal is connected to the hresp signal in the AHB bus
+fabric; the hresp[1] signal is left unconnected.
+Exists: Always
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: Yes
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+hready_resp
+
+O
+
+Transfer complete.
+Exists: Always
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: Yes
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+129
+
+Signal Descriptions
+
+4.4
+
+DesignWare DW_axi_dmac Databook
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals
+
+aclk_mi aresetn_mi awready_mi arready_mi wready_mi rid_mi rdata_mi rresp_mi rlast_mi rvalid_mi bid_mi bvalid_mi bresp_mi dmac_endian_format_mstif_mi dmac_le_select_lli_mstif_mi -
+
+Table 4-4
+
+130
+
+- awid_mi
+- awaddr_mi
+- awlen_mi
+- awsize_mi
+- awburst_mi
+- awlock_mi
+- awcache_mi
+- awprot_mi
+- awqos_mi
+- awvalid_mi
+- arid_mi
+- araddr_mi
+- arlen_mi
+- arsize_mi
+- arburst_mi
+- arlock_mi
+- arcache_mi
+- arprot_mi
+- arqos_mi
+- arvalid_mi
+- wid_mi
+- wdata_mi
+- wstrb_mi
+- wlast_mi
+- wvalid_mi
+- rready_mi
+- bready_mi
+- last_write_mi
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals
+
+Port Name
+
+I/O Description
+
+aclk_mi
+
+I
+
+SolvNet
+DesignWare.com
+
+AXI3/AXI4 Master i interface clock.
+Exists: (DMAX_MSTIF1_CLOCK_MODE == 1)
+Synchronous To: None
+Registered: N/A
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-4
+
+Signal Descriptions
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals (Continued)
+
+Port Name
+
+I/O Description
+
+aresetn_mi
+
+I
+
+AXI3/AXI4 Master i interface reset. Active low input that
+asynchronously resets the AXI3/AXI4 Master i interface to its default
+state. Asynchronous assertion, synchronous de-assertion. The reset
+must be synchronously de-asserted after the rising edge of
+aclk_m1/dmac_core_clk. DW_axi_dmac does not contain logic to
+perform this synchronization, so it must be provided externally.
+Exists: (DMAX_MSTIF(i)_CLOCK_MODE == 1)
+Synchronous To: None
+Registered: N/A
+Power Domain: SINGLE_DOMAIN
+Active State: Low
+
+awid_mi[(DMAX_M_ID_WIDTH-1):0]
+
+O
+
+AXI3/AXI4 Master i interface write address ID. Identification tag for
+the write address group of signals. The upper 4 bits of awid_mi is
+derived from the channel number of the channel that is currently
+accessing the master interface (channel 1 = 4'b0000, channel 8 =
+4'b0111, and so on). The lower bits are the same as the value
+programmed in the CHx_AXI_IDReg.AXI_Write_ID_Suffix field.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+awaddr_mi[(DMAX_M_ADDR_WIDTH1):0]
+
+O
+
+AXI3/AXI4 Master i interface write address. Specifies the address of
+the AXI write burst transaction.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+awlen_mi[(DMAX_M_BURSTLEN_WIDT O
+H-1):0]
+
+1.02a
+February 2018
+
+AXI3/AXI4 Master i interface write burst length.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+131
+
+Signal Descriptions
+
+Table 4-4
+
+DesignWare DW_axi_dmac Databook
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals (Continued)
+
+Port Name
+
+I/O Description
+
+awsize_mi[2:0]
+
+O
+
+AXI3/AXI4 Master i interface write burst size.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+awburst_mi[1:0]
+
+O
+
+AXI3/AXI4 Master i interface write burst type.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+awlock_mi[(DMAX_AXI_LOCK_WIDTH1):0]
+
+O
+
+AXI3/AXI4 Master i interface write lock type.
+■
+
+awlock_mi[0] = 0 as DW_axi_dmac does not initiate exclusive
+transactions.
+
+■
+
+awlock_mi[1] = 0 as DW_axi_dmac does not support AXI bus
+locking.
+
+■
+
+awlock_mi[1] is not available in AXI4 mode.
+
+Exists: Always
+Synchronous To: None
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+132
+
+awcache_mi[3:0]
+
+O
+
+AXI3/AXI4 Master i interface write cache type. CHx_CTL.AWCACHE
+field determines the value of this signal.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+awprot_mi[2:0]
+
+O
+
+AXI3/AXI4 Master i interface write protection type.
+CHx_CTL.AWPROT field determines the value of this signal.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-4
+
+Signal Descriptions
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals (Continued)
+
+Port Name
+
+I/O Description
+
+awqos_mi[3:0]
+
+O
+
+AXI4 Master i interface Quality Of Service signal for write channel.
+The value of awqos_mi is the same as the value programmed in the
+CHx_AXI_QoSReg.AXI_AWQOS field of the channel that is currently
+accessing the master interface.
+Exists: (DMAX_HAS_QOS == 1)
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+awvalid_mi
+
+O
+
+AXI3/AXI4 Master i interface write address valid. Indicates the
+availability of valid write address and associated control signals.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: (DMAX_HOLD_IO_EN == 1) ? "No": "Yes"
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+awready_mi
+
+I
+
+AXI3/AXI4 Master i interface write address ready. Indicates the AXI
+slave readiness to accept write address and associated control
+signals.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+133
+
+Signal Descriptions
+
+Table 4-4
+
+DesignWare DW_axi_dmac Databook
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals (Continued)
+
+Port Name
+
+I/O Description
+
+arid_mi[(DMAX_M_ID_WIDTH-1):0]
+
+O
+
+AXI3/AXI4 Master i interface read address ID. Identification tag for
+the read address group of signals. The upper 4 bits of arid_mi is
+derived from the channel number of the channel that is currently
+accessing the master interface. This varies for LLI fetch and source
+data transfer.
+■
+
+For source data transfer, arid_mi for channel 1 = 4'b0000, arid_mi
+for channel 8 = 4'b0111, and so on.
+
+■
+
+For LLI fetch access, arid_mi for channel 1 = 4'b1000, arid_mi for
+channel 8 = 4'b1111, and so on. Lower bits are the same as the
+value programmed in the CHx_AXI_IDReg.AXI_Read_ID_Suffix
+field.
+
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+134
+
+araddr_mi[(DMAX_M_ADDR_WIDTH1):0]
+
+O
+
+AXI3/AXI4 Master i interface read address. Specifies the address of
+the AXI read burst transaction.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+arlen_mi[(DMAX_M_BURSTLEN_WIDT
+H-1):0]
+
+O
+
+AXI3/AXI4 Master i interface read burst length.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+arsize_mi[2:0]
+
+O
+
+AXI3/AXI4 Master i interface read burst size.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-4
+
+Signal Descriptions
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals (Continued)
+
+Port Name
+
+I/O Description
+
+arburst_mi[1:0]
+
+O
+
+AXI3/AXI4 Master i interface read burst type.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+arlock_mi[(DMAX_AXI_LOCK_WIDTH1):0]
+
+O
+
+AXI3/AXI4 Master i interface read lock type.
+■
+
+arlock_mi [0] = 0 as DW_axi_dmac does not initiate exclusive
+transactions.
+
+■
+
+arlock_mi [1] = 0 as DW_axi_dmac does not support AXI bus
+locking.
+
+■
+
+arlock_mi [1] = 0 in AXI4 mode.
+
+Exists: Always
+Synchronous To: None
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+arcache_mi[3:0]
+
+O
+
+AXI3/AXI4 Master i interface write cache type. The
+CHx_CTL.ARCACHE field determines the value of this signal.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+arprot_mi[2:0]
+
+O
+
+AXI3/AXI4 Master i interface read protection type.The
+CHx_CTL.ARPROT field determines the value of this signal.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+135
+
+Signal Descriptions
+
+Table 4-4
+
+136
+
+DesignWare DW_axi_dmac Databook
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals (Continued)
+
+Port Name
+
+I/O Description
+
+arqos_mi[3:0]
+
+O
+
+AXI4 Master i interface Quality of Service signal for read channel.
+The value of arqos_mi is the same as the value programmed in the
+CHx_AXI_QoSReg.AXI_ARQOS field of the channel that is currently
+accessing the master interface.
+Exists: (DMAX_HAS_QOS == 1)
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+arvalid_mi
+
+O
+
+AXI3/AXI4 Master i interface read address valid. Indicates the
+availability of a valid read address and associated control signals.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: (DMAX_HOLD_IO_EN == 1) ? "No": "Yes"
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+arready_mi
+
+I
+
+AXI3/AXI4 Master i interface read address ready. Indicates the AXI
+slave readiness to accept read address and associated control
+signals.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+wid_mi[(DMAX_M_ID_WIDTH-1):0]
+
+O
+
+AXI3 Master i interface write data ID. Identification tag for the write
+data group of signals. The upper 4 bits of wid_mi is derived from the
+channel number of the channel that is currently accessing the master
+interface (channel 1 = 4'b0000, channel 8 = 4'b0111, and so on).
+The lower bits are the same as the value programmed in the
+CHx_AXI_IDReg.AXI_Write_ID_Suffix field. DW_axi_dmac does not
+support write data interleaving. Therefore, the wid_mi for a particular
+write transaction is same as the awid_mi of the corresponding write
+request.
+Exists: (DMAX_MSTIF_MODE == 0)
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-4
+
+Signal Descriptions
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals (Continued)
+
+Port Name
+
+I/O Description
+
+wdata_mi[(DMAX_M_DATA_WIDTH1):0]
+
+O
+
+AXI3/AXI4 Master i interface write data.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+wstrb_mi[((DMAX_M_DATA_WIDTH/8)1):0]
+
+O
+
+AXI3/AXI4 Master i interface write data strobe.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+wlast_mi
+
+O
+
+AXI3/AXI4 Master i interface write last. Indicates the last transfer in a
+write burst.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+wvalid_mi
+
+O
+
+AXI3/AXI4 Master i interface write data valid. Indicates the availability
+of valid write data and associated control signals.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: (DMAX_HOLD_IO_EN == 1) ? "No": "Yes"
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+wready_mi
+
+I
+
+AXI3/AXI4 Master i interface write data ready. Indicates the AXI slave
+readiness to accept write data and associated control signals.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+137
+
+Signal Descriptions
+
+Table 4-4
+
+138
+
+DesignWare DW_axi_dmac Databook
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals (Continued)
+
+Port Name
+
+I/O Description
+
+rid_mi[(DMAX_M_ID_WIDTH-1):0]
+
+I
+
+AXI3/AXI4 Master i interface read data ID. Identification tag for the
+read data group of signals.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+rdata_mi[(DMAX_M_DATA_WIDTH-1):0] I
+
+AXI3/AXI4 Master i interface read data.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+rresp_mi[1:0]
+
+I
+
+AXI3/AXI4 Master i Interface read response. AXI slave indicates the
+status of read transaction.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+rlast_mi
+
+I
+
+AXI3/AXI4 Master i interface read last. Indicates the last transfer in a
+read burst.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+rvalid_mi
+
+I
+
+AXI3/AXI4 Master i interface read data valid. Indicates the availability
+of valid read data and associated control signals.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-4
+
+Signal Descriptions
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals (Continued)
+
+Port Name
+
+I/O Description
+
+rready_mi
+
+O
+
+AXI3/AXI4 Master i interface read data ready. Indicates the
+DW_axi_dmac readiness to accept read address and associated
+control signals.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: (DMAX_HOLD_IO_EN == 1) ? "No": "Yes"
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+bid_mi[(DMAX_M_ID_WIDTH-1):0]
+
+I
+
+AXI3/AXI4 Master i interface write response ID. Identification tag for
+the write response group of signals.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+bvalid_mi
+
+I
+
+AXI3/AXI4 Master i interface write response valid. AXI slave indicates
+the availability of a valid write response.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+bresp_mi[1:0]
+
+I
+
+AXI3/AXI4 Master i interface write response. AXI slave indicates the
+status of write transaction.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+bready_mi
+
+O
+
+AXI3/AXI4 Master i interface write response ready. Indicates the
+DW_axi_dmac readiness to accept write response.
+Exists: Always
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: (DMAX_HOLD_IO_EN == 1) ? "No" : "Yes"
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+139
+
+Signal Descriptions
+
+Table 4-4
+
+DesignWare DW_axi_dmac Databook
+
+Master Interface (for i = 1; i <= DMAX_NUM_MASTER_IF) Signals (Continued)
+
+Port Name
+
+I/O Description
+
+last_write_mi
+
+O
+
+Last write data of block transfer.
+Exists: (DMAX_ENABLE_LAST_WRITE == 1)
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+dmac_endian_format_mstif_mi
+
+I
+
+Master i interface endian format selection pins. Following are the
+supported endian formats:
+■
+
+0: Little Endian
+
+■
+
+1: Big Endian BE-8
+
+Exists: (DMAX_STATIC_ENDIAN_SELECT_MSTIF == 0)
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+dmac_le_select_lli_mstif_mi
+
+I
+
+Master i interface endian format selection pin for LLI access (LLI
+fetch and LLI status write-back). The following are the supported
+endian formats:
+■
+
+0: Endian scheme used for LLI access is the same as that used
+for data access Mi interface.
+
+■
+
+1: Little endian method is used for LLI access irrespective of the
+endian scheme used for data access Mi interface.
+
+Exists: (DMAX_LLI_ENDIAN_SELECTION_PIN_EN == 1)
+Synchronous To: (DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+140
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+4.5
+
+Signal Descriptions
+
+Hardware Handshaking Signals
+
+hs_clk hs_rstn dma_req dma_single dma_last -
+
+Table 4-5
+
+- dma_ack
+- dma_finish
+- debug_dma_ack
+
+Hardware Handshaking Signals
+
+Port Name
+
+I/O Description
+
+hs_clk[(DMAX_HS_CLKRST_WIDTH1):0]
+
+I
+
+Hardware Handshake Interface Clock.
+Exists: (DMAX_ASYNC_HS_EN == 1)
+Synchronous To: None
+Registered: N/A
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+hs_rstn[(DMAX_HS_CLKRST_WIDTH1):0]
+
+I
+
+Hardware Handshake Interface reset. Asynchronous assertion,
+synchronous de-assertion. The reset must be synchronously deasserted after the rising edge of hs_clk. DW_axi_dmac does not
+contain logic to perform this synchronization, so it must be provided
+externally.
+Exists: (DMAX_ASYNC_HS_EN == 1)
+Synchronous To: None
+Registered: N/A
+Power Domain: SINGLE_DOMAIN
+Active State: Low
+
+dma_req[(DMAX_NUM_HS_IF-1):0]
+
+I
+
+DMA transaction request from peripheral. Where, y =
+1...DMAX_NUM_HS_IF and DMAX_HS1_ASYNC_CLK corresponds
+to dma_req[0], DMAX_HS2_ASYNC_CLK corresponds to
+dma_req[1], and so on.
+Exists: (DMAX_NUM_HS_IF > 0)
+Synchronous To: ((DMAX_HS(y)_ASYNC_CLK == 1) ? "hs_clk[y1]" : "dmac_core_clock")
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+141
+
+Signal Descriptions
+
+Table 4-5
+
+142
+
+DesignWare DW_axi_dmac Databook
+
+Hardware Handshaking Signals (Continued)
+
+Port Name
+
+I/O Description
+
+dma_single[(DMAX_NUM_HS_IF-1):0]
+
+I
+
+Single transfer request/status. Where, y = 1...DMAX_NUM_HS_IF
+and DMAX_HS1_ASYNC_CLK corresponds to dma_single[0],
+DMAX_HS2_ASYNC_CLK corresponds to dma_single[1], and so on.
+Exists: (DMAX_NUM_HS_IF > 0)
+Synchronous To: ((DMAX_HS(y)_ASYNC_CLK == 1) ? "hs_clk[y1]" : "dmac_core_clock")
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+dma_last[(DMAX_NUM_HS_IF-1):0]
+
+I
+
+Last transaction in block indicator. Where, y =
+1...DMAX_NUM_HS_IF and DMAX_HS1_ASYNC_CLK corresponds
+to dma_last[0], DMAX_HS2_ASYNC_CLK corresponds to
+dma_last[1], and so on.
+Exists: (DMAX_NUM_HS_IF > 0)
+Synchronous To: ((DMAX_HS(y)_ASYNC_CLK == 1) ? "hs_clk[y1]" : "dmac_core_clock")
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+dma_ack[(DMAX_NUM_HS_IF-1):0]
+
+O
+
+Transaction complete acknowledge signal. Where, y =
+1...DMAX_NUM_HS_IF and DMAX_HS1_ASYNC_CLK corresponds
+to dma_ack[0], DMAX_HS2_ASYNC_CLK corresponds to
+dma_ack[1], and so on.
+Exists: (DMAX_NUM_HS_IF > 0)
+Synchronous To: ((DMAX_HS(y)_ASYNC_CLK == 1) ? "hs_clk[y1]" : "dmac_core_clock")
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+dma_finish[(DMAX_NUM_HS_IF-1):0]
+
+O
+
+DMA block complete signal. Where, y = 1...DMAX_NUM_HS_IF and
+DMAX_HS1_ASYNC_CLK corresponds to dma_finish[0],
+DMAX_HS2_ASYNC_CLK corresponds to dma_fiish[1], and so on.
+Exists: (DMAX_NUM_HS_IF > 0)
+Synchronous To: ((DMAX_HS(y)_ASYNC_CLK == 1) ? "hs_clk[y1]" : "dmac_core_clock")
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-5
+
+Signal Descriptions
+
+Hardware Handshaking Signals (Continued)
+
+Port Name
+
+I/O Description
+
+debug_dma_ack[(DMAX_NUM_HS_IF1):0]
+
+O
+
+1.02a
+February 2018
+
+Debug Transaction complete acknowledge signal. This signal is
+always synchronous to dmac_core_clock, irrespective type
+Asynchronous Handshake configuration mode chosen.
+Exists: (DMAX_NUM_HS_IF > 0) && (DMAX_ASYNC_HS_EN ==
+1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+143
+
+Signal Descriptions
+
+4.6
+
+DesignWare DW_axi_dmac Databook
+
+Debug Interface Signals
+
+dmac_hold_req debug_ch_num_i -
+
+Table 4-6
+
+144
+
+- slvif_busy
+- dmac_busy
+- dmac_hold_ack
+- debug_grant_index_ar_ch_m1
+- debug_grant_index_aw_ch_m1
+- debug_ch_wr_arb_req_m1
+- debug_ch_rd_arb_req_m1
+- debug_ch_lli_rd_req_m1
+- debug_grant_index_ar_ch_m2
+- debug_grant_index_aw_ch_m2
+- debug_ch_wr_arb_req_m2
+- debug_ch_rd_arb_req_m2
+- debug_ch_lli_rd_req_m2
+- debug_ch_src_blk_tfr_done
+- debug_ch_dst_blk_tfr_done
+- debug_ch_blk_tfr_done
+- debug_ch_src_trans_done
+- debug_ch_dst_trans_done
+- debug_ch_dma_tfr_done
+- debug_ch_src_trans_req
+- debug_ch_dst_trans_req
+- debug_ch_src_is_in_str
+- debug_ch_dst_is_in_str
+- debug_ch_shadowreg_or_lli_invalid_err
+- debug_ch_aborted
+- debug_ch_suspended
+- debug_ch_en
+
+Debug Interface Signals
+
+Port Name
+
+I/O Description
+
+dmac_hold_req
+
+I
+
+SolvNet
+DesignWare.com
+
+DMAC Core Hold Request. A request to put DW_axi_dmac in hold
+(freeze) mode. Asserting this request puts the entire DW_axi_dmac
+in freeze mode without violating the AXI protocol. To exit the hold
+mode, this signal can be de-asserted after DW_axi_dmac asserts
+dmac_hold_ack.
+Exists: (DMAX_HOLD_IO_EN == 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-6
+
+Signal Descriptions
+
+Debug Interface Signals (Continued)
+
+Port Name
+
+I/O Description
+
+slvif_busy
+
+O
+
+Slave Interface status signal indicating that whether the slave
+interface is busy or not. This signal is asserted if there is an active
+transfer on the slave interface.
+Exists: (DMAX_SLVIF_STATUS_OP_EN == 1)
+Synchronous To: (DMAX_SLVIF_CLOCK_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: Yes
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+dmac_busy
+
+O
+
+DMAC status signal indicates whether DW_axi_dmac core is busy or
+not. This signal is asserted if any of the channels in DW_axi_dmac
+are in a non-idle state. A non-idle state of the channel corresponds to
+the following cases:
+■
+
+There is an active transfer on the Master Interface (including
+posted requests) corresponding to one or multiple Channels.
+
+■
+
+Any of the Channels are about to initiate a transfer, which might
+correspond to waiting for the grant of the master interface from
+the arbiter.
+
+Exists: (DMAX_CORE_STATUS_OP_EN == 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+dmac_hold_ack
+
+1.02a
+February 2018
+
+O
+
+DMAC Core Hold request acknowledgement. DW_axi_dmac asserts
+this signal after entering the hold (freeze) mode. This signal is deasserted when dmac_hold_req is de-asserted. It is not allowed to deassert dmac_hold_req before asserting dmac_hold_ack.
+Exists: (DMAX_HOLD_IO_EN == 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+145
+
+Signal Descriptions
+
+Table 4-6
+
+Debug Interface Signals (Continued)
+
+Port Name
+
+146
+
+DesignWare DW_axi_dmac Databook
+
+I/O Description
+
+debug_grant_index_ar_ch_m1[(LOG2_D O
+MAX_ARB_RD_REQ_WIDTH-1):0]
+
+Debug port AXI Master Interface 1 Read Address Channel Arbiter
+grant index. Where the Read Arbiter request is combination of: When
+LLI is enabled for at least one channel (DMAX_HAS_LLI_PARAM =
+1): {CH(x)_LLI_REQ, CH(x)_DST_REQ, CH(x)_SRC_REQ, ...
+CH2_LLI_REQ, CH2_DST_REQ, CH2_SRC_REQ, CH1_LLI_REQ,
+CH1_DST_REQ, CH1_SRC_REQ} When LLI is not enabled for any
+of the channel (DMAX_HAS_LLI_PARAM = 0): {CH(x)_DST_REQ,
+CH(x)_SRC_REQ, ... CH2_DST_REQ, CH2_SRC_REQ,
+CH1_DST_REQ, CH1_SRC_REQ} Where x =
+DMAX_NUM_CHANNELS.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: Yes
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+debug_grant_index_aw_ch_m1[(LOG2_
+DMAX_ARB_WR_REQ_WIDTH-1):0]
+
+O
+
+Debug port AXI Master Interface 1 Write Address Channel Arbiter
+grant index. Where the Write Arbiter request is combination of: When
+LLI is enabled for at least one channel (DMAX_HAS_LLI_PARAM =
+1): {CH(x)_LLI_REQ, CH(x)_DST_REQ, ... CH2_LLI_REQ,
+CH2_DST_REQ, CH1_LLI_REQ, CH1_DST_REQ} When LLI is not
+enabled for any of the channel (DMAX_HAS_LLI_PARAM = 0):
+{CH(x)_DST_REQ, ... CH2_DST_REQ, CH1_DST_REQ} Where x =
+DMAX_NUM_CHANNELS.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: Yes
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+debug_ch_wr_arb_req_m1[(DMAX_NU
+M_CHANNELS-1):0]
+
+O
+
+Debug port AXI Master Interface 1 Write Arbiter Request. Each bit of
+the vector corresponds to respective channels Write Arbiter request.
+Each request is a combination of Destination Data Write request and
+LLI Write request (DMAX_HAS_LLI_PARAM==1) of a channel.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-6
+
+Signal Descriptions
+
+Debug Interface Signals (Continued)
+
+Port Name
+
+I/O Description
+
+debug_ch_rd_arb_req_m1[(DMAX_NUM O
+_CHANNELS-1):0]
+
+Debug port AXI Master Interface 1 Read Arbiter Request. Each bit of
+the vector corresponds to respective Read Arbiter request. Each
+request is a combination of Source Data Read request (Data Fetch
+and SSTAT Fetch) and Destination Read request (DSTAT Fetch) of a
+channel.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+debug_ch_lli_rd_req_m1[(DMAX_NUM_ O
+CHANNELS-1):0]
+
+Debug port AXI Master Interface 1 LLI Read Arbiter Request. Each
+bit of the vector corresponds to respective channels LLI Read Arbiter
+request.
+Exists: (DMAX_DEBUG_PORTS_EN > 0) &&
+(DMAX_HAS_LLI_PARAM == 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+debug_grant_index_ar_ch_m2[(LOG2_D O
+MAX_ARB_RD_REQ_WIDTH-1):0]
+
+Debug port AXI Master Interface 2 Read Address Channel Arbiter
+grant index. Where the Read Arbiter request is combination of: When
+LLI is enabled for at least one channel (DMAX_HAS_LLI_PARAM =
+1): {CH(x)_LLI_REQ, CH(x)_DST_REQ, CH(x)_SRC_REQ, ...
+CH2_LLI_REQ, CH2_DST_REQ, CH2_SRC_REQ, CH1_LLI_REQ,
+CH1_DST_REQ, CH1_SRC_REQ} When LLI is not enabled for any
+of the channel (DMAX_HAS_LLI_PARAM = 0): {CH(x)_DST_REQ,
+CH(x)_SRC_REQ, ... CH2_DST_REQ, CH2_SRC_REQ,
+CH1_DST_REQ, CH1_SRC_REQ} Where x =
+DMAX_NUM_CHANNELS.
+Exists: (DMAX_DEBUG_PORTS_EN > 0) &&
+(DMAX_NUM_MASTER_IF > 1)
+Synchronous To: dmac_core_clock
+Registered: Yes
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+147
+
+Signal Descriptions
+
+Table 4-6
+
+148
+
+DesignWare DW_axi_dmac Databook
+
+Debug Interface Signals (Continued)
+
+Port Name
+
+I/O Description
+
+debug_grant_index_aw_ch_m2[(LOG2_
+DMAX_ARB_WR_REQ_WIDTH-1):0]
+
+O
+
+Debug port AXI Master Interface 2 Write Address Channel Arbiter
+grant index. Where the Write Arbiter request is combination of: When
+LLI is enabled for at least one channel (DMAX_HAS_LLI_PARAM =
+1): {CH(x)_LLI_REQ, CH(x)_DST_REQ, ... CH2_LLI_REQ,
+CH2_DST_REQ, CH1_LLI_REQ, CH1_DST_REQ} When LLI is not
+enabled for any of the channel (DMAX_HAS_LLI_PARAM = 0):
+{CH(x)_DST_REQ, ... CH2_DST_REQ, CH1_DST_REQ} Where x =
+DMAX_NUM_CHANNELS
+Exists: (DMAX_DEBUG_PORTS_EN > 0) &&
+(DMAX_NUM_MASTER_IF > 1)
+Synchronous To: dmac_core_clock
+Registered: Yes
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+debug_ch_wr_arb_req_m2[(DMAX_NU
+M_CHANNELS-1):0]
+
+O
+
+Debug port AXI Master Interface 2 Write Arbiter Request. Each bit of
+the vector corresponds to Write Arbiter request of the respective
+channel. Each request is a combination of Destination Data Write
+request and LLI Write request (DMAX_HAS_LLI_PARAM==1) of a
+channel.
+Exists: (DMAX_DEBUG_PORTS_EN > 0) &&
+(DMAX_NUM_MASTER_IF > 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+debug_ch_rd_arb_req_m2[(DMAX_NUM O
+_CHANNELS-1):0]
+
+Debug port AXI Master Interface 2 Read Arbiter Request. Each bit of
+the vector corresponds to Read Arbiter request of the respective
+channel. Each request is a combination of Source Data Read
+request (Data Fetch and SSTAT Fetch) and Destination Data Read
+request (DSTAT Fetch) of a channel.
+Exists: (DMAX_DEBUG_PORTS_EN > 0) &&
+(DMAX_NUM_MASTER_IF > 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-6
+
+Signal Descriptions
+
+Debug Interface Signals (Continued)
+
+Port Name
+
+I/O Description
+
+debug_ch_lli_rd_req_m2[(DMAX_NUM_ O
+CHANNELS-1):0]
+
+Debug port AXI Master Interface 2 LLI Read Arbiter Request. Each
+bit of the vector corresponds to LLI Read Arbiter request of the
+respective channel.
+Exists: (DMAX_DEBUG_PORTS_EN > 0) &&
+(DMAX_HAS_LLI_PARAM == 1) && (DMAX_NUM_MASTER_IF > 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+debug_ch_num_i[(LOG2_DMAX_NUM_ I
+CHANNELS-1):0]
+
+Debug Interface Channel number. This channel number is used to
+multiplex debug signals from all channels to provide one set of debug
+signals corresponding to a Channel number - debug_ch_num_i. The
+following Channel specific debug signals are multiplexed based on
+the debug_ch_num_i:
+■
+
+ch_src_blk_tfr_done
+
+■
+
+ch_dst_blk_tfr_done
+
+■
+
+ch_blk_tfr_done
+
+■
+
+ch_src_trans_done
+
+■
+
+ch_dst_trans_done
+
+■
+
+ch_dma_tfr_done
+
+■
+
+ch_src_trans_req
+
+■
+
+ch_dst_trans_req
+
+■
+
+ch_src_is_in_str
+
+■
+
+ch_dst_is_in_str
+
+■
+
+ch_aborted
+
+■
+
+ch_suspended
+
+■
+
+ch_shadowreg_or_lli_invalid_err
+
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+debug_ch_src_blk_tfr_done
+
+1.02a
+February 2018
+
+O
+
+Multiplexed - Source Block Transfer Done debug signal
+corresponding to the channel debug_ch_num_i.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+149
+
+Signal Descriptions
+
+Table 4-6
+
+150
+
+DesignWare DW_axi_dmac Databook
+
+Debug Interface Signals (Continued)
+
+Port Name
+
+I/O Description
+
+debug_ch_dst_blk_tfr_done
+
+O
+
+Multiplexed - Destination Block Transfer Done debug signal
+corresponding to the channel debug_ch_num_i.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+debug_ch_blk_tfr_done
+
+O
+
+Multiplexed - DMA Block Transfer Done debug signal corresponding
+to the channel debug_ch_num_i.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+debug_ch_src_trans_done
+
+O
+
+Multiplexed - Source Transaction Done debug signal corresponding
+to the channel debug_ch_num_i.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+debug_ch_dst_trans_done
+
+O
+
+Multiplexed - Destination Transaction Done debug signal
+corresponding to the channel debug_ch_num_i.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+debug_ch_dma_tfr_done
+
+O
+
+Multiplexed - DMA Transfer Done debug signal corresponding to the
+channel debug_ch_num_i.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-6
+
+Signal Descriptions
+
+Debug Interface Signals (Continued)
+
+Port Name
+
+I/O Description
+
+debug_ch_src_trans_req
+
+O
+
+Multiplexed - internally generated Source Transaction request
+(generated based on the Source dma_req* and dma_sgl_req*)
+debug signal corresponding to the channel debug_ch_num_i.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+debug_ch_dst_trans_req
+
+O
+
+Multiplexed - internally generated Destination Transaction request
+(generated based on the Destination dma_req* and dma_sgl_req*)
+debug signal corresponding to the channel debug_ch_num_i.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+debug_ch_src_is_in_str
+
+O
+
+Multiplexed - Source State machine is in Single transaction region
+debug signal corresponding to the channel debug_ch_num_i. For
+more information, see "Single Transaction Region" section of the
+databook.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+debug_ch_dst_is_in_str
+
+O
+
+Multiplexed - Destination State machine is in Single transaction
+region debug signal corresponding to the channel debug_ch_num_i.
+For more information, see "Single Transaction Region" section of the
+databook.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+151
+
+Signal Descriptions
+
+Table 4-6
+
+152
+
+DesignWare DW_axi_dmac Databook
+
+Debug Interface Signals (Continued)
+
+Port Name
+
+I/O Description
+
+debug_ch_shadowreg_or_lli_invalid_err
+
+O
+
+Multiplexed - Shadow register or LLI Invalid error debug signal
+corresponding to the channel debug_ch_num_i. For more
+information, see "Programming Flow for Shadow-Register-Based
+Multi-Block Transfer" and "Programming Flow for Linked-List-Based
+Multi-Bock Transfer" sections of the databook.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+debug_ch_aborted
+
+O
+
+Multiplexed - Channel Abort status (generated due to Channel
+Suspend request, Channel disable, User Channel abort, or due to
+reception of AXI error response) debug signal corresponding to the
+channel debug_ch_num_i.
+Exists: (DMAX_DEBUG_PORTS_EN > 0) &&
+(DMAX_CH_ABORT_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+debug_ch_suspended
+
+O
+
+Multiplexed - Channel Suspend status debug signal corresponding to
+the channel debug_ch_num_i.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+debug_ch_en[(DMAX_NUM_CHANNEL
+S-1):0]
+
+O
+
+DMA Channel enable debug signal.
+Exists: (DMAX_DEBUG_PORTS_EN > 0)
+Synchronous To: dmac_core_clock
+Registered: Yes
+Power Domain: SINGLE_DOMAIN
+Active State: N/A
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+4.7
+
+Signal Descriptions
+
+Interrupt Interface Signals
+
+- intr
+- intr_ch
+- intr_cmnreg
+
+Table 4-7
+
+Interrupt Interface Signals
+
+Port Name
+
+I/O Description
+
+intr
+
+O
+
+Logical OR of all individual interrupts.
+Exists: (DMAX_INTR_IO_TYPE != 1)
+Synchronous To: (DMAX_INTR_SYNC2SLVCLK == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: ((DMAX_INTR_SYNC2SLVCLK == 1) &&
+(DMAX_INTR_IO_TYPE == 0)) ? "Yes" : "No"
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+intr_ch[(DMAX_NUM_CHANNELS-1):0]
+
+O
+
+Logical OR of all individual interrupts of each enabled channels.
+Exists: (DMAX_INTR_IO_TYPE > 0)
+Synchronous To: (DMAX_INTR_SYNC2SLVCLK == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: (DMAX_INTR_SYNC2SLVCLK == 1) ? "Yes" : "No"
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+intr_cmnreg
+
+O
+
+Logical OR of all common register interrupts.
+Exists: (DMAX_INTR_IO_TYPE > 0)
+Synchronous To: (DMAX_INTR_SYNC2SLVCLK == 1) ? "hclk"
+:"dmac_core_clock"
+Registered: (DMAX_INTR_SYNC2SLVCLK == 1) ? "Yes" : "No"
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+153
+
+Signal Descriptions
+
+4.8
+
+DesignWare DW_axi_dmac Databook
+
+Low Power Interface Signals
+
+- dmac_lp_req
+- ch_lp_req
+- sbiu_lp_req
+- mxif_arch_lp_req
+- mxif_arch_oclk_lp_req
+- mxif_awch_lp_req
+- mxif_awch_oclk_lp_req
+- mxif_wch_lp_req
+- mxif_wch_oclk_lp_req
+- mxif_bch_lp_req
+- mxif_bch_oclk_lp_req
+- mxif_rch_lp_req
+- mxif_rch_oclk_lp_req
+- mxif_r_ch_idle
+- mxif_b_ch_idle
+
+Table 4-8
+
+154
+
+Low Power Interface Signals
+
+Port Name
+
+I/O Description
+
+dmac_lp_req
+
+O
+
+Global Low Power request, generated based on the Global Context
+Sensitive Low Power feature.
+Exists: (DMAX_CSLP_EN == 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+ch_lp_req[(DMAX_NUM_CHANNELS1):0]
+
+O
+
+DMA Channel Low Power request, generated based on the DMA
+Channel Context Sensitive Low Power feature.
+Exists: (DMAX_CHNL_CSLP_EN == 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+sbiu_lp_req
+
+O
+
+SBIU Low Power request, generated based on the SBIU Context
+Sensitive Low Power feature.
+Exists: (DMAX_SBIU_CSLP_EN== 1)
+Synchronous To: (DMAX_SLVIF_MODE == 1) ? "hclk" :
+"dmac_core_clock"
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-8
+
+Signal Descriptions
+
+Low Power Interface Signals (Continued)
+
+Port Name
+
+I/O Description
+
+mxif_arch_lp_req[(DMAX_NUM_MASTE O
+R_IF-1):0]
+
+AXI AR Channel Low Power request, generated based on the AXI
+Master Interface Context Sensitive Low Power feature.
+Exists: (DMAX_MXIF_CSLP_EN== 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+mxif_arch_oclk_lp_req[(DMAX_NUM_M
+ASTER_IF-1):0]
+
+O
+
+AXI AR Channel Low Power request (synchronous to other clock aclk_mi), generated based on the AXI Master Interface Context
+Sensitive Low Power feature.
+Exists: (DMAX_MXIF_CSLP_EN== 1)
+Synchronous To: ((DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "None")
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+mxif_awch_lp_req[(DMAX_NUM_MAST
+ER_IF-1):0]
+
+O
+
+AXI AW Channel Low Power request, generated based on the AXI
+Master Interface Context Sensitive Low Power feature.
+Exists: (DMAX_MXIF_CSLP_EN== 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+mxif_awch_oclk_lp_req[(DMAX_NUM_M O
+ASTER_IF-1):0]
+
+AXI AW Channel Low Power request (synchronous to other clock aclk_mi), generated based on the AXI Master Interface Context
+Sensitive Low Power feature.
+Exists: (DMAX_MXIF_CSLP_EN== 1)
+Synchronous To: ((DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "None")
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+mxif_wch_lp_req[(DMAX_NUM_MASTE O
+R_IF-1):0]
+
+AXI W Channel Low Power request, generated based on the AXI
+Master Interface Context Sensitive Low Power feature.
+Exists: (DMAX_MXIF_CSLP_EN== 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+155
+
+Signal Descriptions
+
+Table 4-8
+
+156
+
+DesignWare DW_axi_dmac Databook
+
+Low Power Interface Signals (Continued)
+
+Port Name
+
+I/O Description
+
+mxif_wch_oclk_lp_req[(DMAX_NUM_M
+ASTER_IF-1):0]
+
+O
+
+AXI W Channel Low Power request (synchronous to other clock aclk_mi), generated based on the AXI Master Interface Context
+Sensitive Low Power feature.
+Exists: (DMAX_MXIF_CSLP_EN== 1)
+Synchronous To: ((DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "None")
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+mxif_bch_lp_req[(DMAX_NUM_MASTE
+R_IF-1):0]
+
+O
+
+AXI B Channel Low Power request, generated based on the AXI
+Master Interface Context Sensitive Low Power feature.
+Exists: (DMAX_MXIF_CSLP_EN== 1)
+Synchronous To: aclk_mi
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+mxif_bch_oclk_lp_req[(DMAX_NUM_MA O
+STER_IF-1):0]
+
+AXI B Channel Low Power request (synchronous to other clock dmac_core_clock), generated based on the AXI Master Interface
+Context Sensitive Low Power feature.
+Exists: (DMAX_MXIF_CSLP_EN== 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+mxif_rch_lp_req[(DMAX_NUM_MASTE
+R_IF-1):0]
+
+O
+
+AXI R Channel Low Power request, generated based on the AXI
+Master Interface Context Sensitive Low Power feature.
+Exists: (DMAX_MXIF_CSLP_EN== 1)
+Synchronous To: aclk_mi
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+mxif_rch_oclk_lp_req[(DMAX_NUM_MA O
+STER_IF-1):0]
+
+AXI R Channel Low Power request (synchronous to other clock dmac_core_clock), generated based on the AXI Master Interface
+Context Sensitive Low Power feature.
+Exists: (DMAX_MXIF_CSLP_EN== 1)
+Synchronous To: dmac_core_clock
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 4-8
+
+Signal Descriptions
+
+Low Power Interface Signals (Continued)
+
+Port Name
+
+I/O Description
+
+mxif_r_ch_idle[(DMAX_NUM_MASTER_ O
+IF-1):0]
+
+Debug port AXI Master interface Read Data channel Idle status.
+Exists: (DMAX_DEBUG_PORTS_EN > 0) && (DMAX_CSLP_EN ==
+1)
+Synchronous To: ((DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock")
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+mxif_b_ch_idle[(DMAX_NUM_MASTER
+_IF-1):0]
+
+Debug port AXI Master interface Write Response channel Idle status.
+Exists: (DMAX_DEBUG_PORTS_EN > 0) && (DMAX_CSLP_EN ==
+1)
+Synchronous To: ((DMAX_MSTIF(i)_CLOCK_MODE == 1) ?
+"aclk_mi" : "dmac_core_clock")
+Registered: No
+Power Domain: SINGLE_DOMAIN
+Active State: High
+
+1.02a
+February 2018
+
+O
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+157
+
+Signal Descriptions
+
+158
+
+SolvNet
+DesignWare.com
+
+DesignWare DW_axi_dmac Databook
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+5
+Register Descriptions
+This chapter details all possible registers in the core. They are arranged hierarchically into maps and blocks
+(banks). For configurable IP titles, your actual configuration might not contain all of these registers.
+Attention: For configurable IP titles, do not use this document to determine the exact attributes of your
+register map. It is for reference purposes only.
+When you configure the core in coreConsultant, you must access the register attributes for your actual
+configuration at workspace/report/ComponentRegisters.html or
+workspace/report/ComponentRegisters.xml after you have completed the report creation activity. That
+report comes from the exact same source as this chapter but removes all the registers that are not in your
+actual configuration. This does not apply to non-configurable IP titles. In addition, all parameter
+expressions are evaluated to actual values. Therefore, the Offset and Memory Access values might change
+depending on your actual configuration.
+Some expressions might refer to TCL functions or procedures (sometimes identified as <functionof>) that
+coreConsultant uses to make calculations. The exact formula used by these TCL functions is not provided in
+this chapter. However, when you configure the core in coreConsultant, all TCL functions and parameters
+are evaluated completely; and the resulting values are displayed where appropriate in the coreConsultant
+GUI reports.
+Exists Expressions
+The Exist expressions indicate the combination of configuration parameters required for a register, field, or
+block to exist in the memory map. The expression is only valid in the local context and does not indicate the
+conditions for existence of the parent. For example, the Exists expression for a bit field in a register assumes
+that the register exists and does not include the conditions for existence of the register.
+Offset
+The term Offset is synonymous with Address.
+Memory Access Attributes
+The Memory Access attribute is defined as <ReadBehavior>/<WriteBehavior> which are defined in the
+following table.
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+159
+
+Register Descriptions
+
+Table 5-1
+
+DesignWare DW_axi_dmac Databook
+
+Possible Read and Write Behaviors
+
+Read (or Write) Behavior
+
+Description
+
+RC
+
+A read clears this register field.
+
+RS
+
+A read sets this register field.
+
+RM
+
+A read modifies the contents of this register field.
+
+Wo
+
+You can only write to this register once field.
+
+W1C
+
+A write of 1 clears this register field.
+
+W1S
+
+A write of 1 sets this register field.
+
+W1T
+
+A write of 1 toggles this register field.
+
+W0C
+
+A write of 0 clears this register field.
+
+W0S
+
+A write of 0 sets this register field.
+
+W0T
+
+A write of 0 toggles this register field.
+
+WC
+
+Any write clears this register field.
+
+WS
+
+Any write sets this register field.
+
+WM
+
+Any write toggles this register field.
+
+no Read Behavior attribute
+
+You cannot read this register. It is Write-Only.
+
+no Write Behavior attribute
+
+You cannot write to this register. It is Read-Only.
+
+Table 5-2
+
+Memory Access Examples
+
+Memory Access
+
+Description
+
+R
+
+Read-only register field.
+
+W
+
+Write-only register field.
+
+R/W
+
+Read/write register field.
+
+R/W1C
+
+You can read this register field. Writing 1 clears it.
+
+RC/W1C
+
+Reading this register field clears it. Writing 1 clears it.
+
+R/Wo
+
+You can read this register field. You can only write to it once.
+
+Special Optional Attributes
+Some register fields might use the following optional attributes.
+
+160
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-3
+
+Register Descriptions
+
+Optional Attributes
+
+Attribute
+
+Description
+
+Volatile
+
+As defined by the IP-XACT specification. If true, indicates in the
+case of a write followed by read, or in the case of two consecutive
+reads, there is no guarantee as to what is returned by the read on
+the second transaction or that this return value is consistent with the
+write or read of the first transaction. The element implies there is
+some additional mechanism by which this field can acquire new
+values other than by reads/writes/resets and other access methods
+known to IP-XACT. For example, when the core updates the register
+field contents.
+
+Testable
+
+As defined by the IP-XACT specification. Possible values are
+unconstrained, untestable, readOnly, writeAsRead, restore.
+Untestable means that this field is untestable by a simple automated
+register test. For example, the read-write access of the register is
+controlled by a pin or another register. readOnly means that you
+should not write to this register; only read from it. This might apply
+for a register that modifies the contents of another register.
+
+Reset Mask
+
+As defined by the IP-XACT specification. Indicates that this register
+field has an unknown reset value. For example, the reset value is set
+by another register or an input pin; or the register is implemented
+using RAM.
+
+* Varies
+
+Indicates that the memory access (or reset) attribute (read, write
+behavior) is not fixed. For example, the read-write access of the
+register is controlled by a pin or another register. Or when the
+access depends on some configuration parameter; in this case the
+post-configuration report in coreConsultant gives the actual access
+value.
+
+Component Banks/Blocks
+The following table shows the address blocks for each memory map. Follow the link for an address block to
+see a table of its registers.
+Table 5-4
+
+Address Banks/Blocks for Memory Map: DW_axi_dmac_mem_map
+
+Address Block
+
+Description
+
+Common_Registers_Address_Block on page 162
+
+DW_axi_dmac common register address block
+Exists: Always
+
+DW_axi_dmac Channel x register address block
+(for x = 1; x <= DMAX_NUM_CHANNELS) on page 339
+
+DW_axi_dmac Channel x register address block
+Exists: DMAX_NUM_CHANNELS >= x
+
+DUMMY
+
+Exists: Always
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+161
+
+Register Descriptions
+
+5.1
+
+DesignWare DW_axi_dmac Databook
+
+DW_axi_dmac_mem_map/Common_Registers_Address_Block Registers
+
+DW_axi_dmac common register address block Follow the link for the register to see a detailed description
+of the register.
+Table 5-5
+
+162
+
+Registers for Address Block: DW_axi_dmac_mem_map/Common_Registers_Address_Block
+
+Register
+
+Offset
+
+Description
+
+DMAC_IDREG on page 163
+
+0x0
+
+DMAC ID Register contains a 64-bit value that is hardwired
+and read back by a read to the DW_axi_dmac...
+
+DMAC_COMPVERREG on page 164
+
+0x8
+
+This register contains a 64-bit value that is hardwired and
+read back by a read to the DW_axi_dmac...
+
+DMAC_CFGREG on page 165
+
+0x10
+
+This register is used to enable the DW_axi_dmac, which
+must be done before any channel activity...
+
+DMAC_CHENREG on page 167
+
+0x18
+
+This is DW_axi_dmac Channel Enable Register. If software
+wants to set up a new channel, it can read...
+
+DMAC_CHENREG2 on page 196
+
+0x18
+
+This is DW_axi_dmac Channel Enable Register. If software
+wants to set up a new channel, it can read...
+
+DMAC_CHSUSPREG on page 224
+
+0x20
+
+This is DW_axi_dmac Channel Suspend Register. The
+channel suspend bit, DMAC_ChSuspReg.CH_SUSP, is...
+
+DMAC_CHABORTREG on page 265
+
+0x28
+
+This is DW_axi_dmac Channel Abort Register. The channel
+abort bit, DMAC_ChAbortReg.CH_ABORT, is...
+
+DMAC_INTSTATUSREG on page 308
+
+0x30
+
+DMAC Interrupt Status Register captures the combined
+channel interrupt for each channel and Combined...
+
+DMAC_INTSTATUSREG2 on page 311
+
+0x30
+
+DMAC Interrupt Status Register captures the combined
+channel interrupt for each channel and Combined...
+
+DMAC_COMMONREG_INTCLEARREG
+on page 319
+
+0x38
+
+Writing 1 to specific field clears the corresponding field in
+DMAC Common register Interrupt Status...
+
+DMAC_COMMONREG_INTSTATUS_ENA 0x40
+BLEREG on page 322
+
+Writing 1 to specific field enables the corresponding interrupt
+status generation in DMAC Common...
+
+DMAC_COMMONREG_INTSIGNAL_ENA 0x48
+BLEREG on page 326
+
+Writing 1 to specific field will propagate the corresponding
+interrupt status in DMAC Common register...
+
+DMAC_COMMONREG_INTSTATUSREG
+on page 330
+
+0x50
+
+This Register captures Slave interface access errors. Decode Error. - Write to read only register....
+
+DMAC_RESETREG on page 335
+
+0x58
+
+This register is used to initiate the Software Reset to
+DW_axi_dmac.
+
+DMAC_LOWPOWER_CFGREG on
+page 336
+
+0x60
+
+This register contains the fields that configures the Context
+Sensitive Low Power feature. This...
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+5.1.1
+
+Register Descriptions
+
+DMAC_IDREG
+Description: DMAC ID Register contains a 64-bit value that is hardwired and read back by a read to
+the DW_axi_dmac ID Register.
+
+■
+
+Size: 64 bits
+
+■
+
+Offset: 0x0
+
+■
+
+Exists: Always
+
+DMAC_ID 63:0
+
+■
+
+Table 5-6
+
+Fields for Register: DMAC_IDREG
+
+Bits
+
+Name
+
+Memory
+Access
+
+63:0
+
+DMAC_ID
+
+R
+
+1.02a
+February 2018
+
+Description
+DMAC ID Number.
+Value After Reset: DMAX_ID_NUM
+Exists: Always
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+163
+
+Register Descriptions
+
+5.1.2
+
+DesignWare DW_axi_dmac Databook
+
+DMAC_COMPVERREG
+
+■
+
+Size: 64 bits
+
+■
+
+Offset: 0x8
+
+■
+
+Exists: Always
+
+Table 5-7
+
+164
+
+DMAC_COMPVER
+
+31:0
+
+Description: This register contains a 64-bit value that is hardwired and read back by a read to the
+DW_axi_dmac Component Version Register.
+
+RSVD_DMAC_COMPVERREG 63:32
+
+■
+
+Fields for Register: DMAC_COMPVERREG
+
+Bits
+
+Name
+
+Memory
+Access
+
+63:32
+
+RSVD_DMAC_COMPVERREG
+
+R
+
+DMAC_COMPVERREG Reserved bits - Read Only
+Value After Reset: 0x0
+Exists: Always
+
+31:0
+
+DMAC_COMPVER
+
+R
+
+DMAC Component Version Number.
+Value After Reset: DMAX_COMP_VER
+Exists: Always
+
+SolvNet
+DesignWare.com
+
+Description
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+5.1.3
+
+Register Descriptions
+
+DMAC_CFGREG
+
+Size: 64 bits
+
+■
+
+Offset: 0x10
+
+■
+
+Exists: Always
+
+Table 5-8
+
+INT_EN
+
+DMAC_EN
+
+0
+
+■
+
+1
+
+Description: This register is used to enable the DW_axi_dmac, which must be done before any
+channel activity can begin. This register also contains global interrupt enable bit.
+
+RSVD_DMAC_CFGREG 63:2
+
+■
+
+Fields for Register: DMAC_CFGREG
+
+Bits
+
+Name
+
+Memory
+Access
+
+63:2
+
+RSVD_DMAC_CFGREG
+
+R
+
+DMAC_CFGREG Reserved bits - Read Only
+Value After Reset: 0x0
+Exists: Always
+
+1
+
+INT_EN
+
+R/W
+
+This bit is used to globally enable the interrupt generation.
+
+Description
+
+■
+
+0: DW_axi_dmac Interrupts are disabled
+
+■
+
+1: DW_axi_dmac Interrupt logic is enabled.
+
+Values:
+■
+
+0x1 (ENABLED): DW_axi_dmac Interrupts are enabled
+
+■
+
+0x0 (DISABLED): DW_axi_dmac Interrupts are disabled
+
+Value After Reset: 0x0
+Exists: Always
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+165
+
+Register Descriptions
+
+Table 5-8
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CFGREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+0
+
+DMAC_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac.
+■
+
+0: DW_axi_dmac disabled
+
+■
+
+1: DW_axi_dmac enabled
+
+NOTE: If this bit DMAC_EN bit is cleared while any channel
+is still active, then this bit still returns 1 to indicate that there
+are channels still active until DW_axi_dmac hardware has
+terminated all activity on all channels, at which point this bit
+returns zero (0).
+Values:
+■
+
+0x1 (ENABLED): DW_axi_dmac is enabled
+
+■
+
+0x0 (DISABLED): DW_axi_dmac is disabled
+
+Value After Reset: 0x0
+Exists: Always
+
+166
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+5.1.4
+
+Register Descriptions
+
+DMAC_CHENREG
+■
+
+Description: This is DW_axi_dmac Channel Enable Register. If software wants to set up a new
+channel, it can read this register to find out which channels are currently inactive and then enable an
+inactive channel with the required priority.
+All bits of this register are cleared to 0 when the DW_axi_dmac Global Enable bit
+(DMAC_CfgReg.DMAC_EN) is 0. When DMAC_CfgReg.DMAC_EN is 0, a write to the
+DMAC_ChEnReg register is ignored and a read always reads back 0.
+The channel enable bit, DMAC_ChEnReg.CH_EN, is written only if the corresponding channel write
+enable bit, DMAC_ChEnReg.CH_EN_WE, is asserted on the same slave interface write transfer. For
+example, writing hex XXXX01X1 writes a 1 into DMAC_ChEnReg [0], while DMAC_ChEnReg [7:1]
+remains unchanged. Writing hex XXXX00XX leaves DMAC_ChEnReg [7:0] unchanged.
+The channel suspend bit, DMAC_ChEnReg.CH_SUSP, is written only if the corresponding channel
+write enable bit, DMAC_ChEnReg.CH_SUSP_WE, is asserted on the same slave interface write
+transfer. For example, writing hex 01X1XXXX writes a 1 into DMAC_ChEnReg [16], while
+DMAC_ChEnReg [23:17] remains unchanged. Writing hex 00XXXXXX leaves DMAC_ChEnReg
+[23:16] unchanged. The channel abort bit, DMAC_ChEnReg.CH_ABORT, is written only if the
+corresponding channel write enable bit, DMAC_ChEnReg.CH_ABORT_WE, is asserted on the same
+slave interface write transfer.
+Size: 64 bits
+
+■
+
+Offset: 0x18
+
+■
+
+Exists: DMAX_NUM_CHANNELS <= 8
+
+RSVD_DMAC_CHENREG
+CH8_ABORT_WE
+CH7_ABORT_WE
+CH6_ABORT_WE
+CH5_ABORT_WE
+CH4_ABORT_WE
+CH3_ABORT_WE
+CH2_ABORT_WE
+CH1_ABORT_WE
+CH8_ABORT
+CH7_ABORT
+CH6_ABORT
+CH5_ABORT
+CH4_ABORT
+CH3_ABORT
+CH2_ABORT
+CH1_ABORT
+CH8_SUSP_WE
+CH7_SUSP_WE
+CH6_SUSP_WE
+CH5_SUSP_WE
+CH4_SUSP_WE
+CH3_SUSP_WE
+CH2_SUSP_WE
+CH1_SUSP_WE
+CH8_SUSP
+CH7_SUSP
+CH6_SUSP
+CH5_SUSP
+CH4_SUSP
+CH3_SUSP
+CH2_SUSP
+CH1_SUSP
+CH8_EN_WE
+CH7_EN_WE
+CH6_EN_WE
+CH5_EN_WE
+CH4_EN_WE
+CH3_EN_WE
+CH2_EN_WE
+CH1_EN_WE
+CH8_EN
+CH7_EN
+CH6_EN
+CH5_EN
+CH4_EN
+CH3_EN
+CH2_EN
+CH1_EN
+
+63:48
+47
+46
+45
+44
+43
+42
+41
+40
+39
+38
+37
+36
+35
+34
+33
+32
+31
+30
+29
+28
+27
+26
+25
+24
+23
+22
+21
+20
+19
+18
+17
+16
+15
+14
+13
+12
+11
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+
+■
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+167
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG
+
+Bits
+
+Name
+
+Memory
+Access
+
+63:48
+
+RSVD_DMAC_CHENREG
+
+R
+
+DMAC_CHENREG Reserved bits - Read Only
+Value After Reset: 0x0
+Exists: Always
+Volatile: true
+
+47
+
+CH8_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-8 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+
+Description
+
+■
+
+0x1 (ENABLE_WR_CH8_ABORT): Enable Write to
+CH8_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH8_ABORT): Disable Write to
+CH8_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+46
+
+CH7_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-7 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH7_ABORT): Enable Write to
+CH7_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH7_ABORT): Disable Write to
+CH7_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 6
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+168
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+45
+
+CH6_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-6 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH6_ABORT): Enable Write to
+CH6_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH6_ABORT): Disable Write to
+CH6_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 5
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+44
+
+CH5_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-5 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH5_ABORT): Enable Write to
+CH5_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH5_ABORT): Disable Write to
+CH5_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 4
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+43
+
+CH4_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-4 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH4_ABORT): Enable Write to
+CH4_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH4_ABORT): Disable Write to
+CH4_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 3
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+169
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+42
+
+CH3_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-3 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH3_ABORT): Enable Write to
+CH3_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH3_ABORT): Disable Write to
+CH3_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 2
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+41
+
+CH2_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-2 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH2_ABORT): Enable Write to
+CH2_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH2_ABORT): Disable Write to
+CH2_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 1
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+40
+
+CH1_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-1 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH1_ABORT): Enable Write to
+CH1_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH1_ABORT): Disable Write to
+CH1_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 0
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+170
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+39
+
+CH8_ABORT
+
+* Varies
+
+Description
+Channel-8 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH8_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH8_ABORT): Request for Channel-8
+Abort
+
+■
+
+0x0 (DISABLE_CH8_ABORT): No Request for Channel-8
+Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+171
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+38
+
+CH7_ABORT
+
+* Varies
+
+Description
+Channel-7 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH7_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH7_ABORT): Request for Channel-7
+Abort
+
+■
+
+0x0 (DISABLE_CH7_ABORT): No Request for Channel-7
+Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 6
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+172
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+37
+
+CH6_ABORT
+
+* Varies
+
+Description
+Channel-6 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH6_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH6_ABORT): Request for Channel-6
+Abort
+
+■
+
+0x0 (DISABLE_CH6_ABORT): No Request for Channel-6
+Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 5
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+173
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+36
+
+CH5_ABORT
+
+* Varies
+
+Description
+Channel-5 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH5_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH5_ABORT): Request for Channel-5
+Abort
+
+■
+
+0x0 (DISABLE_CH5_ABORT): No Request for Channel-5
+Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 4
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+174
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+35
+
+CH4_ABORT
+
+* Varies
+
+Description
+Channel-4 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH4_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH4_ABORT): Request for Channel-4
+Abort
+
+■
+
+0x0 (DISABLE_CH4_ABORT): No Request for Channel-4
+Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 3
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+175
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+34
+
+CH3_ABORT
+
+* Varies
+
+Description
+Channel-3 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH3_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH3_ABORT): Request for Channel-3
+Abort
+
+■
+
+0x0 (DISABLE_CH3_ABORT): No Request for Channel-3
+Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 2
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+176
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+33
+
+CH2_ABORT
+
+* Varies
+
+Description
+Channel-2 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH2_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH2_ABORT): Request for Channel-2
+Abort
+
+■
+
+0x0 (DISABLE_CH2_ABORT): No Request for Channel-2
+Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 1
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+177
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+32
+
+CH1_ABORT
+
+* Varies
+
+Description
+Channel-1 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH1_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH1_ABORT): Request for Channel-1
+Abort
+
+■
+
+0x0 (DISABLE_CH1_ABORT): No Request for Channel-1
+Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 0
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+31
+
+CH8_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-8 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH8_SUSP): Enable Write to
+respective CH8_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH8_SUSP): Disable Write to
+CH8_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+
+178
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+30
+
+CH7_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-7 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH7_SUSP): Enable Write to
+respective CH7_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH7_SUSP): Disable Write to
+CH7_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 6
+Volatile: true
+29
+
+CH6_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-6 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH6_SUSP): Enable Write to
+respective CH6_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH6_SUSP): Disable Write to
+CH6_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 5
+Volatile: true
+28
+
+CH5_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-5 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH5_SUSP): Enable Write to
+respective CH5_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH5_SUSP): Disable Write to
+CH5_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 4
+Volatile: true
+27
+
+CH4_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-4 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH4_SUSP): Enable Write to
+respective CH4_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH4_SUSP): Disable Write to
+CH4_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 3
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+179
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+26
+
+CH3_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-3 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH3_SUSP): Enable Write to
+respective CH3_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH3_SUSP): Disable Write to
+CH3_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 2
+Volatile: true
+25
+
+CH2_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-2 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH2_SUSP): Enable Write to
+respective CH2_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH2_SUSP): Disable Write to
+CH2_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 1
+Volatile: true
+24
+
+CH1_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-1 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH1_SUSP): Enable Write to
+respective CH1_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH1_SUSP): Disable Write to
+CH1_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 0
+Volatile: true
+
+180
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+23
+
+CH8_SUSP
+
+R/W
+
+Description
+Channel-8 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH8_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH8_SUSP bit to 1 and polls
+CH8_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH8_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH8_SUSP bit to 0, after DW_axi_dmac
+sets CH8_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH8_SUSP): Request to Suspended
+Channel-8
+
+■
+
+0x0 (DISABLE_CH8_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+181
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+22
+
+CH7_SUSP
+
+R/W
+
+Description
+Channel-7 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH7_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH7_SUSP bit to 1 and polls
+CH7_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH7_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH7_SUSP bit to 0, after DW_axi_dmac
+sets CH7_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH7_SUSP): Request to Suspended
+Channel-7
+
+■
+
+0x0 (DISABLE_CH7_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 6
+Volatile: true
+
+182
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+21
+
+CH6_SUSP
+
+R/W
+
+Description
+Channel-6 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH6_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH6_SUSP bit to 1 and polls
+CH6_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH6_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH6_SUSP bit to 0, after DW_axi_dmac
+sets CH6_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH6_SUSP): Request to Suspended
+Channel-6
+
+■
+
+0x0 (DISABLE_CH6_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 5
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+183
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+20
+
+CH5_SUSP
+
+R/W
+
+Description
+Channel-5 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH5_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH5_SUSP bit to 1 and polls
+CH5_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH5_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH5_SUSP bit to 0, after DW_axi_dmac
+sets CH5_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH5_SUSP): Request to Suspended
+Channel-5
+
+■
+
+0x0 (DISABLE_CH5_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 4
+Volatile: true
+
+184
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+19
+
+CH4_SUSP
+
+R/W
+
+Description
+Channel-4 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH4_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH4_SUSP bit to 1 and polls
+CH4_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH4_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH4_SUSP bit to 0, after DW_axi_dmac
+sets CH4_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH4_SUSP): Request to Suspended
+Channel-4
+
+■
+
+0x0 (DISABLE_CH4_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 3
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+185
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+18
+
+CH3_SUSP
+
+R/W
+
+Description
+Channel-3 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH3_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH3_SUSP bit to 1 and polls
+CH3_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH3_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH3_SUSP bit to 0, after DW_axi_dmac
+sets CH3_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH3_SUSP): Request to Suspended
+Channel-3
+
+■
+
+0x0 (DISABLE_CH3_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 2
+Volatile: true
+
+186
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+17
+
+CH2_SUSP
+
+R/W
+
+Description
+Channel-2 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH2_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH2_SUSP bit to 1 and polls
+CH2_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH2_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH2_SUSP bit to 0, after DW_axi_dmac
+sets CH2_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH2_SUSP): Request to Suspended
+Channel-2
+
+■
+
+0x0 (DISABLE_CH2_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 1
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+187
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+16
+
+CH1_SUSP
+
+R/W
+
+Description
+Channel-1 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH1_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH1_SUSP bit to 1 and polls
+CH1_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH1_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH1_SUSP bit to 0, after DW_axi_dmac
+sets CH1_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH1_SUSP): Request to Suspended
+Channel-1
+
+■
+
+0x0 (DISABLE_CH1_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 0
+Volatile: true
+15
+
+CH8_EN_WE
+
+W
+
+DW_axi_dmac Channel-8 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH8_EN): Enable Write to CH8_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH8_EN): Disable Write to
+respective CH8_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+
+188
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+14
+
+CH7_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-7 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH7_EN): Enable Write to CH7_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH7_EN): Disable Write to
+respective CH7_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 6
+Volatile: true
+13
+
+CH6_EN_WE
+
+W
+
+DW_axi_dmac Channel-6 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH6_EN): Enable Write to CH6_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH6_EN): Disable Write to
+respective CH6_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 5
+Volatile: true
+12
+
+CH5_EN_WE
+
+W
+
+DW_axi_dmac Channel-5 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH5_EN): Enable Write to CH5_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH5_EN): Disable Write to
+respective CH5_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 4
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+189
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+11
+
+CH4_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-4 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH4_EN): Enable Write to CH4_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH4_EN): Disable Write to
+respective CH4_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 3
+Volatile: true
+10
+
+CH3_EN_WE
+
+W
+
+DW_axi_dmac Channel-3 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH3_EN): Enable Write to CH3_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH3_EN): Disable Write to
+respective CH3_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 2
+Volatile: true
+9
+
+CH2_EN_WE
+
+W
+
+DW_axi_dmac Channel-2 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH2_EN): Enable Write to CH2_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH2_EN): Disable Write to
+respective CH2_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 1
+Volatile: true
+
+190
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+8
+
+CH1_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-1 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH1_EN): Enable Write to CH1_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH1_EN): Disable Write to
+respective CH1_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 0
+Volatile: true
+7
+
+CH8_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-8.
+■
+
+0: DW_axi_dmac Channel-8 is disabled
+
+■
+
+1: DW_axi_dmac Channel-8 is enabled
+
+The bit 'DMAC_ChEnReg.CH8_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH8): DW_axi_dmac: Channel-8 is
+enabled
+
+■
+
+0x0 (DISABLE_CH8): DW_axi_dmac: Channel-8 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS >= x
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+191
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+6
+
+CH7_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-7.
+■
+
+0: DW_axi_dmac Channel-7 is disabled
+
+■
+
+1: DW_axi_dmac Channel-7 is enabled
+
+The bit 'DMAC_ChEnReg.CH7_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH7): DW_axi_dmac: Channel-7 is
+enabled
+
+■
+
+0x0 (DISABLE_CH7): DW_axi_dmac: Channel-7 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS >= x
+Volatile: true
+5
+
+CH6_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-6.
+■
+
+0: DW_axi_dmac Channel-6 is disabled
+
+■
+
+1: DW_axi_dmac Channel-6 is enabled
+
+The bit 'DMAC_ChEnReg.CH6_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH6): DW_axi_dmac: Channel-6 is
+enabled
+
+■
+
+0x0 (DISABLE_CH6): DW_axi_dmac: Channel-6 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS >= x
+Volatile: true
+
+192
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+4
+
+CH5_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-5.
+■
+
+0: DW_axi_dmac Channel-5 is disabled
+
+■
+
+1: DW_axi_dmac Channel-5 is enabled
+
+The bit 'DMAC_ChEnReg.CH5_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH5): DW_axi_dmac: Channel-5 is
+enabled
+
+■
+
+0x0 (DISABLE_CH5): DW_axi_dmac: Channel-5 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS >= x
+Volatile: true
+3
+
+CH4_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-4.
+■
+
+0: DW_axi_dmac Channel-4 is disabled
+
+■
+
+1: DW_axi_dmac Channel-4 is enabled
+
+The bit 'DMAC_ChEnReg.CH4_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH4): DW_axi_dmac: Channel-4 is
+enabled
+
+■
+
+0x0 (DISABLE_CH4): DW_axi_dmac: Channel-4 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS >= x
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+193
+
+Register Descriptions
+
+Table 5-9
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+2
+
+CH3_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-3.
+■
+
+0: DW_axi_dmac Channel-3 is disabled
+
+■
+
+1: DW_axi_dmac Channel-3 is enabled
+
+The bit 'DMAC_ChEnReg.CH3_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH3): DW_axi_dmac: Channel-3 is
+enabled
+
+■
+
+0x0 (DISABLE_CH3): DW_axi_dmac: Channel-3 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS >= x
+Volatile: true
+1
+
+CH2_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-2.
+■
+
+0: DW_axi_dmac Channel-2 is disabled
+
+■
+
+1: DW_axi_dmac Channel-2 is enabled
+
+The bit 'DMAC_ChEnReg.CH2_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH2): DW_axi_dmac: Channel-2 is
+enabled
+
+■
+
+0x0 (DISABLE_CH2): DW_axi_dmac: Channel-2 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS >= x
+Volatile: true
+
+194
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-9
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+0
+
+CH1_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-1.
+■
+
+0: DW_axi_dmac Channel-1 is disabled
+
+■
+
+1: DW_axi_dmac Channel-1 is enabled
+
+The bit 'DMAC_ChEnReg.CH1_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH1): DW_axi_dmac: Channel-1 is
+enabled
+
+■
+
+0x0 (DISABLE_CH1): DW_axi_dmac: Channel-1 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS >= x
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+195
+
+Register Descriptions
+
+5.1.5
+
+DesignWare DW_axi_dmac Databook
+
+DMAC_CHENREG2
+■
+
+Description: This is DW_axi_dmac Channel Enable Register. If software wants to set up a new
+channel, it can read this register to find out which channels are currently inactive and then enable an
+inactive channel with the required priority.
+All bits of this register are cleared to 0 when the DW_axi_dmac Global Enable bit
+(DMAC_CfgReg.DMAC_EN) is 0. When DMAC_CfgReg.DMAC_EN is 0, a write to the
+DMAC_ChEnReg register is ignored and a read always reads back 0.
+The channel enable bit, DMAC_ChEnReg.CH_EN, is written only if the corresponding channel write
+enable bit, DMAC_ChEnReg.CH_EN_WE, is asserted on the same slave interface write transfer. For
+example, writing hex 0000_XXXX_0001_XXX1 writes a 1 into DMAC_ChEnReg [0], while
+DMAC_ChEnReg [15:1] and DMAC_ChEnReg [47:32] remains unchanged. . Writing hex
+0000_XXXX_0000_XXXX leaves DMAC_ChEnReg [15:0] and DMAC_ChEnReg [47:32] unchanged.
+Size: 64 bits
+
+■
+
+Offset: 0x18
+
+■
+
+Exists: DMAX_NUM_CHANNELS > 8
+
+CH32_EN_WE
+CH31_EN_WE
+CH30_EN_WE
+CH29_EN_WE
+CH28_EN_WE
+CH27_EN_WE
+CH26_EN_WE
+CH25_EN_WE
+CH24_EN_WE
+CH23_EN_WE
+CH22_EN_WE
+CH21_EN_WE
+CH20_EN_WE
+CH19_EN_WE
+CH18_EN_WE
+CH17_EN_WE
+CH32_EN
+CH31_EN
+CH30_EN
+CH29_EN
+CH28_EN
+CH27_EN
+CH26_EN
+CH25_EN
+CH24_EN
+CH23_EN
+CH22_EN
+CH21_EN
+CH20_EN
+CH19_EN
+CH18_EN
+CH17_EN
+CH16_EN_WE
+CH15_EN_WE
+CH14_EN_WE
+CH13_EN_WE
+CH12_EN_WE
+CH11_EN_WE
+CH10_EN_WE
+CH9_EN_WE
+CH8_EN_WE
+CH7_EN_WE
+CH6_EN_WE
+CH5_EN_WE
+CH4_EN_WE
+CH3_EN_WE
+CH2_EN_WE
+CH1_EN_WE
+CH16_EN
+CH15_EN
+CH14_EN
+CH13_EN
+CH12_EN
+CH11_EN
+CH10_EN
+CH9_EN
+CH8_EN
+CH7_EN
+CH6_EN
+CH5_EN
+CH4_EN
+CH3_EN
+CH2_EN
+CH1_EN
+
+63
+62
+61
+60
+59
+58
+57
+56
+55
+54
+53
+52
+51
+50
+49
+48
+47
+46
+45
+44
+43
+42
+41
+40
+39
+38
+37
+36
+35
+34
+33
+32
+31
+30
+29
+28
+27
+26
+25
+24
+23
+22
+21
+20
+19
+18
+17
+16
+15
+14
+13
+12
+11
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+
+■
+
+Table 5-10
+
+Fields for Register: DMAC_CHENREG2
+
+Bits
+
+Name
+
+Memory
+Access
+
+63
+
+CH32_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-32 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH32_EN): Enable Write to
+CH32_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH32_EN): Disable Write to
+respective CH32_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 31
+Volatile: true
+
+196
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+62
+
+CH31_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-31 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH31_EN): Enable Write to
+CH31_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH31_EN): Disable Write to
+respective CH31_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 30
+Volatile: true
+61
+
+CH30_EN_WE
+
+W
+
+DW_axi_dmac Channel-30 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH30_EN): Enable Write to
+CH30_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH30_EN): Disable Write to
+respective CH30_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 29
+Volatile: true
+60
+
+CH29_EN_WE
+
+W
+
+DW_axi_dmac Channel-29 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH29_EN): Enable Write to
+CH29_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH29_EN): Disable Write to
+respective CH29_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 28
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+197
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+59
+
+CH28_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-28 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH28_EN): Enable Write to
+CH28_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH28_EN): Disable Write to
+respective CH28_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 27
+Volatile: true
+58
+
+CH27_EN_WE
+
+W
+
+DW_axi_dmac Channel-27 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH27_EN): Enable Write to
+CH27_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH27_EN): Disable Write to
+respective CH27_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 26
+Volatile: true
+57
+
+CH26_EN_WE
+
+W
+
+DW_axi_dmac Channel-26 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH26_EN): Enable Write to
+CH26_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH26_EN): Disable Write to
+respective CH26_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 25
+Volatile: true
+
+198
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+56
+
+CH25_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-25 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH25_EN): Enable Write to
+CH25_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH25_EN): Disable Write to
+respective CH25_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 24
+Volatile: true
+55
+
+CH24_EN_WE
+
+W
+
+DW_axi_dmac Channel-24 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH24_EN): Enable Write to
+CH24_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH24_EN): Disable Write to
+respective CH24_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 23
+Volatile: true
+54
+
+CH23_EN_WE
+
+W
+
+DW_axi_dmac Channel-23 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH23_EN): Enable Write to
+CH23_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH23_EN): Disable Write to
+respective CH23_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 22
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+199
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+53
+
+CH22_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-22 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH22_EN): Enable Write to
+CH22_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH22_EN): Disable Write to
+respective CH22_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 21
+Volatile: true
+52
+
+CH21_EN_WE
+
+W
+
+DW_axi_dmac Channel-21 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH21_EN): Enable Write to
+CH21_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH21_EN): Disable Write to
+respective CH21_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 20
+Volatile: true
+51
+
+CH20_EN_WE
+
+W
+
+DW_axi_dmac Channel-20 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH20_EN): Enable Write to
+CH20_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH20_EN): Disable Write to
+respective CH20_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 19
+Volatile: true
+
+200
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+

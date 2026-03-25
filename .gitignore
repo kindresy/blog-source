@@ -1,0 +1,15 @@
+.DS_Store
+Thumbs.db
+db.json
+*.log
+node_modules/
+public/
+.deploy*/
+blog/
+.vscode/
+_multiconfig.yml
+*.pem
+*.key
+id_rsa
+id_dsa
+source/**/.ssh/

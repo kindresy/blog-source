@@ -1,0 +1,8397 @@
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+50
+
+CH19_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-19 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH19_EN): Enable Write to
+CH19_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH19_EN): Disable Write to
+respective CH19_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 18
+Volatile: true
+49
+
+CH18_EN_WE
+
+W
+
+DW_axi_dmac Channel-18 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH18_EN): Enable Write to
+CH18_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH18_EN): Disable Write to
+respective CH18_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 17
+Volatile: true
+48
+
+CH17_EN_WE
+
+W
+
+DW_axi_dmac Channel-17 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH17_EN): Enable Write to
+CH17_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH17_EN): Disable Write to
+respective CH17_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 16
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+201
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+47
+
+CH32_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-32.
+■
+
+0: DW_axi_dmac Channel-32 is disabled
+
+■
+
+1: DW_axi_dmac Channel-32 is enabled
+
+The bit 'DMAC_ChEnReg.CH32_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH32): DW_axi_dmac: Channel-32 is
+enabled
+
+■
+
+0x0 (DISABLE_CH32): DW_axi_dmac: Channel-32 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 31
+Volatile: true
+46
+
+CH31_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-31.
+■
+
+0: DW_axi_dmac Channel-31 is disabled
+
+■
+
+1: DW_axi_dmac Channel-31 is enabled
+
+The bit 'DMAC_ChEnReg.CH31_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH31): DW_axi_dmac: Channel-31 is
+enabled
+
+■
+
+0x0 (DISABLE_CH31): DW_axi_dmac: Channel-31 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 30
+Volatile: true
+
+202
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+45
+
+CH30_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-30.
+■
+
+0: DW_axi_dmac Channel-30 is disabled
+
+■
+
+1: DW_axi_dmac Channel-30 is enabled
+
+The bit 'DMAC_ChEnReg.CH30_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH30): DW_axi_dmac: Channel-30 is
+enabled
+
+■
+
+0x0 (DISABLE_CH30): DW_axi_dmac: Channel-30 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 29
+Volatile: true
+44
+
+CH29_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-29.
+■
+
+0: DW_axi_dmac Channel-29 is disabled
+
+■
+
+1: DW_axi_dmac Channel-29 is enabled
+
+The bit 'DMAC_ChEnReg.CH29_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH29): DW_axi_dmac: Channel-29 is
+enabled
+
+■
+
+0x0 (DISABLE_CH29): DW_axi_dmac: Channel-29 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 28
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+203
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+43
+
+CH28_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-28.
+■
+
+0: DW_axi_dmac Channel-28 is disabled
+
+■
+
+1: DW_axi_dmac Channel-28 is enabled
+
+The bit 'DMAC_ChEnReg.CH28_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH28): DW_axi_dmac: Channel-28 is
+enabled
+
+■
+
+0x0 (DISABLE_CH28): DW_axi_dmac: Channel-28 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 27
+Volatile: true
+42
+
+CH27_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-27.
+■
+
+0: DW_axi_dmac Channel-27 is disabled
+
+■
+
+1: DW_axi_dmac Channel-27 is enabled
+
+The bit 'DMAC_ChEnReg.CH27_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH27): DW_axi_dmac: Channel-27 is
+enabled
+
+■
+
+0x0 (DISABLE_CH27): DW_axi_dmac: Channel-27 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 26
+Volatile: true
+
+204
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+41
+
+CH26_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-26.
+■
+
+0: DW_axi_dmac Channel-26 is disabled
+
+■
+
+1: DW_axi_dmac Channel-26 is enabled
+
+The bit 'DMAC_ChEnReg.CH26_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH26): DW_axi_dmac: Channel-26 is
+enabled
+
+■
+
+0x0 (DISABLE_CH26): DW_axi_dmac: Channel-26 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 25
+Volatile: true
+40
+
+CH25_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-25.
+■
+
+0: DW_axi_dmac Channel-25 is disabled
+
+■
+
+1: DW_axi_dmac Channel-25 is enabled
+
+The bit 'DMAC_ChEnReg.CH25_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH25): DW_axi_dmac: Channel-25 is
+enabled
+
+■
+
+0x0 (DISABLE_CH25): DW_axi_dmac: Channel-25 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 24
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+205
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+39
+
+CH24_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-24.
+■
+
+0: DW_axi_dmac Channel-24 is disabled
+
+■
+
+1: DW_axi_dmac Channel-24 is enabled
+
+The bit 'DMAC_ChEnReg.CH24_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH24): DW_axi_dmac: Channel-24 is
+enabled
+
+■
+
+0x0 (DISABLE_CH24): DW_axi_dmac: Channel-24 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 23
+Volatile: true
+38
+
+CH23_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-23.
+■
+
+0: DW_axi_dmac Channel-23 is disabled
+
+■
+
+1: DW_axi_dmac Channel-23 is enabled
+
+The bit 'DMAC_ChEnReg.CH23_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH23): DW_axi_dmac: Channel-23 is
+enabled
+
+■
+
+0x0 (DISABLE_CH23): DW_axi_dmac: Channel-23 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 22
+Volatile: true
+
+206
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+37
+
+CH22_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-22.
+■
+
+0: DW_axi_dmac Channel-22 is disabled
+
+■
+
+1: DW_axi_dmac Channel-22 is enabled
+
+The bit 'DMAC_ChEnReg.CH22_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH22): DW_axi_dmac: Channel-22 is
+enabled
+
+■
+
+0x0 (DISABLE_CH22): DW_axi_dmac: Channel-22 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 21
+Volatile: true
+36
+
+CH21_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-21.
+■
+
+0: DW_axi_dmac Channel-21 is disabled
+
+■
+
+1: DW_axi_dmac Channel-21 is enabled
+
+The bit 'DMAC_ChEnReg.CH21_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH21): DW_axi_dmac: Channel-21 is
+enabled
+
+■
+
+0x0 (DISABLE_CH21): DW_axi_dmac: Channel-21 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 20
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+207
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+35
+
+CH20_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-20.
+■
+
+0: DW_axi_dmac Channel-20 is disabled
+
+■
+
+1: DW_axi_dmac Channel-20 is enabled
+
+The bit 'DMAC_ChEnReg.CH20_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH20): DW_axi_dmac: Channel-20 is
+enabled
+
+■
+
+0x0 (DISABLE_CH20): DW_axi_dmac: Channel-20 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 19
+Volatile: true
+34
+
+CH19_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-19.
+■
+
+0: DW_axi_dmac Channel-19 is disabled
+
+■
+
+1: DW_axi_dmac Channel-19 is enabled
+
+The bit 'DMAC_ChEnReg.CH19_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH19): DW_axi_dmac: Channel-19 is
+enabled
+
+■
+
+0x0 (DISABLE_CH19): DW_axi_dmac: Channel-19 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 18
+Volatile: true
+
+208
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+33
+
+CH18_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-18.
+■
+
+0: DW_axi_dmac Channel-18 is disabled
+
+■
+
+1: DW_axi_dmac Channel-18 is enabled
+
+The bit 'DMAC_ChEnReg.CH18_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH18): DW_axi_dmac: Channel-18 is
+enabled
+
+■
+
+0x0 (DISABLE_CH18): DW_axi_dmac: Channel-18 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 17
+Volatile: true
+32
+
+CH17_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-17.
+■
+
+0: DW_axi_dmac Channel-17 is disabled
+
+■
+
+1: DW_axi_dmac Channel-17 is enabled
+
+The bit 'DMAC_ChEnReg.CH17_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH17): DW_axi_dmac: Channel-17 is
+enabled
+
+■
+
+0x0 (DISABLE_CH17): DW_axi_dmac: Channel-17 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 16
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+209
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+31
+
+CH16_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-16 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH16_EN): Enable Write to
+CH16_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH16_EN): Disable Write to
+respective CH16_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 15
+Volatile: true
+30
+
+CH15_EN_WE
+
+W
+
+DW_axi_dmac Channel-15 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH15_EN): Enable Write to
+CH15_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH15_EN): Disable Write to
+respective CH15_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 14
+Volatile: true
+29
+
+CH14_EN_WE
+
+W
+
+DW_axi_dmac Channel-14 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH14_EN): Enable Write to
+CH14_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH14_EN): Disable Write to
+respective CH14_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 13
+Volatile: true
+
+210
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+28
+
+CH13_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-13 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH13_EN): Enable Write to
+CH13_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH13_EN): Disable Write to
+respective CH13_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 12
+Volatile: true
+27
+
+CH12_EN_WE
+
+W
+
+DW_axi_dmac Channel-12 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH12_EN): Enable Write to
+CH12_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH12_EN): Disable Write to
+respective CH12_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 11
+Volatile: true
+26
+
+CH11_EN_WE
+
+W
+
+DW_axi_dmac Channel-11 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH11_EN): Enable Write to
+CH11_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH11_EN): Disable Write to
+respective CH11_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 10
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+211
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+25
+
+CH10_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-10 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH10_EN): Enable Write to
+CH10_EN bit
+
+■
+
+0x0 (DISABLE_WR_CH10_EN): Disable Write to
+respective CH10_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 9
+Volatile: true
+24
+
+CH9_EN_WE
+
+W
+
+DW_axi_dmac Channel-9 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH9_EN): Enable Write to CH9_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH9_EN): Disable Write to
+respective CH9_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 8
+Volatile: true
+23
+
+CH8_EN_WE
+
+W
+
+DW_axi_dmac Channel-8 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH8_EN): Enable Write to CH8_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH8_EN): Disable Write to
+respective CH8_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+
+212
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+22
+
+CH7_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-7 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH7_EN): Enable Write to CH7_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH7_EN): Disable Write to
+respective CH7_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 6
+Volatile: true
+21
+
+CH6_EN_WE
+
+W
+
+DW_axi_dmac Channel-6 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH6_EN): Enable Write to CH6_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH6_EN): Disable Write to
+respective CH6_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 5
+Volatile: true
+20
+
+CH5_EN_WE
+
+W
+
+DW_axi_dmac Channel-5 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH5_EN): Enable Write to CH5_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH5_EN): Disable Write to
+respective CH5_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 4
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+213
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+19
+
+CH4_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-4 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH4_EN): Enable Write to CH4_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH4_EN): Disable Write to
+respective CH4_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 3
+Volatile: true
+18
+
+CH3_EN_WE
+
+W
+
+DW_axi_dmac Channel-3 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH3_EN): Enable Write to CH3_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH3_EN): Disable Write to
+respective CH3_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 2
+Volatile: true
+17
+
+CH2_EN_WE
+
+W
+
+DW_axi_dmac Channel-2 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH2_EN): Enable Write to CH2_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH2_EN): Disable Write to
+respective CH2_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 1
+Volatile: true
+
+214
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+16
+
+CH1_EN_WE
+
+W
+
+Description
+DW_axi_dmac Channel-1 Enable Write Enable bit.
+Read back value of this register bit is always '0'.
+Values:
+■
+
+0x1 (ENABLE_WR_CH1_EN): Enable Write to CH1_EN
+bit
+
+■
+
+0x0 (DISABLE_WR_CH1_EN): Disable Write to
+respective CH1_EN bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 0
+Volatile: true
+15
+
+CH16_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-16.
+■
+
+0: DW_axi_dmac Channel-16 is disabled
+
+■
+
+1: DW_axi_dmac Channel-16 is enabled
+
+The bit 'DMAC_ChEnReg.CH16_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH16): DW_axi_dmac: Channel-16 is
+enabled
+
+■
+
+0x0 (DISABLE_CH16): DW_axi_dmac: Channel-16 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 15
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+215
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+14
+
+CH15_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-15.
+■
+
+0: DW_axi_dmac Channel-15 is disabled
+
+■
+
+1: DW_axi_dmac Channel-15 is enabled
+
+The bit 'DMAC_ChEnReg.CH15_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH15): DW_axi_dmac: Channel-15 is
+enabled
+
+■
+
+0x0 (DISABLE_CH15): DW_axi_dmac: Channel-15 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 14
+Volatile: true
+13
+
+CH14_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-14.
+■
+
+0: DW_axi_dmac Channel-14 is disabled
+
+■
+
+1: DW_axi_dmac Channel-14 is enabled
+
+The bit 'DMAC_ChEnReg.CH14_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH14): DW_axi_dmac: Channel-14 is
+enabled
+
+■
+
+0x0 (DISABLE_CH14): DW_axi_dmac: Channel-14 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 13
+Volatile: true
+
+216
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+12
+
+CH13_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-13.
+■
+
+0: DW_axi_dmac Channel-13 is disabled
+
+■
+
+1: DW_axi_dmac Channel-13 is enabled
+
+The bit 'DMAC_ChEnReg.CH13_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH13): DW_axi_dmac: Channel-13 is
+enabled
+
+■
+
+0x0 (DISABLE_CH13): DW_axi_dmac: Channel-13 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 12
+Volatile: true
+11
+
+CH12_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-12.
+■
+
+0: DW_axi_dmac Channel-12 is disabled
+
+■
+
+1: DW_axi_dmac Channel-12 is enabled
+
+The bit 'DMAC_ChEnReg.CH12_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH12): DW_axi_dmac: Channel-12 is
+enabled
+
+■
+
+0x0 (DISABLE_CH12): DW_axi_dmac: Channel-12 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 11
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+217
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+10
+
+CH11_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-11.
+■
+
+0: DW_axi_dmac Channel-11 is disabled
+
+■
+
+1: DW_axi_dmac Channel-11 is enabled
+
+The bit 'DMAC_ChEnReg.CH11_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH11): DW_axi_dmac: Channel-11 is
+enabled
+
+■
+
+0x0 (DISABLE_CH11): DW_axi_dmac: Channel-11 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 10
+Volatile: true
+9
+
+CH10_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-10.
+■
+
+0: DW_axi_dmac Channel-10 is disabled
+
+■
+
+1: DW_axi_dmac Channel-10 is enabled
+
+The bit 'DMAC_ChEnReg.CH10_EN' is automatically
+cleared by hardware to disable the channel after the last
+AMBA transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH10): DW_axi_dmac: Channel-10 is
+enabled
+
+■
+
+0x0 (DISABLE_CH10): DW_axi_dmac: Channel-10 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 9
+Volatile: true
+
+218
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+8
+
+CH9_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-9.
+■
+
+0: DW_axi_dmac Channel-9 is disabled
+
+■
+
+1: DW_axi_dmac Channel-9 is enabled
+
+The bit 'DMAC_ChEnReg.CH9_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH9): DW_axi_dmac: Channel-9 is
+enabled
+
+■
+
+0x0 (DISABLE_CH9): DW_axi_dmac: Channel-9 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 8
+Volatile: true
+7
+
+CH8_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-8.
+■
+
+0: DW_axi_dmac Channel-8 is disabled
+
+■
+
+1: DW_axi_dmac Channel-8 is enabled
+
+The bit 'DMAC_ChEnReg.CH8_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH8): DW_axi_dmac: Channel-8 is
+enabled
+
+■
+
+0x0 (DISABLE_CH8): DW_axi_dmac: Channel-8 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+219
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+6
+
+CH7_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-7.
+■
+
+0: DW_axi_dmac Channel-7 is disabled
+
+■
+
+1: DW_axi_dmac Channel-7 is enabled
+
+The bit 'DMAC_ChEnReg.CH7_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH7): DW_axi_dmac: Channel-7 is
+enabled
+
+■
+
+0x0 (DISABLE_CH7): DW_axi_dmac: Channel-7 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 6
+Volatile: true
+5
+
+CH6_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-6.
+■
+
+0: DW_axi_dmac Channel-6 is disabled
+
+■
+
+1: DW_axi_dmac Channel-6 is enabled
+
+The bit 'DMAC_ChEnReg.CH6_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH6): DW_axi_dmac: Channel-6 is
+enabled
+
+■
+
+0x0 (DISABLE_CH6): DW_axi_dmac: Channel-6 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 5
+Volatile: true
+
+220
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+4
+
+CH5_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-5.
+■
+
+0: DW_axi_dmac Channel-5 is disabled
+
+■
+
+1: DW_axi_dmac Channel-5 is enabled
+
+The bit 'DMAC_ChEnReg.CH5_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH5): DW_axi_dmac: Channel-5 is
+enabled
+
+■
+
+0x0 (DISABLE_CH5): DW_axi_dmac: Channel-5 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 4
+Volatile: true
+3
+
+CH4_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-4.
+■
+
+0: DW_axi_dmac Channel-4 is disabled
+
+■
+
+1: DW_axi_dmac Channel-4 is enabled
+
+The bit 'DMAC_ChEnReg.CH4_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH4): DW_axi_dmac: Channel-4 is
+enabled
+
+■
+
+0x0 (DISABLE_CH4): DW_axi_dmac: Channel-4 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 3
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+221
+
+Register Descriptions
+
+Table 5-10
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+2
+
+CH3_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-3.
+■
+
+0: DW_axi_dmac Channel-3 is disabled
+
+■
+
+1: DW_axi_dmac Channel-3 is enabled
+
+The bit 'DMAC_ChEnReg.CH3_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH3): DW_axi_dmac: Channel-3 is
+enabled
+
+■
+
+0x0 (DISABLE_CH3): DW_axi_dmac: Channel-3 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 2
+Volatile: true
+1
+
+CH2_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-2.
+■
+
+0: DW_axi_dmac Channel-2 is disabled
+
+■
+
+1: DW_axi_dmac Channel-2 is enabled
+
+The bit 'DMAC_ChEnReg.CH2_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH2): DW_axi_dmac: Channel-2 is
+enabled
+
+■
+
+0x0 (DISABLE_CH2): DW_axi_dmac: Channel-2 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 1
+Volatile: true
+
+222
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-10
+
+Register Descriptions
+
+Fields for Register: DMAC_CHENREG2 (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+Description
+
+0
+
+CH1_EN
+
+R/W
+
+This bit is used to enable the DW_axi_dmac Channel-1.
+■
+
+0: DW_axi_dmac Channel-1 is disabled
+
+■
+
+1: DW_axi_dmac Channel-1 is enabled
+
+The bit 'DMAC_ChEnReg.CH1_EN' is automatically cleared
+by hardware to disable the channel after the last AMBA
+transfer of the DMA transfer to the destination has
+completed. Software can therefore poll this bit to determine
+when this channel is free for a new DMA transfer.
+Values:
+■
+
+0x1 (ENABLE_CH1): DW_axi_dmac: Channel-1 is
+enabled
+
+■
+
+0x0 (DISABLE_CH1): DW_axi_dmac: Channel-1 is
+disabled
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 0
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+223
+
+Register Descriptions
+
+5.1.6
+
+DesignWare DW_axi_dmac Databook
+
+DMAC_CHSUSPREG
+Description: This is DW_axi_dmac Channel Suspend Register. The channel suspend bit,
+DMAC_ChSuspReg.CH_SUSP, is written only if the corresponding channel write enable bit,
+DMAC_ChSuspReg.CH_SUSP_WE, is asserted on the same slave interface write transfer. For
+example, writing hex 0000_XXXX_0001_XXX1 writes a 1 into DMAC_ChSuspReg [0], while
+DMAC_ChSuspReg [15:1] and DMAC_ChSuspReg [47:32] remains unchanged. Writing hex
+0000_XXXX_0000_XXXX leaves DMAC_ChSuspReg [15:0] and DMAC_ChSuspReg [47:32]
+unchanged.
+
+■
+
+Size: 64 bits
+
+■
+
+Offset: 0x20
+
+■
+
+Exists: DMAX_NUM_CHANNELS > 8
+
+CH32_SUSP_WE
+CH31_SUSP_WE
+CH30_SUSP_WE
+CH29_SUSP_WE
+CH28_SUSP_WE
+CH27_SUSP_WE
+CH26_SUSP_WE
+CH25_SUSP_WE
+CH24_SUSP_WE
+CH23_SUSP_WE
+CH22_SUSP_WE
+CH21_SUSP_WE
+CH20_SUSP_WE
+CH19_SUSP_WE
+CH18_SUSP_WE
+CH17_SUSP_WE
+CH32_SUSP
+CH31_SUSP
+CH30_SUSP
+CH29_SUSP
+CH28_SUSP
+CH27_SUSP
+CH26_SUSP
+CH25_SUSP
+CH24_SUSP
+CH23_SUSP
+CH22_SUSP
+CH21_SUSP
+CH20_SUSP
+CH19_SUSP
+CH18_SUSP
+CH17_SUSP
+CH16_SUSP_WE
+CH15_SUSP_WE
+CH14_SUSP_WE
+CH13_SUSP_WE
+CH12_SUSP_WE
+CH11_SUSP_WE
+CH10_SUSP_WE
+CH9_SUSP_WE
+CH8_SUSP_WE
+CH7_SUSP_WE
+CH6_SUSP_WE
+CH5_SUSP_WE
+CH4_SUSP_WE
+CH3_SUSP_WE
+CH2_SUSP_WE
+CH1_SUSP_WE
+CH16_SUSP
+CH15_SUSP
+CH14_SUSP
+CH13_SUSP
+CH12_SUSP
+CH11_SUSP
+CH10_SUSP
+CH9_SUSP
+CH8_SUSP
+CH7_SUSP
+CH6_SUSP
+CH5_SUSP
+CH4_SUSP
+CH3_SUSP
+CH2_SUSP
+CH1_SUSP
+
+63
+62
+61
+60
+59
+58
+57
+56
+55
+54
+53
+52
+51
+50
+49
+48
+47
+46
+45
+44
+43
+42
+41
+40
+39
+38
+37
+36
+35
+34
+33
+32
+31
+30
+29
+28
+27
+26
+25
+24
+23
+22
+21
+20
+19
+18
+17
+16
+15
+14
+13
+12
+11
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+
+■
+
+Table 5-11
+
+Fields for Register: DMAC_CHSUSPREG
+
+Bits
+
+Name
+
+Memory
+Access
+
+63
+
+CH32_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-32 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH32_SUSP): Enable Write to
+respective CH32_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH32_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 31
+Volatile: true
+
+224
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+62
+
+CH31_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-31 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH31_SUSP): Enable Write to
+respective CH31_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH31_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 30
+Volatile: true
+61
+
+CH30_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-30 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH30_SUSP): Enable Write to
+respective CH30_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH30_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 29
+Volatile: true
+60
+
+CH29_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-29 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH29_SUSP): Enable Write to
+respective CH29_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH29_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 28
+Volatile: true
+59
+
+CH28_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-28 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH28_SUSP): Enable Write to
+respective CH28_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH28_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 27
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+225
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+58
+
+CH27_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-27 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH27_SUSP): Enable Write to
+respective CH27_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH27_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 26
+Volatile: true
+57
+
+CH26_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-26 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH26_SUSP): Enable Write to
+respective CH26_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH26_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 25
+Volatile: true
+56
+
+CH25_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-25 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH25_SUSP): Enable Write to
+respective CH25_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH25_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 24
+Volatile: true
+55
+
+CH24_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-24 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH24_SUSP): Enable Write to
+respective CH24_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH24_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 23
+Volatile: true
+
+226
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+54
+
+CH23_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-23 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH23_SUSP): Enable Write to
+respective CH23_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH23_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 22
+Volatile: true
+53
+
+CH22_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-22 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH22_SUSP): Enable Write to
+respective CH22_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH22_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 21
+Volatile: true
+52
+
+CH21_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-21 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH21_SUSP): Enable Write to
+respective CH21_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH21_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 20
+Volatile: true
+51
+
+CH20_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-20 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH20_SUSP): Enable Write to
+respective CH20_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH20_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 19
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+227
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+50
+
+CH19_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-19 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH19_SUSP): Enable Write to
+respective CH19_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH19_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 18
+Volatile: true
+49
+
+CH18_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-18 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH18_SUSP): Enable Write to
+respective CH18_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH18_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 17
+Volatile: true
+48
+
+CH17_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-17 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH17_SUSP): Enable Write to
+respective CH17_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH17_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 16
+Volatile: true
+
+228
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+47
+
+CH32_SUSP
+
+R/W
+
+Description
+Channel-32 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH32_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH32_SUSP bit to 1 and polls
+CH32_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH32_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH32_SUSP bit to 0, after DW_axi_dmac
+sets CH32_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH32_SUSP): Request to Suspended
+Channel-32
+
+■
+
+0x0 (DISABLE_CH32_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 31
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+229
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+46
+
+CH31_SUSP
+
+R/W
+
+Description
+Channel-31 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH31_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH31_SUSP bit to 1 and polls
+CH31_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH31_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH31_SUSP bit to 0, after DW_axi_dmac
+sets CH31_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH31_SUSP): Request to Suspended
+Channel-31
+
+■
+
+0x0 (DISABLE_CH31_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 30
+Volatile: true
+
+230
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+45
+
+CH30_SUSP
+
+R/W
+
+Description
+Channel-30 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH30_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH30_SUSP bit to 1 and polls
+CH30_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH30_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH30_SUSP bit to 0, after DW_axi_dmac
+sets CH30_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH30_SUSP): Request to Suspended
+Channel-30
+
+■
+
+0x0 (DISABLE_CH30_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 29
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+231
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+44
+
+CH29_SUSP
+
+R/W
+
+Description
+Channel-29 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH29_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH29_SUSP bit to 1 and polls
+CH29_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH29_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH29_SUSP bit to 0, after DW_axi_dmac
+sets CH29_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH29_SUSP): Request to Suspended
+Channel-29
+
+■
+
+0x0 (DISABLE_CH29_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 28
+Volatile: true
+
+232
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+43
+
+CH28_SUSP
+
+R/W
+
+Description
+Channel-28 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH28_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH28_SUSP bit to 1 and polls
+CH28_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH28_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH28_SUSP bit to 0, after DW_axi_dmac
+sets CH28_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH28_SUSP): Request to Suspended
+Channel-28
+
+■
+
+0x0 (DISABLE_CH28_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 27
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+233
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+42
+
+CH27_SUSP
+
+R/W
+
+Description
+Channel-27 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH27_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH27_SUSP bit to 1 and polls
+CH27_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH27_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH27_SUSP bit to 0, after DW_axi_dmac
+sets CH27_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH27_SUSP): Request to Suspended
+Channel-27
+
+■
+
+0x0 (DISABLE_CH27_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 26
+Volatile: true
+
+234
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+41
+
+CH26_SUSP
+
+R/W
+
+Description
+Channel-26 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH26_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH26_SUSP bit to 1 and polls
+CH26_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH26_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH26_SUSP bit to 0, after DW_axi_dmac
+sets CH26_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH26_SUSP): Request to Suspended
+Channel-26
+
+■
+
+0x0 (DISABLE_CH26_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 25
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+235
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+40
+
+CH25_SUSP
+
+R/W
+
+Description
+Channel-25 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH25_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH25_SUSP bit to 1 and polls
+CH25_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH25_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH25_SUSP bit to 0, after DW_axi_dmac
+sets CH25_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH25_SUSP): Request to Suspended
+Channel-25
+
+■
+
+0x0 (DISABLE_CH25_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 24
+Volatile: true
+
+236
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+39
+
+CH24_SUSP
+
+R/W
+
+Description
+Channel-24 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH24_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH24_SUSP bit to 1 and polls
+CH24_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH24_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH24_SUSP bit to 0, after DW_axi_dmac
+sets CH24_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH24_SUSP): Request to Suspended
+Channel-24
+
+■
+
+0x0 (DISABLE_CH24_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 23
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+237
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+38
+
+CH23_SUSP
+
+R/W
+
+Description
+Channel-23 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH23_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH23_SUSP bit to 1 and polls
+CH23_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH23_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH23_SUSP bit to 0, after DW_axi_dmac
+sets CH23_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH23_SUSP): Request to Suspended
+Channel-23
+
+■
+
+0x0 (DISABLE_CH23_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 22
+Volatile: true
+
+238
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+37
+
+CH22_SUSP
+
+R/W
+
+Description
+Channel-22 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH22_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH22_SUSP bit to 1 and polls
+CH22_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH22_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH22_SUSP bit to 0, after DW_axi_dmac
+sets CH22_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH22_SUSP): Request to Suspended
+Channel-22
+
+■
+
+0x0 (DISABLE_CH22_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 21
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+239
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+36
+
+CH21_SUSP
+
+R/W
+
+Description
+Channel-21 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH21_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH21_SUSP bit to 1 and polls
+CH21_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH21_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH21_SUSP bit to 0, after DW_axi_dmac
+sets CH21_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH21_SUSP): Request to Suspended
+Channel-21
+
+■
+
+0x0 (DISABLE_CH21_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 20
+Volatile: true
+
+240
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+35
+
+CH20_SUSP
+
+R/W
+
+Description
+Channel-20 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH20_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH20_SUSP bit to 1 and polls
+CH20_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH20_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH20_SUSP bit to 0, after DW_axi_dmac
+sets CH20_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH20_SUSP): Request to Suspended
+Channel-20
+
+■
+
+0x0 (DISABLE_CH20_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 19
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+241
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+34
+
+CH19_SUSP
+
+R/W
+
+Description
+Channel-19 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH19_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH19_SUSP bit to 1 and polls
+CH19_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH19_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH19_SUSP bit to 0, after DW_axi_dmac
+sets CH19_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH19_SUSP): Request to Suspended
+Channel-19
+
+■
+
+0x0 (DISABLE_CH19_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 18
+Volatile: true
+
+242
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+33
+
+CH18_SUSP
+
+R/W
+
+Description
+Channel-18 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH18_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH18_SUSP bit to 1 and polls
+CH18_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH18_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH18_SUSP bit to 0, after DW_axi_dmac
+sets CH18_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH18_SUSP): Request to Suspended
+Channel-18
+
+■
+
+0x0 (DISABLE_CH18_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 17
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+243
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+32
+
+CH17_SUSP
+
+R/W
+
+Description
+Channel-17 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH17_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH17_SUSP bit to 1 and polls
+CH17_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH17_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH17_SUSP bit to 0, after DW_axi_dmac
+sets CH17_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH17_SUSP): Request to Suspended
+Channel-17
+
+■
+
+0x0 (DISABLE_CH17_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 16
+Volatile: true
+31
+
+CH16_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-16 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH16_SUSP): Enable Write to
+respective CH16_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH16_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 15
+Volatile: true
+
+244
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+30
+
+CH15_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-15 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH15_SUSP): Enable Write to
+respective CH15_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH15_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 14
+Volatile: true
+29
+
+CH14_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-14 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH14_SUSP): Enable Write to
+respective CH14_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH14_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 13
+Volatile: true
+28
+
+CH13_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-13 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH13_SUSP): Enable Write to
+respective CH13_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH13_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 12
+Volatile: true
+27
+
+CH12_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-12 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH12_SUSP): Enable Write to
+respective CH12_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH12_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 11
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+245
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+26
+
+CH11_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-11 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH11_SUSP): Enable Write to
+respective CH11_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH11_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 10
+Volatile: true
+25
+
+CH10_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-10 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH10_SUSP): Enable Write to
+respective CH10_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH10_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 9
+Volatile: true
+24
+
+CH9_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-9 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH9_SUSP): Enable Write to
+respective CH9_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH9_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 8
+Volatile: true
+23
+
+CH8_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-8 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH8_SUSP): Enable Write to
+respective CH8_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH8_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+
+246
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+22
+
+CH7_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-7 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH7_SUSP): Enable Write to
+respective CH7_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH7_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 6
+Volatile: true
+21
+
+CH6_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-6 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH6_SUSP): Enable Write to
+respective CH6_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH6_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 5
+Volatile: true
+20
+
+CH5_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-5 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH5_SUSP): Enable Write to
+respective CH5_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH5_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 4
+Volatile: true
+19
+
+CH4_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-4 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH4_SUSP): Enable Write to
+respective CH4_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH4_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 3
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+247
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+18
+
+CH3_SUSP_WE
+
+W
+
+Description
+This bit is used as a write enable to the Channel-3 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH3_SUSP): Enable Write to
+respective CH3_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH3_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 2
+Volatile: true
+17
+
+CH2_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-2 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH2_SUSP): Enable Write to
+respective CH2_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH2_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 1
+Volatile: true
+16
+
+CH1_SUSP_WE
+
+W
+
+This bit is used as a write enable to the Channel-1 Suspend
+bit. The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH1_SUSP): Enable Write to
+respective CH1_SUSP bit
+
+■
+
+0x0 (DISABLE_WR_CH1_SUSP): Disable Write to
+CH${ch_num}_SUSP bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 0
+Volatile: true
+
+248
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+15
+
+CH16_SUSP
+
+R/W
+
+Description
+Channel-16 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH16_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH16_SUSP bit to 1 and polls
+CH16_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH16_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH16_SUSP bit to 0, after DW_axi_dmac
+sets CH16_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH16_SUSP): Request to Suspended
+Channel-16
+
+■
+
+0x0 (DISABLE_CH16_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 15
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+249
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+14
+
+CH15_SUSP
+
+R/W
+
+Description
+Channel-15 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH15_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH15_SUSP bit to 1 and polls
+CH15_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH15_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH15_SUSP bit to 0, after DW_axi_dmac
+sets CH15_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH15_SUSP): Request to Suspended
+Channel-15
+
+■
+
+0x0 (DISABLE_CH15_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 14
+Volatile: true
+
+250
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+13
+
+CH14_SUSP
+
+R/W
+
+Description
+Channel-14 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH14_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH14_SUSP bit to 1 and polls
+CH14_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH14_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH14_SUSP bit to 0, after DW_axi_dmac
+sets CH14_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH14_SUSP): Request to Suspended
+Channel-14
+
+■
+
+0x0 (DISABLE_CH14_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 13
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+251
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+12
+
+CH13_SUSP
+
+R/W
+
+Description
+Channel-13 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH13_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH13_SUSP bit to 1 and polls
+CH13_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH13_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH13_SUSP bit to 0, after DW_axi_dmac
+sets CH13_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH13_SUSP): Request to Suspended
+Channel-13
+
+■
+
+0x0 (DISABLE_CH13_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 12
+Volatile: true
+
+252
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+11
+
+CH12_SUSP
+
+R/W
+
+Description
+Channel-12 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH12_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH12_SUSP bit to 1 and polls
+CH12_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH12_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH12_SUSP bit to 0, after DW_axi_dmac
+sets CH12_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH12_SUSP): Request to Suspended
+Channel-12
+
+■
+
+0x0 (DISABLE_CH12_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 11
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+253
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+10
+
+CH11_SUSP
+
+R/W
+
+Description
+Channel-11 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH11_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH11_SUSP bit to 1 and polls
+CH11_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH11_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH11_SUSP bit to 0, after DW_axi_dmac
+sets CH11_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH11_SUSP): Request to Suspended
+Channel-11
+
+■
+
+0x0 (DISABLE_CH11_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 10
+Volatile: true
+
+254
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+9
+
+CH10_SUSP
+
+R/W
+
+Description
+Channel-10 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH10_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH10_SUSP bit to 1 and polls
+CH10_Status.CH_SUSPENDED till it is set to 1. Software
+can then clear CH10_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH10_SUSP bit to 0, after DW_axi_dmac
+sets CH10_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH10_SUSP): Request to Suspended
+Channel-10
+
+■
+
+0x0 (DISABLE_CH10_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 9
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+255
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+8
+
+CH9_SUSP
+
+R/W
+
+Description
+Channel-9 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH9_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH9_SUSP bit to 1 and polls
+CH9_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH9_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH9_SUSP bit to 0, after DW_axi_dmac
+sets CH9_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH9_SUSP): Request to Suspended
+Channel-9
+
+■
+
+0x0 (DISABLE_CH9_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 8
+Volatile: true
+
+256
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+7
+
+CH8_SUSP
+
+R/W
+
+Description
+Channel-8 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH8_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH8_SUSP bit to 1 and polls
+CH8_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH8_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH8_SUSP bit to 0, after DW_axi_dmac
+sets CH8_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH8_SUSP): Request to Suspended
+Channel-8
+
+■
+
+0x0 (DISABLE_CH8_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+257
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+6
+
+CH7_SUSP
+
+R/W
+
+Description
+Channel-7 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH7_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH7_SUSP bit to 1 and polls
+CH7_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH7_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH7_SUSP bit to 0, after DW_axi_dmac
+sets CH7_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH7_SUSP): Request to Suspended
+Channel-7
+
+■
+
+0x0 (DISABLE_CH7_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 6
+Volatile: true
+
+258
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+5
+
+CH6_SUSP
+
+R/W
+
+Description
+Channel-6 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH6_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH6_SUSP bit to 1 and polls
+CH6_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH6_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH6_SUSP bit to 0, after DW_axi_dmac
+sets CH6_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH6_SUSP): Request to Suspended
+Channel-6
+
+■
+
+0x0 (DISABLE_CH6_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 5
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+259
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+4
+
+CH5_SUSP
+
+R/W
+
+Description
+Channel-5 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH5_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH5_SUSP bit to 1 and polls
+CH5_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH5_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH5_SUSP bit to 0, after DW_axi_dmac
+sets CH5_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH5_SUSP): Request to Suspended
+Channel-5
+
+■
+
+0x0 (DISABLE_CH5_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 4
+Volatile: true
+
+260
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+3
+
+CH4_SUSP
+
+R/W
+
+Description
+Channel-4 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH4_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH4_SUSP bit to 1 and polls
+CH4_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH4_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH4_SUSP bit to 0, after DW_axi_dmac
+sets CH4_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH4_SUSP): Request to Suspended
+Channel-4
+
+■
+
+0x0 (DISABLE_CH4_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 3
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+261
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+2
+
+CH3_SUSP
+
+R/W
+
+Description
+Channel-3 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH3_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH3_SUSP bit to 1 and polls
+CH3_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH3_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH3_SUSP bit to 0, after DW_axi_dmac
+sets CH3_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH3_SUSP): Request to Suspended
+Channel-3
+
+■
+
+0x0 (DISABLE_CH3_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 2
+Volatile: true
+
+262
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-11
+
+Register Descriptions
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+1
+
+CH2_SUSP
+
+R/W
+
+Description
+Channel-2 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH2_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH2_SUSP bit to 1 and polls
+CH2_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH2_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH2_SUSP bit to 0, after DW_axi_dmac
+sets CH2_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH2_SUSP): Request to Suspended
+Channel-2
+
+■
+
+0x0 (DISABLE_CH2_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 1
+Volatile: true
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+263
+
+Register Descriptions
+
+Table 5-11
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHSUSPREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+0
+
+CH1_SUSP
+
+R/W
+
+Description
+Channel-1 Suspend Request.
+Software sets this bit to 1 to request channel suspend. If this
+bit is set to 1, DW_axi_dmac suspends all DMA data
+transfers from the source gracefully until this bit is cleared.
+There is no guarantee that the current dma transaction will
+complete. This bit can also be used in conjunction with
+CH1_Status.CH_SUSPENDED to cleanly disable the
+channel without losing any data. In this case, software first
+sets CH1_SUSP bit to 1 and polls
+CH1_Status.CH_SUSPENDED till it is set to 1. Software can
+then clear CH1_EN bit to 0 to disable the channel.
+■
+
+0: No Channel Suspend Request.
+
+■
+
+1: Request for Channel Suspend.
+
+Software can clear CH1_SUSP bit to 0, after DW_axi_dmac
+sets CH1_Status.CH_SUSPENDED bit to 1, to exit the
+channel suspend mode.
+Note: CH_SUSP is cleared when channel is disabled.
+Values:
+■
+
+0x1 (ENABLE_CH1_SUSP): Request to Suspended
+Channel-1
+
+■
+
+0x0 (DISABLE_CH1_SUSP): No Channel Suspend
+Request
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 0
+Volatile: true
+
+264
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+5.1.7
+
+Register Descriptions
+
+DMAC_CHABORTREG
+Description: This is DW_axi_dmac Channel Abort Register. The channel abort bit,
+DMAC_ChAbortReg.CH_ABORT, is written only if the corresponding channel write enable bit,
+DMAC_ChAbortReg.CH_ABORT_WE, is asserted on the same slave interface write transfer.
+
+■
+
+Size: 64 bits
+
+■
+
+Offset: 0x28
+
+■
+
+Exists: DMAX_NUM_CHANNELS > 8
+
+CH32_ABORT_WE
+CH31_ABORT_WE
+CH30_ABORT_WE
+CH29_ABORT_WE
+CH28_ABORT_WE
+CH27_ABORT_WE
+CH26_ABORT_WE
+CH25_ABORT_WE
+CH24_ABORT_WE
+CH23_ABORT_WE
+CH22_ABORT_WE
+CH21_ABORT_WE
+CH20_ABORT_WE
+CH19_ABORT_WE
+CH18_ABORT_WE
+CH17_ABORT_WE
+CH32_ABORT
+CH31_ABORT
+CH30_ABORT
+CH29_ABORT
+CH28_ABORT
+CH27_ABORT
+CH26_ABORT
+CH25_ABORT
+CH24_ABORT
+CH23_ABORT
+CH22_ABORT
+CH21_ABORT
+CH20_ABORT
+CH19_ABORT
+CH18_ABORT
+CH17_ABORT
+CH16_ABORT_WE
+CH15_ABORT_WE
+CH14_ABORT_WE
+CH13_ABORT_WE
+CH12_ABORT_WE
+CH11_ABORT_WE
+CH10_ABORT_WE
+CH9_ABORT_WE
+CH8_ABORT_WE
+CH7_ABORT_WE
+CH6_ABORT_WE
+CH5_ABORT_WE
+CH4_ABORT_WE
+CH3_ABORT_WE
+CH2_ABORT_WE
+CH1_ABORT_WE
+CH16_ABORT
+CH15_ABORT
+CH14_ABORT
+CH13_ABORT
+CH12_ABORT
+CH11_ABORT
+CH10_ABORT
+CH9_ABORT
+CH8_ABORT
+CH7_ABORT
+CH6_ABORT
+CH5_ABORT
+CH4_ABORT
+CH3_ABORT
+CH2_ABORT
+CH1_ABORT
+
+63
+62
+61
+60
+59
+58
+57
+56
+55
+54
+53
+52
+51
+50
+49
+48
+47
+46
+45
+44
+43
+42
+41
+40
+39
+38
+37
+36
+35
+34
+33
+32
+31
+30
+29
+28
+27
+26
+25
+24
+23
+22
+21
+20
+19
+18
+17
+16
+15
+14
+13
+12
+11
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+
+■
+
+Table 5-12
+
+Fields for Register: DMAC_CHABORTREG
+
+Bits
+
+Name
+
+Memory
+Access
+
+63
+
+CH32_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-32 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH32_ABORT): Enable Write to
+CH32_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH32_ABORT): Disable Write to
+CH32_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 31
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+265
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+62
+
+CH31_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-31 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH31_ABORT): Enable Write to
+CH31_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH31_ABORT): Disable Write to
+CH31_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 30
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+61
+
+CH30_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-30 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH30_ABORT): Enable Write to
+CH30_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH30_ABORT): Disable Write to
+CH30_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 29
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+60
+
+CH29_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-29 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH29_ABORT): Enable Write to
+CH29_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH29_ABORT): Disable Write to
+CH29_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 28
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+266
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+59
+
+CH28_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-28 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH28_ABORT): Enable Write to
+CH28_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH28_ABORT): Disable Write to
+CH28_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 27
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+58
+
+CH27_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-27 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH27_ABORT): Enable Write to
+CH27_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH27_ABORT): Disable Write to
+CH27_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 26
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+57
+
+CH26_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-26 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH26_ABORT): Enable Write to
+CH26_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH26_ABORT): Disable Write to
+CH26_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 25
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+267
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+56
+
+CH25_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-25 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH25_ABORT): Enable Write to
+CH25_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH25_ABORT): Disable Write to
+CH25_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 24
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+55
+
+CH24_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-24 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH24_ABORT): Enable Write to
+CH24_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH24_ABORT): Disable Write to
+CH24_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 23
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+54
+
+CH23_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-23 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH23_ABORT): Enable Write to
+CH23_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH23_ABORT): Disable Write to
+CH23_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 22
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+268
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+53
+
+CH22_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-22 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH22_ABORT): Enable Write to
+CH22_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH22_ABORT): Disable Write to
+CH22_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 21
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+52
+
+CH21_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-21 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH21_ABORT): Enable Write to
+CH21_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH21_ABORT): Disable Write to
+CH21_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 20
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+51
+
+CH20_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-20 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH20_ABORT): Enable Write to
+CH20_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH20_ABORT): Disable Write to
+CH20_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 19
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+269
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+50
+
+CH19_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-19 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH19_ABORT): Enable Write to
+CH19_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH19_ABORT): Disable Write to
+CH19_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 18
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+49
+
+CH18_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-18 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH18_ABORT): Enable Write to
+CH18_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH18_ABORT): Disable Write to
+CH18_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 17
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+48
+
+CH17_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-17 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH17_ABORT): Enable Write to
+CH17_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH17_ABORT): Disable Write to
+CH17_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 16
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+270
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+47
+
+CH32_ABORT
+
+* Varies
+
+Description
+Channel-32 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH32_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH32_ABORT): Request for Channel-32
+Abort
+
+■
+
+0x0 (DISABLE_CH32_ABORT): No Request for Channel32 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 31
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+271
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+46
+
+CH31_ABORT
+
+* Varies
+
+Description
+Channel-31 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH31_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH31_ABORT): Request for Channel-31
+Abort
+
+■
+
+0x0 (DISABLE_CH31_ABORT): No Request for Channel31 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 30
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+272
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+45
+
+CH30_ABORT
+
+* Varies
+
+Description
+Channel-30 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH30_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH30_ABORT): Request for Channel-30
+Abort
+
+■
+
+0x0 (DISABLE_CH30_ABORT): No Request for Channel30 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 29
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+273
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+44
+
+CH29_ABORT
+
+* Varies
+
+Description
+Channel-29 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH29_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH29_ABORT): Request for Channel-29
+Abort
+
+■
+
+0x0 (DISABLE_CH29_ABORT): No Request for Channel29 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 28
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+274
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+43
+
+CH28_ABORT
+
+* Varies
+
+Description
+Channel-28 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH28_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH28_ABORT): Request for Channel-28
+Abort
+
+■
+
+0x0 (DISABLE_CH28_ABORT): No Request for Channel28 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 27
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+275
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+42
+
+CH27_ABORT
+
+* Varies
+
+Description
+Channel-27 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH27_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH27_ABORT): Request for Channel-27
+Abort
+
+■
+
+0x0 (DISABLE_CH27_ABORT): No Request for Channel27 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 26
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+276
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+41
+
+CH26_ABORT
+
+* Varies
+
+Description
+Channel-26 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH26_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH26_ABORT): Request for Channel-26
+Abort
+
+■
+
+0x0 (DISABLE_CH26_ABORT): No Request for Channel26 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 25
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+277
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+40
+
+CH25_ABORT
+
+* Varies
+
+Description
+Channel-25 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH25_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH25_ABORT): Request for Channel-25
+Abort
+
+■
+
+0x0 (DISABLE_CH25_ABORT): No Request for Channel25 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 24
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+278
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+39
+
+CH24_ABORT
+
+* Varies
+
+Description
+Channel-24 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH24_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH24_ABORT): Request for Channel-24
+Abort
+
+■
+
+0x0 (DISABLE_CH24_ABORT): No Request for Channel24 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 23
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+279
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+38
+
+CH23_ABORT
+
+* Varies
+
+Description
+Channel-23 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH23_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH23_ABORT): Request for Channel-23
+Abort
+
+■
+
+0x0 (DISABLE_CH23_ABORT): No Request for Channel23 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 22
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+280
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+37
+
+CH22_ABORT
+
+* Varies
+
+Description
+Channel-22 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH22_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH22_ABORT): Request for Channel-22
+Abort
+
+■
+
+0x0 (DISABLE_CH22_ABORT): No Request for Channel22 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 21
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+281
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+36
+
+CH21_ABORT
+
+* Varies
+
+Description
+Channel-21 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH21_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH21_ABORT): Request for Channel-21
+Abort
+
+■
+
+0x0 (DISABLE_CH21_ABORT): No Request for Channel21 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 20
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+282
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+35
+
+CH20_ABORT
+
+* Varies
+
+Description
+Channel-20 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH20_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH20_ABORT): Request for Channel-20
+Abort
+
+■
+
+0x0 (DISABLE_CH20_ABORT): No Request for Channel20 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 19
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+283
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+34
+
+CH19_ABORT
+
+* Varies
+
+Description
+Channel-19 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH19_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH19_ABORT): Request for Channel-19
+Abort
+
+■
+
+0x0 (DISABLE_CH19_ABORT): No Request for Channel19 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 18
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+284
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+33
+
+CH18_ABORT
+
+* Varies
+
+Description
+Channel-18 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH18_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH18_ABORT): Request for Channel-18
+Abort
+
+■
+
+0x0 (DISABLE_CH18_ABORT): No Request for Channel18 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 17
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+285
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+32
+
+CH17_ABORT
+
+* Varies
+
+Description
+Channel-17 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH17_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH17_ABORT): Request for Channel-17
+Abort
+
+■
+
+0x0 (DISABLE_CH17_ABORT): No Request for Channel17 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 16
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+31
+
+CH16_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-16 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH16_ABORT): Enable Write to
+CH16_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH16_ABORT): Disable Write to
+CH16_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 15
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+286
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+30
+
+CH15_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-15 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH15_ABORT): Enable Write to
+CH15_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH15_ABORT): Disable Write to
+CH15_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 14
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+29
+
+CH14_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-14 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH14_ABORT): Enable Write to
+CH14_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH14_ABORT): Disable Write to
+CH14_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 13
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+28
+
+CH13_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-13 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH13_ABORT): Enable Write to
+CH13_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH13_ABORT): Disable Write to
+CH13_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 12
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+287
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+27
+
+CH12_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-12 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH12_ABORT): Enable Write to
+CH12_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH12_ABORT): Disable Write to
+CH12_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 11
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+26
+
+CH11_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-11 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH11_ABORT): Enable Write to
+CH11_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH11_ABORT): Disable Write to
+CH11_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 10
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+25
+
+CH10_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-10 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH10_ABORT): Enable Write to
+CH10_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH10_ABORT): Disable Write to
+CH10_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 9
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+288
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+24
+
+CH9_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-9 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH9_ABORT): Enable Write to
+CH9_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH9_ABORT): Disable Write to
+CH9_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 8
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+23
+
+CH8_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-8 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH8_ABORT): Enable Write to
+CH8_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH8_ABORT): Disable Write to
+CH8_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+22
+
+CH7_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-7 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH7_ABORT): Enable Write to
+CH7_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH7_ABORT): Disable Write to
+CH7_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 6
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+289
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+21
+
+CH6_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-6 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH6_ABORT): Enable Write to
+CH6_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH6_ABORT): Disable Write to
+CH6_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 5
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+20
+
+CH5_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-5 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH5_ABORT): Enable Write to
+CH5_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH5_ABORT): Disable Write to
+CH5_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 4
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+19
+
+CH4_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-4 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH4_ABORT): Enable Write to
+CH4_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH4_ABORT): Disable Write to
+CH4_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 3
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+290
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+18
+
+CH3_ABORT_WE
+
+* Varies
+
+Description
+This bit is used to write enable the Channel-3 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH3_ABORT): Enable Write to
+CH3_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH3_ABORT): Disable Write to
+CH3_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 2
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+17
+
+CH2_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-2 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH2_ABORT): Enable Write to
+CH2_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH2_ABORT): Disable Write to
+CH2_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 1
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+16
+
+CH1_ABORT_WE
+
+* Varies
+
+This bit is used to write enable the Channel-1 Abort bit.
+The read back value of this register bit is always 0.
+Values:
+■
+
+0x1 (ENABLE_WR_CH1_ABORT): Enable Write to
+CH1_ABORT bit
+
+■
+
+0x0 (DISABLE_WR_CH1_ABORT): Disable Write to
+CH1_ABORT bit
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 0
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "writeonly" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+291
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+15
+
+CH16_ABORT
+
+* Varies
+
+Description
+Channel-16 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH16_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH16_ABORT): Request for Channel-16
+Abort
+
+■
+
+0x0 (DISABLE_CH16_ABORT): No Request for Channel16 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 15
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+292
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+14
+
+CH15_ABORT
+
+* Varies
+
+Description
+Channel-15 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH15_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH15_ABORT): Request for Channel-15
+Abort
+
+■
+
+0x0 (DISABLE_CH15_ABORT): No Request for Channel15 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 14
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+293
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+13
+
+CH14_ABORT
+
+* Varies
+
+Description
+Channel-14 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH14_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH14_ABORT): Request for Channel-14
+Abort
+
+■
+
+0x0 (DISABLE_CH14_ABORT): No Request for Channel14 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 13
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+294
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+12
+
+CH13_ABORT
+
+* Varies
+
+Description
+Channel-13 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH13_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH13_ABORT): Request for Channel-13
+Abort
+
+■
+
+0x0 (DISABLE_CH13_ABORT): No Request for Channel13 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 12
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+295
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+11
+
+CH12_ABORT
+
+* Varies
+
+Description
+Channel-12 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH12_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH12_ABORT): Request for Channel-12
+Abort
+
+■
+
+0x0 (DISABLE_CH12_ABORT): No Request for Channel12 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 11
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+296
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+10
+
+CH11_ABORT
+
+* Varies
+
+Description
+Channel-11 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH11_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH11_ABORT): Request for Channel-11
+Abort
+
+■
+
+0x0 (DISABLE_CH11_ABORT): No Request for Channel11 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 10
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+297
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+9
+
+CH10_ABORT
+
+* Varies
+
+Description
+Channel-10 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH10_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH10_ABORT): Request for Channel-10
+Abort
+
+■
+
+0x0 (DISABLE_CH10_ABORT): No Request for Channel10 Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 9
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+298
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+DesignWare DW_axi_dmac Databook
+
+Table 5-12
+
+Register Descriptions
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+8
+
+CH9_ABORT
+
+* Varies
+
+Description
+Channel-9 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH9_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH9_ABORT): Request for Channel-9
+Abort
+
+■
+
+0x0 (DISABLE_CH9_ABORT): No Request for Channel-9
+Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 8
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+1.02a
+February 2018
+
+Synopsys, Inc.
+
+SolvNet
+DesignWare.com
+
+299
+
+Register Descriptions
+
+Table 5-12
+
+DesignWare DW_axi_dmac Databook
+
+Fields for Register: DMAC_CHABORTREG (Continued)
+
+Bits
+
+Name
+
+Memory
+Access
+
+7
+
+CH8_ABORT
+
+* Varies
+
+Description
+Channel-8 Abort Request.
+Software sets this bit to 1 to request channel abort. If this bit
+is set to 1, DW_axi_dmac disables the channel immediately.
+Aborting the channel might result in AXI Protocol violation as
+DW_axi_dmac does not make sure that all AXI transfers
+initiated on the master interface are completed.Aborting the
+channel is not recommended and should be used only in
+situations where a particular channel hangs due to no
+response from the corresponding AXI slave interface and
+software wants to disable the channel without resetting the
+entire DW_axi_dmac. It is recommended to try channel
+disabling first and then only opt for channel aborting.
+■
+
+0: No Channel Abort Request.
+
+■
+
+1: Request for Channel Abort.
+
+DW_axi_dmac clears this bit to 0 once the channel is
+aborted (when it sets CH8_Status.CH_ABORTED bit to 1).
+Values:
+■
+
+0x1 (ENABLE_CH8_ABORT): Request for Channel-8
+Abort
+
+■
+
+0x0 (DISABLE_CH8_ABORT): No Request for Channel-8
+Abort
+
+Value After Reset: 0x0
+Exists: DMAX_NUM_CHANNELS > 7
+Volatile: true
+Memory Access: {(DMAX_CH_ABORT_EN == 1) ? "readwrite" : "read-only"}
+
+300
+
+SolvNet
+DesignWare.com
+
+Synopsys, Inc.
+
+1.02a
+February 2018
+
+
