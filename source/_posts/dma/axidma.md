@@ -360,60 +360,101 @@ Channel locking（通道锁定）​
 
 #### LLI 模式
 
+LLI 模式本质上是 `linked-list-based multi-block transfer`。软件把每个 block 的参数写到内存中的链表项里，DMA 在 block 边界按链表继续取下一个描述符，而不是每次都由 CPU 重新编程通道寄存器。
 
+**1. 基本使能条件**
 
-**LLI 描述符结构**
+根据手册的 programming flow，`CHx_CFG` 中的 `SRC_MLTBLK_TYPE` 和/或 `DST_MLTBLK_TYPE` 需要配置为 linked list 模式，也就是 `2'b11`。随后软件需要把第一个 LLI 的基地址，以及该 LLI 所在的 master interface，写入 `CHx_LLP` 寄存器。
 
+**2. LLI 的作用**
 
+LLI 中保存的是“下一个 block 的执行参数”。DMA 在取到 LLI 后，会把其中的内容复制到当前通道执行寄存器中，也就是：
 
-DesignWare AXI DMA 支持通过链表（Linked List）实现多块传输。链表项（LLI）是一个 64 字节对齐的数据结构，包含以下字段：
+- `CHx_SAR` 和/或 `CHx_DAR`
+- `CHx_BLOCK_TS`
+- `CHx_CTL`
 
+因此在 LLI 多块传输模式下，`CHx_CTL` 可以在不同 block 之间变化，而软件在传输过程中通过 slave interface 直接改 `CHx_CTL` 是无效的。
 
+**3. LLI 结构和对齐**
 
-| 字段 | 宽度 | 功能 |
-|------|------|------|
-| SAR | 64 位 | 源数据地址 |
-| DAR | 64 位 | 目的数据地址 |
-| BLOCK_TS | 20 位 | 块传输大小（单位：传输宽度） |
-| LLP | 64 位 | 指向下一个描述符的指针（bit[5:0] 必须为 0，64 字节对齐） |
-| CTRL_L | 32 位 | 传输宽度、burst 大小等 |
-| CTRL_H | 32 位 | 中断使能、LLI 结束标志等 |
+从手册描述来看，LLI 访问不会跨越一个完整的 64B LLI 结构；如果不受其他设置限制，DMA 会在一次 AXI burst 里取回其中约 40B 的有效内容。因此更稳妥的理解是：
 
+- 软件侧通常按 64B 对齐来组织 LLI
+- DMA 实际取用的是其中的有效字段，而不是“必须恰好只有 40B 的 C 结构体”
 
+常见有效字段包括：
 
-**CH_CFG_L 寄存器配置：**
+| 字段 | 作用 |
+|------|------|
+| `SAR` | 下一块的源地址 |
+| `DAR` | 下一块的目的地址 |
+| `BLOCK_TS` | 下一块的 block 大小 |
+| `LLP` | 下一个 LLI 的地址 |
+| `CTL` | 下一块的传输控制参数 |
 
-| 位 | 字段 | 说明 |
-| :--- | :--- | :--- |
-| [3:0] | SRC_MULTBLK_TYPE / DST_MULTBLK_TYPE | 多块传输类型选择 |
-| | 0b0000 = CONTIGUOUS（连续地址） |
-| | 0b0001 = RELOAD（自动重载） |
-| | 0b0010 = SHADOW（阴影寄存器） |
-| | 0b1111 = LINKED_LIST（链表） |
+**4. 结合已验证驱动来看链尾语义**
 
+这里最容易误解。根据手册，DMA 判断“当前取到的 LLI 是否为最后一个 block”，看的不是“`llp` 指针是否为空”，而是取到的 LLI 中 `CHx_CTL.ShadowReg_Or_LLI_Last` 位。
 
+结合 `dma_code/axidma.c` 里的已验证驱动实现，还能进一步看出：驱动在每个非尾描述符里都会把 `ctrl_h[30]` 清 0，而只在最后一个描述符里把 `ctrl_h[30]` 置 1。也就是说，驱动实际上把 `ctrl_h[30]` 当作“最后一个 block”标志在使用。
 
-**CH_CTL_H 寄存器配置：**
+- `ShadowReg_Or_LLI_Last = 1`：当前 block 是本次 DMA transfer 的最后一个 block
+- `ShadowReg_Or_LLI_Last = 0`：后面还有 block，DMA 会继续取下一个 LLI
 
+从文章表达上，更稳妥的说法应该是：
 
+- `llp_l/h` 用来给出“下一个描述符地址”
+- `ctrl_h[30]` 用来给出“当前描述符是否为最后一个 block”
 
-| 位 | 字段 | 说明 |
-|----|------|------|
-| [31] | LLP_SRC_EN | LLI 源使能 |
-| [30] | LLP_DST_EN | LLI 目的使能（最后一个描述符设为 1） |
-| [26] | IOC_BlkTfr | Block 完成中断使能 |
+因此链尾语义应当建立在 `ShadowReg_Or_LLI_Last` 这类“last 标志”上，而不是把它简化成“看 `llp`”。
 
+**5. 动态扩链的关键位**
 
+手册明确提到，软件既可以一次性把整条链表都准备好，也可以动态扩展 linked list。动态扩链依赖两个位：
 
-**LLI 链式传输流程：**
+- `ShadowReg_Or_LLI_Valid`
+- `ShadowReg_Or_LLI_Last`
 
-1. 软件配置 CH_LLP_L/H 寄存器指向第一个 LLI 描述符
+其中：
 
-2. DMA 引擎取指 desc[0]，执行传输，完成中断（可选）
+- `ShadowReg_Or_LLI_Valid = 1` 表示当前取到的 LLI 有效
+- `ShadowReg_Or_LLI_Valid = 0` 表示当前 LLI 暂时无效，DMA 可能上报 `ShadowReg_Or_LLI_Invalid_ERR`
 
-3. 根据 LLP 取指 desc[1]，执行传输，完成中断（可选）
+如果 DMA 在取 LLI 时看到 `ShadowReg_Or_LLI_Valid = 0`，它会等待软件写 `CHx_BLK_TFR_ResumeReqReg`，然后再尝试下一次 LLI 读取。这正是动态扩链能成立的基础。
 
-4. 重复直到最后一个描述符（LLP_DST_EN=1，链表结束）
+**6. LLI fetch 的 AXI 访问特点**
+
+手册还有一个很重要的限制：LLI fetch 使用的 `arsize/awsize` 与数据总线宽度绑定，不能单独编程成其他值。burst length 则会被选择为“不跨越一个完整 64B LLI 结构”。
+
+这意味着：
+
+- LLI 访问方式和普通数据搬运访问方式并不完全等价
+- LLI fetch 的总线行为受 master data width 影响明显
+- 分析性能问题时，LLI fetch 也需要单独考虑
+
+**7. 建议的理解顺序**
+
+可以把 LLI 模式理解成下面这条主线：
+
+1. 软件在内存中准备好一个或多个 LLI
+2. 软件把第一个 LLI 地址写入 `CHx_LLP`
+3. DMA 取回 LLI，并把其中的地址、长度、控制信息复制到通道寄存器
+4. 当前 block 执行完成后，DMA 根据 `ShadowReg_Or_LLI_Last` 和 `ShadowReg_Or_LLI_Valid` 判断是结束、继续还是等待软件补链
+
+这样理解会比单纯把它看成“desc[0] -> desc[1] -> desc[2]”更接近硬件真实行为。
+
+**8. 当前驱动实际实现的是哪一种 LLI**
+
+结合 `source/_posts/dma/dma_code/axidma.c` 可以看到，这套已经验证正确的驱动实现的是“静态 LLI 链”：
+
+- 软件在启动前一次性把整条描述符链准备好
+- 每个描述符都提前写好 `sar/dar/block_ts/ctrl/llp`
+- 通过 `CH_LLP` 只把首个描述符地址交给硬件
+- 传输过程中没有使用 `CH_BLK_TFR_ResumeReqReg`
+- 也没有实现运行时补链的 `ShadowReg_Or_LLI_Valid` 流程
+
+所以如果当前目标是理解这套驱动，那么可以先把 LLI 模式理解为“静态 block chaining”；动态扩链属于 databook 支持、但这份驱动暂未使用的高级能力。
 
 
 ### 中断
@@ -823,8 +864,8 @@ void __axidma_config(struct axidma_config config, struct axidma_desc *desc)
 
             // 4.5 配置控制寄存器高 32 位
             val = axidma_reg_read(ch_base + CH_CTL_H);
-            val &= ~(0x01U << 31);  // LLP_SRC_EN = 1
-            val &= ~(0x01 << 30);   // LLP_DST_EN = 0 (最后一个描述符设为 1)
+            val |= 0x01U << 31;     // 驱动中该位始终置 1
+            val &= ~(0x01 << 30);   // 非最后一个描述符：ctrl_h[30] = 0
             if(config.intr_en == 1)
                 val |= 0x1 << 26;   // IOC_BlkTfr 中断使能
             else
@@ -841,8 +882,8 @@ void __axidma_config(struct axidma_config config, struct axidma_desc *desc)
         }
     }
 
-    // 5. 标记最后一个描述符（LLP 结束标志）
-    desc[i-1].ctrl_h |= 0x01 << 30;  // LLP_DST_EN = 1, 表示链表结束
+    // 5. 标记最后一个描述符
+    desc[i-1].ctrl_h |= 0x01 << 30;  // 最后一个描述符：ctrl_h[30] = 1
 
     // 6. 加载链表头指针到硬件
     axidma_reg_write(ch_base + CH_LLP_L, (uint32_t)(((uint64_t)&desc[0] & 0xffffffff) & (~0x3f)));
@@ -860,9 +901,11 @@ void __axidma_config(struct axidma_config config, struct axidma_desc *desc)
   - 0b1111 = LINKED_LIST（链表）
 
 **CH_CTL_H 寄存器：**
-- **[31] LLP_SRC_EN** - LLI 源使能
-- **[30] LLP_DST_EN** - LLI 目的使能（最后一个描述符设为 1）
+- **[31]** - 在当前驱动实现中始终置 1
+- **[30]** - 当前驱动中被实际用作“最后一个描述符”标志位
 - **[26] IOC_BlkTfr** - Block 完成中断使能
+
+这里要特别注意：上面的位语义是“结合已验证驱动行为后的文章化总结”。如果只看 databook，应优先按 `ShadowReg_Or_LLI_Last` / `ShadowReg_Or_LLI_Valid` 这套语义来理解。
 
 
 ### 测试用例
@@ -1030,7 +1073,7 @@ desc1[0]
 ├── dar_l/h    = 0x210700000
 ├── block_ts   = 0xFFF (0x1000-1)
 ├── ctrl_l     = 传输宽度配置
-├── ctrl_h     = LLP_SRC_EN=1, IOC=1
+├── ctrl_h     = bit31=1, bit30=0, IOC=1
 └── llp_l/h    = &desc1[1]
 
 desc1[1]
@@ -1038,7 +1081,7 @@ desc1[1]
 ├── dar_l/h    = 0x210702000
 ├── block_ts   = 0xFFF
 ├── ctrl_l     = 传输宽度配置
-├── ctrl_h     = LLP_SRC_EN=1, IOC=1
+├── ctrl_h     = bit31=1, bit30=0, IOC=1
 └── llp_l/h    = &desc1[2]
 
 desc1[2]
@@ -1046,7 +1089,7 @@ desc1[2]
 ├── dar_l/h    = 0x210704000
 ├── block_ts   = 0xFFF
 ├── ctrl_l     = 传输宽度配置
-├── ctrl_h     = LLP_SRC_EN=1, IOC=1
+├── ctrl_h     = bit31=1, bit30=0, IOC=1
 └── llp_l/h    = &desc1[3]
 
 ...
@@ -1056,7 +1099,7 @@ desc1[9] (最后一个)
 ├── dar_l/h    = 0x21071C000
 ├── block_ts   = 0xFFF
 ├── ctrl_l     = 传输宽度配置
-├── ctrl_h     = LLP_SRC_EN=1, LLP_DST_EN=1
+├── ctrl_h     = bit31=1, bit30=1（最后一个 block）
 └── llp_l/h    = 0 (不需要)
 
 ↑
@@ -1074,7 +1117,7 @@ CH_LLP_L/H 寄存器加载此地址
    desc[0]: sar, dar, block_ts, ctrl, llp -> desc[1]
    desc[1]: sar, dar, block_ts, ctrl, llp -> desc[2]
    ...
-   desc[n-1]: sar, dar, block_ts, ctrl (LLP_DST_EN=1)
+   desc[n-1]: sar, dar, block_ts, ctrl (ctrl_h[30]=1，表示最后一个 block)
 
 3. 配置 CH_CFG_L = LINKED_LIST (0x0f)
 
@@ -1092,7 +1135,7 @@ DMA 引擎取指 desc[0] → 执行传输 → 完成中断 (可选)
        ...
        ↓
 取指 desc[n-1] → 执行传输 → 完成中断 → 通道禁用
-(LLP_DST_EN=1, 链表结束)
+(ctrl_h[30]=1，当前描述符为最后一个 block)
 ```
 
 ## 关键参数
@@ -1430,4 +1473,3 @@ SRC_PER 字段 Assigns a hardware handshaking interface (0 - DMAX_NUM_HS_IF-1) t
 | Single Transaction Region 是什么？ | 块传输的尾部区域，剩余数据不足一次 Burst 时使用单次传输 |
 
 ## 原型验证CASE列表
-
