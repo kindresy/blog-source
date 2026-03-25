@@ -1,0 +1,702 @@
+
+#include <stdio.h>
+#include <stdint.h>
+#include <types.h>
+#include <regs.h>
+#include <timer.h>
+#include "axidma.h"
+
+
+#define AXIDMA1_BASE_ADDR	0xA7500000
+#define AXIDMA2_BASE_ADDR	0xA7510000
+
+#define AXIDMA1_IRQ_NUM		81
+#define AXIDMA2_IRQ_NUM		82
+
+/* Common registers offset */
+#define DMAC_ID			0x000 /* R DMAC ID */
+#define DMAC_COMPVER		0x008 /* R DMAC Component Version */
+#define DMAC_CFG		0x010 /* R/W DMAC Configuration */
+#define DMAC_CHEN		0x018 /* R/W DMAC Channel Enable */
+#define DMAC_CHEN_L		0x018 /* R/W DMAC Channel Enable 00-31 */
+#define DMAC_CHEN_H		0x01C /* R/W DMAC Channel Enable 32-63 */
+#define DMAC_CHSUSP		0x020 /* R/w DMAC Channel Suspend Register*/
+#define DMAC_CHABORT	0x028 /* R/w DMAC Channel Abort Register*/
+#define DMAC_INTSTATUS		0x030 /* R DMAC Interrupt Status */
+#define DMAC_COMMON_INTCLEAR	0x038 /* W DMAC Interrupt Clear */
+#define DMAC_COMMON_INTSTATUS_ENA 0x040 /* R DMAC Interrupt Status Enable */
+#define DMAC_COMMON_INTSIGNAL_ENA 0x048 /* R/W DMAC Interrupt Signal Enable */
+#define DMAC_COMMON_INTSTATUS	0x050 /* R DMAC Interrupt Status */
+#define DMAC_RESET		0x058 /* R DMAC Reset Register1 */
+#define DMAC_LOWPOWER_CFG		0x060 /* R/W DMAC Low Power Configuration Register */
+#define DMAC_COMMON_PARCTL		0x070 /* R/W DMAC Parity Control Register */
+#define DMAC_COMMON_ECCCTLSTATUS	0x070 /* R/W DMAC  ECC Control and Status Register */
+
+
+// 0x100 + (x -1) * 0x100
+/* DMA channel registers offset */
+#define CH_SAR_L		0x000 /* R/W Chan Source Address */
+#define CH_SAR_H		0x004 /* R/W Chan Source Address */
+#define CH_DAR_L		0x008 /* R/W Chan Destination Address */
+#define CH_DAR_H		0x00C /* R/W Chan Destination Address */
+#define CH_BLOCK_TS		0x010 /* R/W Chan Block Transfer Size */
+#define CH_CTL			0x018 /* R/W Chan Control */
+#define CH_CTL_L		0x018 /* R/W Chan Control 00-31 */
+#define CH_CTL_H		0x01C /* R/W Chan Control 32-63 */
+#define CH_CFG			0x020 /* R/W Chan Configuration */
+#define CH_CFG_L		0x020 /* R/W Chan Configuration 00-31 */
+#define CH_CFG_H		0x024 /* R/W Chan Configuration 32-63 */
+#define CH_LLP			0x028 /* R/W Chan Linked List Pointer */
+#define CH_LLP_L		0x028 /* R/W Chan Linked List Pointer */
+#define CH_LLP_H		0x02C /* R/W Chan Linked List Pointer */
+#define CH_STATUS		0x030 /* R Chan Status */
+#define CH_SWHSSRC		0x038 /* R/W Chan SW Handshake Source */
+#define CH_SWHSDST		0x040 /* R/W Chan SW Handshake Destination */
+#define CH_BLK_TFR_RESUMEREQ	0x048 /* W Chan Block Transfer Resume Req */
+#define CH_AXI_ID		0x050 /* R/W Chan AXI ID */
+#define CH_AXI_QOS		0x058 /* R/W Chan AXI QOS */
+#define CH_SSTAT		0x060 /* R Chan Source Status */
+#define CH_DSTAT		0x068 /* R Chan Destination Status */
+#define CH_SSTATAR		0x070 /* R/W Chan Source Status Fetch Addr */
+#define CH_DSTATAR		0x078 /* R/W Chan Destination Status Fetch Addr */
+#define CH_INTSTATUS_ENA	0x080 /* R/W Chan Interrupt Status Enable */
+#define CH_INTSTATUS		0x088 /* R/W Chan Interrupt Status */
+#define CH_INTSIGNAL_ENA	0x090 /* R/W Chan Interrupt Signal Enable */
+#define CH_INTCLEAR		0x098 /* W Chan Interrupt Clear */
+
+#define MAX_DESC_NUMS 		30
+#define MAX_SG_NUMS 		30
+#define MAX_BLOCK_TRANSFER_SIZE 	0x10000
+
+enum
+{
+	BITS_8=0,
+	BITS_16, 
+	BITS_32,
+	BITS_64,	
+	BITS_128,
+	BITS_256,
+	BITS_512
+};
+
+struct axidma_desc
+{
+	unsigned int sar_l;
+	unsigned int sar_h;
+	unsigned int dar_l;
+	unsigned int dar_h;
+	unsigned int block_ts;
+	unsigned int reserved;
+	unsigned int llp_l;
+	unsigned int llp_h;
+	unsigned int ctrl_l;
+	unsigned int ctrl_h;
+	unsigned int sstat;
+	unsigned int dstat;
+	unsigned int llp_status_l;
+	unsigned int llp_status_h;
+	unsigned int reserved2;
+	unsigned int reserved3;
+};
+
+struct axidma_config
+{
+	unsigned int id;
+	unsigned int chann;
+	
+	uint64_t src_addr[MAX_SG_NUMS];
+	uint64_t dst_addr[MAX_SG_NUMS];
+	unsigned int len[MAX_SG_NUMS];
+	unsigned int nums;
+	
+	unsigned int width;
+	unsigned int prior;
+	unsigned int intr_en;
+};
+
+
+static struct axidma_desc desc[8][MAX_DESC_NUMS] __attribute__((aligned(64)));
+	
+int __axidma_clk_reset_init(unsigned int id)
+{
+	unsigned int val;
+	// on clk
+	val = read_mreg32(AP_CGM_EN_PERI0_ADDR);
+	switch(id)
+	{
+		case 1:
+			val |= AP_CGM_EN_CLK_AXI_DMA0_MASK;
+			break;
+		case 2:
+			val |= AP_CGM_EN_CLK_AXI_DMA1_MASK;
+			break;
+		default:
+			break;
+	}
+	write_mreg32(AP_CGM_EN_PERI0_ADDR, val);
+	
+	// off reset
+	val = read_mreg32(AP_RST_SWRST_1_ADDR);
+	switch(id)
+	{
+		case 1:
+			val |= AP_RST_SWRST_AXI_DMA0_MASK;
+			break;
+		case 2:
+			val |= AP_RST_SWRST_AXI_DMA1_MASK;
+			break;
+		default:
+			break;
+	}
+	write_mreg32(AP_RST_SWRST_1_ADDR, val);
+
+	usleep(1000);
+	switch(id)
+	{
+		case 1: 
+			val &= ~(AP_RST_SWRST_AXI_DMA0_MASK);
+			break;
+		case 2:
+			val &= ~(AP_RST_SWRST_AXI_DMA1_MASK);
+		default:
+			break;
+	}
+	write_mreg32(AP_RST_SWRST_1_ADDR, val);	
+	
+	return 0; //TODO
+}
+
+void dump_desc(struct axidma_desc *desc, unsigned int num)
+{
+	int i;
+	
+	for(i=0;i<num;i++)
+	{
+		printf("i=%d\n",i);
+		printf("sar_l=0x%x\n",desc[i].sar_l);
+		printf("sar_h=0x%x\n",desc[i].sar_h);
+		printf("dar_l=0x%x\n",desc[i].dar_l);
+		printf("dar_h=0x%x\n",desc[i].dar_h);
+		printf("block_ts=0x%x\n",desc[i].block_ts);
+		printf("llp_l=0x%x\n",desc[i].llp_l);
+		printf("llp_h=0x%x\n",desc[i].llp_h);
+		printf("ctrl_l=0x%x\n",desc[i].ctrl_l);
+		printf("ctrl_h=0x%x\n",desc[i].ctrl_h);
+		printf("sstat=0x%x\n",desc[i].sstat);
+		printf("dstat=0x%x\n",desc[i].dstat);
+		printf("llp_status_l=0x%x\n",desc[i].llp_status_l);
+		printf("llp_status_h=0x%x\n",desc[i].llp_status_h);
+		printf("\n");
+	}
+}
+
+int __axidma_config(struct axidma_config config)
+{
+	int i,m,n;
+	unsigned int val;
+	unsigned int base;
+	unsigned int ch_base;
+	unsigned int transfer_size;
+	unsigned int transfer_val; 
+	unsigned int transfer_width;
+	unsigned int desc_sum=0;
+	
+	transfer_val = config.width;
+	switch(transfer_val)
+	{
+		case 0:
+			transfer_width = 8;
+			break;
+		case 1:
+			transfer_width = 16;
+			break;
+		case 2:
+			transfer_width = 32;
+			break;
+		case 3:
+			transfer_width = 64;
+			break;
+		case 4:
+			transfer_width = 128;
+			break;
+		default:
+			printf("invalid param, config.width=%d\n",config.width);
+			return -1;
+	}
+	
+	if(config.nums > MAX_SG_NUMS)
+	{
+		printf("invalid param, config.nums=%d > %d\n",desc_sum, MAX_SG_NUMS);
+		return -1;
+	}
+	for(i=0;i<config.nums;i++)
+	{
+		desc_sum += config.len[i] / (transfer_width/8 * MAX_BLOCK_TRANSFER_SIZE) + 1;
+	}
+	if(desc_sum > MAX_DESC_NUMS)
+	{
+		printf("invalid param, desc num=%d > %d\n",desc_sum, MAX_DESC_NUMS);
+		return -1;
+	}
+	
+	base = AXIDMA1_BASE_ADDR + (config.id -1)* 0x10000;
+	ch_base = base + 0x100 + (config.chann -1) * 0x100;
+	
+	// channel configure
+	val = read_mreg32(ch_base + CH_CFG_H);
+	val &= ~(0x03); // DWAXIDMAC_TT_FC: MEM_TO_MEM_DMAC
+	val |= config.prior << (49-32); // channel prioritys
+	write_mreg32(ch_base + CH_CFG_H, val);
+	
+	val = read_mreg32(ch_base + CH_CFG_L);
+	val |= 0x0f;  // LINKED_LIST
+	write_mreg32(ch_base + CH_CFG_L, val);
+	
+
+	
+	#if 0
+	for(i=0;i<MAX_DESC_NUMS;i++)
+	{
+		printf("i=%d, %p\n", i, &desc[config.chann -1][i]);
+	}
+	#endif
+	
+	i=0;
+	for(n=0;n<config.nums;n++)
+	{
+		m=0;
+		while(config.len[n])
+		{
+			transfer_size = config.len[n] > (transfer_width/8 * MAX_BLOCK_TRANSFER_SIZE) ? MAX_BLOCK_TRANSFER_SIZE : config.len[n];
+
+			desc[config.chann -1][i].sar_l = (config.src_addr[n] + m*MAX_BLOCK_TRANSFER_SIZE) & 0xffffffff;
+			desc[config.chann -1][i].sar_h = ((config.src_addr[n] + m*MAX_BLOCK_TRANSFER_SIZE) >> 32) & 0xffffffff;
+			desc[config.chann -1][i].dar_l = (config.dst_addr[n] + m*MAX_BLOCK_TRANSFER_SIZE) & 0xffffffff;
+			desc[config.chann -1][i].dar_h = ((config.dst_addr[n] + m*MAX_BLOCK_TRANSFER_SIZE) >> 32) & 0xffffffff;
+			
+			desc[config.chann -1][i].block_ts = transfer_size;
+			
+			val = read_mreg32(ch_base + CH_CTL_L);
+			val |= transfer_val << 11 | transfer_val << 8 | 0x0 << 6 | 0x0 << 4 | 0x0 << 2 | 0x0 << 0;
+			desc[config.chann -1][i].ctrl_l = val;
+			
+			val = read_mreg32(ch_base + CH_CTL_H);
+			val |= 0x01 << 31;
+			val &= ~(0x01 << 30);
+			if(config.intr_en == 1) // IOC_BlkTfr	
+				val |= 0x1 << 26; 
+			else
+				val &= ~(0x1 << 26);
+			desc[config.chann -1][i].ctrl_h = val;
+			
+			#if 0 // STAR
+				desc[config.chann -1][i].llp_l = (uint32_t)(&desc[config.chann -1][i+1]) & 0xffffffff;
+				desc[config.chann -1][i].llp_h = 0x0;
+			#else // A55
+				desc[config.chann -1][i].llp_l = (uint32_t)(((uint64_t)(&desc[config.chann -1][i+1])) & 0xffffffff);
+				desc[config.chann -1][i].llp_h = (uint32_t)((((uint64_t)(&desc[config.chann -1][i+1])) >> 32) & 0xffffffff);
+			#endif
+			
+			i++;
+			m++;
+			config.len[n] -= transfer_size;
+		}
+	}
+	
+	desc[config.chann -1][i-1].ctrl_h |= 0x01 << 30; 
+	
+	#if 0 // STAR
+		write_mreg32(ch_base + CH_LLP_L, (uint32_t)(&desc[config.chann -1][0]) & 0xffffffff & (~0x3f));
+		write_mreg32(ch_base + CH_LLP_H, 0x0);
+	#else // A55
+		write_mreg32(ch_base + CH_LLP_L, (uint32_t)(((uint64_t)&desc[config.chann -1][0]) & 0xffffffff & (~0x3f)));
+		write_mreg32(ch_base + CH_LLP_H,(uint32_t)((((uint64_t)&desc[config.chann -1][0]) >> 32 )& 0xffffffff));
+	#endif
+	
+	#if 0
+	dump_desc(desc[config.chann -1], i);
+	#endif
+	
+	return 0;
+}	
+
+
+int axidma_init(uint32_t id)
+{
+	int i;
+	int ret;
+	unsigned int val;
+	unsigned int base;
+	
+	base = AXIDMA1_BASE_ADDR + (id -1)* 0x10000;
+	
+	ret = __axidma_clk_reset_init(id);
+	if(ret < 0)
+		return -1;
+	
+	// close axidma interrupt
+	val = read_mreg32(base + DMAC_CFG);
+	val = val & ~(0x01 << 1) ; // INT_EN
+	write_mreg32(base + DMAC_CFG, val);
+	
+	// close all channel interrupt
+	for(i=1;i<9;i++)
+	{
+		write_mreg32(base + 0x100 + (i -1) * 0x100 + CH_INTSTATUS_ENA, 0x0);
+		write_mreg32(base + 0x100 + (i -1) * 0x100 + CH_INTSIGNAL_ENA, 0x0);
+	}
+	write_mreg32(base + DMAC_COMMON_INTSTATUS_ENA, 0x0);
+	write_mreg32(base + DMAC_COMMON_INTSIGNAL_ENA, 0x0);
+	
+	val = read_mreg32(base + DMAC_CFG);
+	val = val | (0x01 << 1) ; // INT_EN
+	write_mreg32(base + DMAC_CFG, val);
+
+	val = read_mreg32(base + DMAC_CFG);
+	val = val | (0x01 << 0); // DMAC_EN
+	write_mreg32(base + DMAC_CFG, val);
+	
+	return 0;
+}
+
+int axidma_deinit(uint32_t id)
+{
+	int i;
+	unsigned int val;
+	unsigned int base;
+	
+	base = AXIDMA1_BASE_ADDR + (id -1)* 0x10000;
+	
+	val = read_mreg32(base + DMAC_CFG);
+	val &= ~(0x01 << 0); // DMAC_EN
+	write_mreg32(base + DMAC_CFG, val);
+	
+	// close axidma interrupt
+	val = read_mreg32(base + DMAC_CFG);
+	val = val & ~(0x01 << 1) ; // INT_EN
+	write_mreg32(base + DMAC_CFG, val);
+	
+	// close all channel interrupt
+	for(i=1;i<9;i++)
+	{
+		write_mreg32(base + 0x100 + (i -1) * 0x100 + CH_INTSTATUS_ENA, 0x0);
+		write_mreg32(base + 0x100 + (i -1) * 0x100 + CH_INTSIGNAL_ENA, 0x0);
+	}
+	write_mreg32(base + DMAC_COMMON_INTSTATUS_ENA, 0x0);
+	write_mreg32(base + DMAC_COMMON_INTSIGNAL_ENA, 0x0);
+	
+	return 0;
+}
+
+void __axidma_enable(unsigned int id, unsigned int chann)
+{
+	unsigned int base;
+	unsigned int ch_base;
+	unsigned int val;
+	
+	base = AXIDMA1_BASE_ADDR + (id -1)* 0x10000;
+	ch_base = base + 0x100 + (chann -1) * 0x100;
+		
+	write_mreg32(ch_base + CH_INTSTATUS_ENA, 0x03);
+	write_mreg32(ch_base + CH_INTSIGNAL_ENA, 0x03);
+	
+	val = read_mreg32(base + DMAC_CHEN_L);
+	val |= (0x1 << (chann-1) | 0x01 << (chann-1+8));
+	write_mreg32(base + DMAC_CHEN_L, val);
+}
+
+void __axidma_disable(unsigned int id, unsigned int chann)
+{
+	unsigned int base;
+	unsigned int ch_base;
+	unsigned int val;
+	
+	base = AXIDMA1_BASE_ADDR + (id -1)* 0x10000;
+	ch_base = base + 0x100 + (chann -1) * 0x100;
+	
+	val = read_mreg32(base + CH_INTSTATUS_ENA);
+	val &= ~(0x03);
+	write_mreg32(ch_base + CH_INTSTATUS_ENA, val);
+	
+	val = read_mreg32(base + CH_INTSIGNAL_ENA);
+	val &= ~(0x03);
+	write_mreg32(ch_base + CH_INTSIGNAL_ENA, val);
+	
+	
+	val = read_mreg32(base + DMAC_CHEN_L);
+	val &= ~(0x1 << (chann-1));
+	val &= ~(0x01 << (chann-1+8));
+	write_mreg32(base + DMAC_CHEN_L, val);
+}
+
+
+int axidma_memcpy(uint32_t id, uint32_t chann, uint64_t src, uint64_t dst, uint32_t len, int timeout)
+{
+	int ret;
+	unsigned int val;
+	unsigned int base;
+	unsigned int ch_base;
+	struct axidma_config config;
+	
+	base = AXIDMA1_BASE_ADDR + (id -1)* 0x10000;
+	ch_base = base + 0x100 + (chann -1) * 0x100;
+	
+	memset((struct axidma_config *)&config, 0, sizeof(struct axidma_config));
+	config.id = id;
+	config.chann = chann;
+	
+	config.src_addr[0] = src; 
+	config.dst_addr[0] = dst; 
+	config.len[0] = len;
+	config.nums = 1;
+	config.width = BITS_8;
+	config.prior = 1;
+	config.intr_en = 1;
+	ret = __axidma_config(config);
+	if(ret < 0)
+		return ret;
+	__axidma_enable(id, chann);
+	
+	while(timeout--)
+	{
+		val = read_mreg32(ch_base + CH_INTSTATUS);
+		if((val & 0x3) == 0x3)
+		{
+			write_mreg32(ch_base + CH_INTCLEAR, val);
+			break;
+		}
+		usleep(1);
+	}
+	
+	__axidma_disable(id, 0x01 << (chann-1));
+	
+	if(timeout == 0)
+		return -1;
+	else
+		return 0;
+}
+
+int axidma_memcpy_sg(uint32_t id, uint32_t chann, struct sg_param param, int timeout)
+{
+	int i;
+	int ret;
+	unsigned int val;
+	unsigned int base;
+	unsigned int ch_base;
+	struct axidma_config config;
+	
+	base = AXIDMA1_BASE_ADDR + (id -1)* 0x10000;
+	ch_base = base + 0x100 + (chann -1) * 0x100;
+	
+	config.id = id;
+	config.chann = chann;
+	
+	for(i=0;i<param.nums;i++)
+	{
+		config.src_addr[i] = param.src_addr[i]; 
+		config.dst_addr[i] = param.dst_addr[i]; 
+		config.len[i] = param.len[i]; 
+	}
+
+	config.nums = param.nums;
+	config.width = BITS_8;
+	config.prior = 1;
+	config.intr_en = 1;
+	
+	#if 0
+	for(i=0;i<10;i++)
+	{
+		printf("i=%d src=0x%lx, dst=0x%lx len=0x%x\n",i, config.src_addr[i], config.dst_addr[i], config.len[i]);
+	}
+	#endif
+	
+	ret = __axidma_config(config);
+	if(ret < 0)
+		return -1;
+	
+	__axidma_enable(id, chann);
+	
+	while(timeout--)
+	{
+		val = read_mreg32(ch_base + CH_INTSTATUS);
+		if((val & 0x3) == 0x3)
+		{
+			write_mreg32(ch_base + CH_INTCLEAR, val);
+			break;
+		}
+		usleep(1);
+	}
+	
+	if(timeout == 0)
+		return -1;
+	else
+		return 0;
+}
+
+int axidma_config(uint32_t id, uint32_t chann, uint64_t src, uint64_t dst, uint32_t len)
+{
+	int ret;
+	struct axidma_config config;
+
+	config.id = id;
+	config.chann = chann;
+	
+	config.src_addr[0] = src; 
+	config.dst_addr[0] = dst; 
+	config.len[0] = len;
+	config.nums = 1;
+	config.width = BITS_8;
+	config.prior = 1;
+	config.intr_en = 1;
+	ret = __axidma_config(config);
+	if(ret < 0)
+		return -1;
+	else
+		return 0;
+}
+
+int axidma_config_sg(uint32_t id, uint32_t chann, struct sg_param param)
+{
+	int i;
+	int ret;
+	struct axidma_config config;
+
+	config.id = id;
+	config.chann = chann;
+	
+	for(i=0;i<param.nums;i++)
+	{
+		config.src_addr[i] = param.src_addr[i]; 
+		config.dst_addr[i] = param.dst_addr[i]; 
+		config.len[i] = param.len[i]; 
+	}
+
+	config.nums = param.nums;
+	config.width = BITS_8;
+	config.prior = 1;
+	config.intr_en = 1;
+	ret = __axidma_config(config);
+	if(ret < 0)
+		return -1;
+	else
+		return 0;
+}
+
+void axidma_enable(uint32_t id, uint32_t chann)
+{
+	__axidma_enable(id, chann);
+}
+
+void axidma_disable(uint32_t id, uint32_t chann)
+{
+	__axidma_enable(id, chann);
+}
+
+
+
+#if 1
+void axidma_test(void)
+{
+	int i,n,m;
+	int ret;
+	int error_flg=0;
+	struct sg_param param;
+	
+	for(m=0;m<10;m++)
+	{
+		axidma_init(1);
+		{
+			// memcpy test
+			memset((unsigned char *)0x200000000, 0x77, 0x1000);
+			
+			ret = axidma_memcpy(1, 1, 0x200000000, 0x200010000, 0x1000, -1);
+			for(i=0;i<0x1000;i++)
+			{
+				if(*(unsigned char *)(0x200000000+i) != *(unsigned char *)(0x200010000+i))
+				{
+					error_flg++;
+					printf("i=%d, src_addr=0x%lx != dst_addr=0x%lx\n",i, *(unsigned char *)(0x200000000+i), *(unsigned char *)(0x200010000+i));
+				}
+			}
+			if(error_flg == 0)
+				printf("axidma_memcpy .......... ok\n");
+			else
+				printf("axidma_memcpy .......... fail\n");
+		}
+		
+		
+		
+		// memcpy sg test
+		{
+			uint64_t src_addr[10];
+			uint64_t dst_addr[10];
+			int len[10];
+			for(i=0;i<10;i++)
+			{
+				len[i] = 0x1000;
+				src_addr[i] = 0x200000000 + i*len[i] *2;
+				dst_addr[i] = 0x200100000 + i*len[i] *2;
+				memset((unsigned char *)src_addr[i], i+1, len[i]);
+			}
+			param.src_addr = src_addr;
+			param.dst_addr = dst_addr;
+			param.len = len;
+			param.nums = 10;
+			ret = axidma_memcpy_sg(1, 1, param, -1);
+			for(n=0;n<param.nums;n++)
+			{
+				for(i=0;i<param.len[n];i++)
+				{
+					if(*(unsigned char *)(param.src_addr[n]+i) != *(unsigned char *)(param.dst_addr[n]+i))
+					{
+						error_flg++;
+						printf("n=%d, i=%d, src_addr=0x%lx != dst_addr=0x%lx\n",n, i, *(unsigned char *)(param.src_addr[n]+i), *(unsigned char *)(param.dst_addr[n]+i));
+					}
+				}
+			}
+			if(error_flg == 0)
+				printf("axidma_memcpy sg .......... ok\n");
+			else
+				printf("axidma_memcpy sg .......... fail\n");		
+		}
+
+		// memcpy sg test 2
+		{
+			uint64_t src_addr[10];
+			uint64_t dst_addr[10];
+			int len[10];
+			for(i=0;i<10;i++)
+			{
+				len[i] = 0x1000;
+				src_addr[i] = 0x200000000 + i*len[i] *2;
+				dst_addr[i] = 0x200200000 + i*len[i] *2;
+				memset((unsigned char *)src_addr[i], i+2, len[i]);
+			}
+			param.src_addr = src_addr;
+			param.dst_addr = dst_addr;
+			param.len = len;
+			param.nums = 10;
+			ret = axidma_memcpy_sg(1, 1, param, -1);
+			for(n=0;n<param.nums;n++)
+			{
+				for(i=0;i<param.len[n];i++)
+				{
+					if(*(unsigned char *)(param.src_addr[n]+i) != *(unsigned char *)(param.dst_addr[n]+i))
+					{
+						error_flg++;
+						printf("n=%d, i=%d, src_addr=0x%lx != dst_addr=0x%lx\n",n, i, *(unsigned char *)(param.src_addr[n]+i), *(unsigned char *)(param.dst_addr[n]+i));
+					}
+				}
+			}
+			if(error_flg == 0)
+				printf("axidma_memcpy sg 2.......... ok\n");
+			else
+				printf("axidma_memcpy sg 2.......... fail\n");	
+		}
+		
+		axidma_deinit(1);
+	}
+	
+}
+
+#endif
