@@ -7,7 +7,7 @@ const frontMatter = require('hexo-front-matter');
 
 const root = path.resolve(__dirname, '..', 'source', '_posts');
 const categories = {
-  '嵌入式开发': ['PCIe', 'I2C', 'DMA', 'SD'],
+  '嵌入式开发': ['PCIe', 'I2C', 'I3C', 'DMA', 'SD'],
   AI: ['Claude Code', 'OpenClaw'],
   '生活记录': []
 };

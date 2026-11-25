@@ -70,6 +70,7 @@ category_map:
   嵌入式开发: embedded-tech
   PCIe: pcie
   I2C: i2c
+  I3C: i3c
   DMA: dma
   SD: sd
   AI: AI

@@ -4,7 +4,7 @@ This repository is the Hexo source repository for the blog. It is used for writi
 
 ## 文章分类与标签
 
-- 嵌入式开发：PCIe、I2C、DMA、SD。
+- 嵌入式开发：PCIe、I2C、I3C、DMA、SD。
 - AI：Claude Code、OpenClaw。相关文章统一放在 `source/_posts/AI/`。
 - 生活记录：旅行、阅读与个人感悟。
 
