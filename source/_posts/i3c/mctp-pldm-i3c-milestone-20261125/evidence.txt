@@ -1,0 +1,147 @@
+MCTP / PLDM over I3C · 2026-11-25 里程碑证据摘录
+
+状态：端到端未打通。HOST 部署与枚举通过，首笔 GetEID 地址 NACK。
+
+这是已有材料的摘录，不是写文章时重新做的一次硬件测试。
+
+
+
+[1] 独立 Target 组件固定版本
+
+{
+  "libmctp": {
+    "url": "https://github.com/openbmc/libmctp",
+    "commit": "ab58506f08dbda562fccaa66340faad9c2e96fa4"
+  },
+  "libpldm": {
+    "url": "https://github.com/openbmc/libpldm",
+    "tag": "v0.13.0",
+    "commit": "af271b8247d22935c062cacd578d74cc35b6ec45"
+  }
+}
+
+
+[2] 独立 Target 组件原验证范围
+
+# 验证记录
+
+本包完成以下检查；未运行芯片硬件或 i.MX93 MCTP 联调。
+
+- Linux x86_64 GCC 原生编译与内存协议测试：PASS，启用 `-Wall -Wextra -Werror`。记录：`validation/native-test.log`。
+- AddressSanitizer + UndefinedBehaviorSanitizer：PASS，含默认内存泄漏检查。记录：`validation/asan-ubsan.log`。
+- Xuantie RISC-V GCC 14.3.0 / newlib 静态库编译：PASS。记录：`validation/riscv-build.log` 和 `validation/riscv-toolchain.txt`。
+- RISC-V 产物：`artifacts/riscv64/libchip_endpoint.a`。使用工具链默认架构/ABI生成，仅作编译验证；实际集成须按芯片固件原有 `-march/-mabi` 重编译。
+
+测试内容：PEC 已知向量、MCTP Get/SetEID、PLDM Base 五条命令、GetVersion CRC32、错误版本与类型响应、短读重试、69B MCTP 首包重组、EID 修改和端点重建。
+
+测试不是完整规范符合性测试。没有验证 IRQ/DMA、IBI 实际时序、动态地址分配、I3C 硬件 PEC 设置、Linux 驱动绑定、Discovery Notify 或最终固件链接/装载。
+
+
+[3] HOST transport 模型原始结果
+
+MCTP_I3C_MODEL_PASS: short/full RX, bad length/PEC/error, MDB filtering
+MCTP_I3C_LIFECYCLE_PASS: setup success/failure/OOM, drvdata and mutex cleanup
+
+
+[4] 原有 I3C 离线回归及返回值
+
+test-controller-read-preflight	0
+test-controller-read-terminated	0
+test-core-addrslots	0
+test-getcaps-length	0
+test-ibi-enable	0
+test-ibi-receive	0
+test-dv-flow	0
+test-mode-node-lifetime	0
+test-open-enumeration	0
+test-private-write	0
+test-hotjoin-recovery	0
+test-probe	0
+
+
+[5] HOST 移植基准与归档 patch 指纹（部署前快照）
+
+{
+  "base_commit": "c58292616eeed014c605d572ae3f58a5c7095b43",
+  "branch": "codex/mctp-i3c-slim-20261125",
+  "uncommitted": true,
+  "kernel_release": "6.6.36-slim-mctp",
+  "patch_sha256": "944ee818506c26e903381dcfbb6dbd9a678d942edd1ea104677d92f36a613430",
+  "new_source_files": 71,
+  "deployed": false,
+  "hardware_tested": false
+}
+
+[6] HOST 部署确认（部署阶段快照，后续枚举另见下节）
+
+{
+  "release": "6.6.36-slim-mctp",
+  "boot_id": "1e46c97c-0036-490f-9d8a-e7f60af4b7f8",
+  "deployed": true,
+  "boot_confirmed": true,
+  "af_mctp_socket_pass": true,
+  "userspace_selftest_pass": true,
+  "loaded_modules": [
+    "i3c",
+    "mctp_i3c"
+  ],
+  "svc_controller_loaded": false,
+  "target_bus_tested": false,
+  "rollback_guard_enabled": false,
+  "image_sha256": "b261ad2a2af758325d14f00a97850ea24abeff6ce305178063ba68a5c128842f",
+  "dtb_sha256": "60fd181073b3081440b3c70469578d0fe55e9b16c83a66314c65b81958fe3fe6"
+}
+
+[7] 枚举阶段的 HOST 原始日志节选
+
+[ 4019.519603] silvaco-i3c-master 44330000.i3c-master: I3C CCC seq=5 bytes=01 04 01
+[ 4019.543807] silvaco-i3c-master 44330000.i3c-master: I3C CCC seq=6 bytes=01 04
+[ 4019.572536] i3c i3c-0: I3C GETCAPS da=0x44 max=4 actual=3 bytes=01f118
+[ 4019.572563] i3c i3c-0: I3C ENUM identity OK da=0x44 PID=beee00000101 BCR=3e DCR=cc
+[ 4019.574698] silvaco-i3c-master 44330000.i3c-master: I3C IBI enable addr=0x44 bcr=0x3e rules=0x4
+[ 4019.596715] silvaco-i3c-master 44330000.i3c-master: I3C CCC seq=8 ENEC(0x80) OK rc=0
+
+[8] 首包失败的 HOST 原始日志节选
+
+[ 4570.038297] silvaco-i3c-master 44330000.i3c-master: I3C XFER FAIL rc=-6 recovery_required=0
+[ 4570.038318] silvaco-i3c-master 44330000.i3c-master: I3C XFER cmd=1 addr=0x44/W stage=address-nack rc=-6 stop_rc=0 status=0x9223 err=0x4 stop_status=0x1200 stop_err=0x0
+
+[9] requester 原始输出
+
+response timeout
+REQUEST_EXIT=3
+
+
+[10] 首包结束后本地计数
+
+COUNTERS
+rx_packets=0
+tx_packets=0
+rx_errors=0
+tx_errors=1
+rx_crc_errors=0
+rx_length_errors=0
+rx_dropped=0
+tx_dropped=0
+LINKS
+dev lo index 1 address 00:00:00:00:00:00 net 1 mtu 65536 up
+dev mctpi3c0 index 4 address 00:00:00:00:00:00 net 1 mtu 68 up
+
+
+[11] Target 截图回传对应的会话文字记录（并非本地取得的原始串口日志）
+
+active=1 phase=2 error=0 wait_enec=0; DA=0x44
+
+rx_packets=0 trace_count=0 irq_count=0; ibi_submitted=0
+
+最新 Target 源码不可访问。硬件 DA_VALID、Enable、HALT 和 RX 资源状态仍待核对。
+
+[12] 证据解释
+
+部署前 manifest 的 deployed=false、hardware_tested=false 是当时的快照，不覆盖后续部署与总线实验。
+
+部署阶段 JSON 的 Controller 尚未加载，同样不覆盖后续枚举；本轮 GetEID 失败以第8～10项为准。
+
+rx_crc_errors=0 不代表 PEC 通过，本次 rx_packets=0。
+
+本轮没有外部总线采样，地址 NACK 是驱动对硬件状态的判断，未补写逐位波形。
