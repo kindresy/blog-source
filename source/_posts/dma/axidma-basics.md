@@ -33,7 +33,7 @@ description: 从一笔 SRAM 搬运出发，理解 AXIDMA 参数、AXI 总线、�
 
 回归基本功：把一次 DMA 搬运讲清楚
 
-![英雄联盟“回归基本功”强化图标；封面卡片为教学排版，并非游戏界面截图。](/2026/11/25/axidma-basics/images/back-to-basics.png)
+<img src="/2026/11/25/axidma-basics/images/back-to-basics.png" alt="海克斯大乱斗：回归基本功强化图标" width="64" height="64" style="box-sizing:content-box;width:64px;height:64px;padding:16px;background:#243041;border-radius:12px;">
 
 图中标注与动作顺序：
 
