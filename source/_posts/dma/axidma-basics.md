@@ -4,8 +4,8 @@ date: 2026-11-25
 permalink: 2026/11/25/axidma-basics/
 toc: true
 max_depth: 3
-categories: dma
-tags: [embedded, dma, AXI, firmware]
+categories: [嵌入式开发, DMA]
+tags: [dma, axi, firmware, lli]
 description: 从一笔 SRAM 搬运出发，理解 AXIDMA 参数、AXI 总线、单块与 LLI、外设握手、缓存同步和测试定位。
 ---
 

@@ -1,3 +1,13 @@
+---
+title: PCIe Endpoint 固件初始化实例
+date: 2026-03-23 15:59:57
+permalink: 2026/03/23/pcie/pcie_fw/
+toc: true
+max_depth: 3
+categories: [嵌入式开发, PCIe]
+tags: [pcie, firmware, endpoint, phy]
+---
+
 # pcie fw程序demo
 ```
 #include <edge10_mcu.h>

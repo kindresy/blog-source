@@ -1,3 +1,12 @@
+---
+title: Claude Code：工具、记忆与运行环境
+date: 2026-03-21 11:25:54
+permalink: 2026/03/21/claude_code/what_is/
+toc: true
+max_depth: 3
+categories: [AI, Claude Code]
+tags: [ai, claude-code, mcp, memory]
+---
 
 # what is claude code?
 

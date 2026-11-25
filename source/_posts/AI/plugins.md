@@ -4,10 +4,9 @@ date: 2026-03-16
 toc: true
 max_depth: 3 
 mermaid: true
-categories: AI
-tags: [AI]
+categories: [AI, Claude Code]
+tags: [ai, claude-code, plugins]
 ---
-
 
 除了Claude官网插件市场（https://claude.com/plugins#plugins），**Claude Code（核心使用插件的场景）** 还有**4种官方/社区主流的插件安装路径**，覆盖**在线插件市场添加、自然语言指令安装、本地离线安装、第三方工具安装**，同时支持官方/社区开源插件，以下是分场景的完整方法，可直接落地使用：
 

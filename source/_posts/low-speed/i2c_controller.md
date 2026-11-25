@@ -4,8 +4,8 @@ date: 2026-03-06
 toc: true
 max_depth: 3 
 mermaid: true
-categories: embedded_tech
-tags: [embedded , Linux]
+categories: [嵌入式开发, I2C]
+tags: [i2c, designware, controller, dma]
 ---
 
 # 简介

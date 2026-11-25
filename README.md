@@ -2,6 +2,18 @@
 
 This repository is the Hexo source repository for the blog. It is used for writing posts, updating configuration, and maintaining the theme and dependencies.
 
+## 文章分类与标签
+
+- 嵌入式开发：PCIe、I2C、DMA、SD。
+- AI：Claude Code、OpenClaw。相关文章统一放在 `source/_posts/AI/`。
+- 生活记录：旅行、阅读与个人感悟。
+
+Front Matter 的 `categories` 数组表示从一级分类到专题的层级，例如 `[嵌入式开发, DMA]`。标签使用小写英文，多个单词用连字符连接，例如 `linux`、`dmaengine`、`claude-code`；优先标注具体协议、平台或机制。
+
+每篇文章都要填写标题、日期、分类和标签。移动旧文章时，用 `permalink` 固定原有网址，并一起移动配图目录。
+
+部署前运行 `npm run check:content`，再检查正文是否自然，有没有残留的对话过程或工具日志。自动检查只用于查漏，不能代替阅读。
+
 ## Repository Roles
 
 There are two different GitHub repositories in this blog setup, and they serve different purposes.

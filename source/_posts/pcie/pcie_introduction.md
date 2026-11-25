@@ -3,8 +3,8 @@ title: pcie_introduction
 date: 2026-03-03
 toc: true
 max_depth: 3 
-categories: embedded_tech
-tags: [embedded , Linux]
+categories: [嵌入式开发, PCIe]
+tags: [pcie, architecture]
 ---
 
 # 本文简介

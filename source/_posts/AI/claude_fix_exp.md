@@ -4,8 +4,8 @@ date: 2026-03-16
 toc: true
 max_depth: 3 
 mermaid: true
-categories: AI
-tags: [AI]
+categories: [AI, Claude Code]
+tags: [ai, claude-code, troubleshooting]
 ---
 
 ## webfetch失败

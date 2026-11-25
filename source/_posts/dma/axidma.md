@@ -4,8 +4,8 @@ date: 2026-03-17
 toc: true
 max_depth: 3 
 mermaid: true
-categories: life_record
-tags: [life]
+categories: [嵌入式开发, DMA]
+tags: [dma, axi, designware, baremetal, lli]
 ---
 
 ## 通用特性

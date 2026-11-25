@@ -67,6 +67,15 @@ index_generator:
 # Category & Tag
 default_category: uncategorized
 category_map:
+  嵌入式开发: embedded-tech
+  PCIe: pcie
+  I2C: i2c
+  DMA: dma
+  SD: sd
+  AI: AI
+  Claude Code: claude-code
+  OpenClaw: openclaw
+  生活记录: life-record
 tag_map:
 
 # Metadata elements

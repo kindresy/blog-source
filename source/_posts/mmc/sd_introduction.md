@@ -3,11 +3,9 @@ title: sd_introduction
 date: 2026-03-02
 toc: true
 max_depth: 3 
-categories: embedded_tech
-tags: [embedded , Linux]
+categories: [嵌入式开发, SD]
+tags: [sd, storage, protocol, tuning]
 ---
-
-
 
 # 写在前面
 
