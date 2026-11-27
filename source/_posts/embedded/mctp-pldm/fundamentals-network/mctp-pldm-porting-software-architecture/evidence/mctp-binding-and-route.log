@@ -1,0 +1,13 @@
+[ 5649.376275] silvaco-i3c-master 44330000.i3c-master: I3C IBI enable addr=0x44 bcr=0x3e rules=0x4
+[ 5649.399176] silvaco-i3c-master 44330000.i3c-master: I3C CCC seq=8 ENEC(0x80) OK rc=0
+DRIVER=/sys/bus/i3c/drivers/mctp-i3c
+dev mctpi3c0 index 5 address 00:00:00:00:00:00 net 1 mtu 68 up
+eid 8 net 1 dev mctpi3c0
+eid min 9 max 9 net 1 dev mctpi3c0 mtu 0
+eid min 8 max 8 net 1 dev mctpi3c0 mtu 0
+eid 9 net 1 dev mctpi3c0 lladdr be:ee:00:00:01:01
+tx_packets=0
+rx_packets=0
+tx_errors=0
+rx_errors=0
+rx_crc_errors=0

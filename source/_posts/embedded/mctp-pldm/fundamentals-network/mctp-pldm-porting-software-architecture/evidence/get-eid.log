@@ -1,0 +1,27 @@
+BEFORE
+tx_packets=1
+tx_bytes=8
+tx_errors=0
+tx_dropped=0
+rx_packets=0
+rx_bytes=0
+rx_errors=0
+rx_crc_errors=0
+rx_length_errors=0
+rx_dropped=0
+REQUEST /root/mctp-get-eid-fix-20261126-iG7pGX/mctp-pldm-request control 1 9 get-eid
+response: 00 19 02 00 09 01 00
+completion_code=0x00
+eid=9 endpoint_type=0x01 medium_specific=0x00
+REQUEST_EXIT=0
+AFTER
+tx_packets=2
+tx_bytes=15
+tx_errors=0
+tx_dropped=0
+rx_packets=1
+rx_bytes=11
+rx_errors=0
+rx_crc_errors=0
+rx_length_errors=0
+rx_dropped=0

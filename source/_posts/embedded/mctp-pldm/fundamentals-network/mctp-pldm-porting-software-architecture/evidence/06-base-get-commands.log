@@ -1,0 +1,27 @@
+BEFORE
+tx_packets=7
+tx_bytes=60
+rx_packets=6
+rx_bytes=96
+tx_errors=0
+rx_errors=0
+rx_crc_errors=0
+rx_length_errors=0
+tx_dropped=0
+rx_dropped=0
+COMMAND MCTP_TIMEOUT_MS=30000 /opt/frdm/modules/6.6.36-slim-mctp/mctp-pldm-request base 1 9 get-commands
+response: 01 0a 00 05 00 3e 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+completion_code=0x00
+commands: 0x01 0x02 0x03 0x04 0x05
+REQUEST_EXIT=0
+AFTER
+tx_packets=8
+tx_bytes=73
+rx_packets=7
+rx_bytes=137
+tx_errors=0
+rx_errors=0
+rx_crc_errors=0
+rx_length_errors=0
+tx_dropped=0
+rx_dropped=0

@@ -1,0 +1,12 @@
+COMMAND python3 -u observe-tx.py 61
+HOST_PACKET 01 09 08 88 7e cc de f0 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f 20 21 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f 30 31 32 33 34 35 36 37 38 39 3a 3b
+HOST_PACKET 01 09 08 58 3c
+echo_request_exit=124
+COUNTER_DELTAS {'tx_packets': 1, 'tx_bytes': 68, 'tx_errors': 1, 'tx_dropped': 0, 'rx_packets': 0, 'rx_errors': 0, 'rx_crc_errors': 0, 'rx_length_errors': 0, 'rx_dropped': 0}
+FRAGMENT index=0 mctp_len=68 i3c_len_with_pec=69 flags=0x88
+FRAGMENT index=1 mctp_len=5 i3c_len_with_pec=6 flags=0x58
+Driver successful-transfer counters do not match capture
+NEW_I3C_MESSAGES
+[ 5825.760310] silvaco-i3c-master 44330000.i3c-master: I3C XFER FAIL rc=-6 recovery_required=0
+[ 5825.760333] silvaco-i3c-master 44330000.i3c-master: I3C XFER cmd=1 addr=0x44/W stage=address-nack rc=-6 stop_rc=0 status=0x9223 err=0x4 stop_status=0x1200 stop_err=0x0
+HOST_OBSERVATION_EXIT=1

@@ -1,0 +1,27 @@
+BEFORE
+tx_packets=4
+tx_bytes=30
+rx_packets=3
+rx_bytes=47
+tx_errors=0
+rx_errors=0
+rx_crc_errors=0
+rx_length_errors=0
+tx_dropped=0
+rx_dropped=0
+COMMAND MCTP_TIMEOUT_MS=30000 /opt/frdm/modules/6.6.36-slim-mctp/mctp-pldm-request base 1 9 get-tid
+response: 01 03 00 02 00 01
+completion_code=0x00
+tid=1
+REQUEST_EXIT=0
+AFTER
+tx_packets=5
+tx_bytes=38
+rx_packets=4
+rx_bytes=57
+tx_errors=0
+rx_errors=0
+rx_crc_errors=0
+rx_length_errors=0
+tx_dropped=0
+rx_dropped=0
