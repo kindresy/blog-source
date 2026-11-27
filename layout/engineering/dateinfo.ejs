@@ -1,0 +1,5 @@
+<% const meta = engineering_meta(page); %>
+<div class="engineering-dates">
+  <% if (page.date) { %><span>发布于 <%= date(page.date, 'YYYY-MM-DD') %></span><% } %>
+  <% if (meta.evidence) { %><span>证据截至 <%= meta.evidence.date %></span><% } %>
+</div>

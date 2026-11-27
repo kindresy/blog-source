@@ -1,0 +1,13 @@
+<%
+const posts = site.posts.toArray().filter(p => p.tags.toArray().some(t => t.name === 'milestone') || p.categories.toArray().some(c => c.name === '移植与回归')).sort((a,b) => +b.date - +a.date);
+%>
+<%- partial('_partial/main/navbar/nav_tabs_blog') %>
+<section class="topic-intro">
+  <span class="eyebrow">过程 / 证据 / 下一步</span>
+  <h1>工程记录</h1>
+  <p>把移植、联调和回归的过程留下来。已经走通的部分、仍然卡住的地方，以及下一轮准备怎样验证，都分开记录。</p>
+  <p class="support-note">状态只对应文章所记录的版本与日期，不自动代表后续版本已经通过。</p>
+</section>
+<div class="post-list post engineering-post-list">
+  <% for (const post of posts) { %><a class="post-card post" href="<%= url_for(post.path) %>"><%- partial('_partial/main/post_list/post_card', {post}) %></a><% } %>
+</div>

@@ -18,6 +18,16 @@ This repository is the Hexo source repository for the blog. It is used for writi
 
 部署前运行 `npm run check:content`，再检查正文是否自然，有没有残留的对话过程或工具日志。自动检查只用于查漏，不能代替阅读。
 
+## 页面与阅读体验
+
+首页专题、推荐文章、阅读顺序和有日期的工程状态统一维护在 `tools/site-profile.js`。更新进展时同时核对证据日期，不把待验收项标为通过。关于页位于 `source/about/index.md`，工程记录入口位于 `source/engineering/index.md`。
+
+主题配置放在 `_config.stellar.yml`，页面覆盖位于 `layout/engineering/`，由 `scripts/site-ui.js` 注册。样式和阅读交互分别在 `source/css/engineering.css`、`source/js/engineering.js`，不修改已安装的 Stellar 主题。修改资源后同步更新注册脚本中的版本号。
+
+站内搜索所需的 jQuery 3.7.1 随站点发布在 `source/js/vendor/`，保留 MIT 许可证，避免搜索初始化受外部 CDN 加载速度影响。
+
+修改页面后，先执行 `npm run build`，再运行 `npm run check:ui`，并用桌面和手机宽度检查导航、搜索、文章宽屏及验收表格的逐项阅读。原始 Markdown 表格保留，手机视图由浏览器增强生成。
+
 ## Repository Roles
 
 There are two different GitHub repositories in this blog setup, and they serve different purposes.

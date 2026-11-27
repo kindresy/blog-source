@@ -1,45 +1,32 @@
 <%
-page.title = '文章分类';
+page.title = '技术专题与文章分类';
 page.layout = 'categories';
 page.menu_id = 'post';
 const taxonomy = article_taxonomy();
-function findCategory(name, parent) {
-  return site.categories.toArray().find(c => c.name === name && (c.parent || null) === parent);
-}
-function showBranch(branch, parent) {
-  let out = '<ul>';
-  for (const [name, children] of Object.entries(branch)) {
-    const category = findCategory(name, parent);
-    if (!category) continue;
-    out += '<li><a href="' + url_for(category.path) + '">' + escape_html(name) + '</a> <span>(' + category.posts.length + ' 篇)</span>';
-    if (children) out += showBranch(children, category._id);
-    out += '</li>';
-  }
-  return out + '</ul>';
-}
+const all = site.categories.toArray();
 %>
 <%- partial('_partial/main/navbar/nav_tabs_blog') %>
-<article class="md-text content" id="article-taxonomy">
-  <h1>文章分类</h1>
-  <p>按主题寻找知识，按文章类型选择原理讲解、源码分析或工程过程。共 <%= site.posts.length %> 篇文章。</p>
-  <% for (const [name, children] of Object.entries(taxonomy.categories)) {
-    const category = findCategory(name, null);
-    if (!category) continue;
-  %>
-    <section aria-label="<%= name %>">
-      <h2><a href="<%= url_for(category.path) %>"><%= name %></a>（<%= category.posts.length %> 篇）</h2>
-      <%- showBranch(children, category._id) %>
-    </section>
-  <% } %>
-  <section aria-label="按文章类型阅读">
-    <h2>按文章类型阅读</h2>
-    <ul>
-      <% for (const [slug, title] of Object.entries(taxonomy.articleTypes)) {
-        const tag = site.tags.toArray().find(t => t.name === slug);
-        if (!tag) continue;
-      %>
-        <li><a href="<%= url_for(tag.path) %>"><%= title %></a>（<%= tag.posts.length %> 篇）</li>
-      <% } %>
-    </ul>
+<section class="topic-intro">
+  <span class="eyebrow">按问题寻找知识</span>
+  <h1>技术专题与文章分类</h1>
+  <p>先找一个感兴趣的方向，再沿着原理、实现与工程记录往下读。这里共整理了 <%= site.posts.length %> 篇文章。</p>
+</section>
+<% for (const [name, children] of Object.entries(taxonomy.categories)) {
+  const root = all.find(c => c.name === name && !c.parent); if (!root) continue;
+  const branches = Object.keys(children || {}).map(n => all.find(c => c.name === n && c.parent === root._id)).filter(Boolean);
+%>
+  <section class="category-section" aria-label="<%= name %>">
+    <div class="section-heading"><h2><a href="<%= url_for(root.path) %>"><%= name %></a></h2><span><%= root.posts.length %> 篇</span></div>
+    <div class="topic-grid">
+      <% for (const category of branches) { %><%- partial('engineering/category-card', {category}) %><% } %>
+    </div>
   </section>
-</article>
+<% } %>
+<section class="category-section article-type-index">
+  <div class="section-heading"><h2>也可以按文章类型阅读</h2></div>
+  <div class="type-links">
+    <% for (const [slug, title] of Object.entries(taxonomy.articleTypes)) { const tag = site.tags.toArray().find(t => t.name === slug); if (!tag) continue; %>
+      <a href="<%= url_for(tag.path) %>"><%= title %><span><%= tag.posts.length %></span></a>
+    <% } %>
+  </div>
+</section>

@@ -1,0 +1,17 @@
+<%
+const topic = engineering_profile().topics.find(t => t.name === category.name);
+const children = site.categories.toArray().filter(c => c.parent === category._id);
+%>
+<section class="topic-card">
+  <a class="topic-card-main" href="<%= url_for(category.path) %>">
+    <span class="topic-mark" aria-hidden="true"><%= topic?.mark || category.name.slice(0, 2) %></span>
+    <span class="topic-card-heading"><strong><%= category.name %></strong><span><%= category.posts.length %> 篇</span></span>
+    <p><%= topic?.description || '按主题整理的阅读与实践记录。' %></p>
+    <span class="topic-card-action">进入专题 <span aria-hidden="true">↗</span></span>
+  </a>
+  <% if (children.length) { %>
+    <div class="topic-subcategories" aria-label="<%= category.name %>的内容方向">
+      <% for (const child of children) { %><a href="<%= url_for(child.path) %>"><%= child.name %><span><%= child.posts.length %></span></a><% } %>
+    </div>
+  <% } %>
+</section>

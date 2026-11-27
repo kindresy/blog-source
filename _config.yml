@@ -3,11 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 庐山东林
+title: 庐山东林的晚钟
 subtitle: ''
-description: 'Embedded software knowledge sharing'
+description: '协议、驱动与调试现场，也记录工作之外的日常。'
 keywords: 'Linux PCIe eMMc ARM RTOS Firmware'
 author: Luyuan
+favicon: /images/evening-bell.svg
 language: zh-CN
 timezone: Asia/Shanghai
 

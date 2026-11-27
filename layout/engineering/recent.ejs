@@ -1,0 +1,10 @@
+<%
+const topic = engineering_topic(page);
+const candidates = topic ? engineering_reading(topic) : site.posts.toArray().sort((a,b) => +b.date - +a.date);
+const posts = candidates.filter(p => p.path !== page.path && p.indexing !== false).slice(0, 6);
+%>
+<widget class="widget-wrapper engineering-related">
+  <div class="widget-header"><span class="name"><%= topic ? topic.name + ' · 继续阅读' : '最近发布' %></span></div>
+  <ul><% for (const post of posts) { %><li><a href="<%= url_for(post.path) %>"><%= post.title %></a></li><% } %></ul>
+</widget>
+<widget class="widget-wrapper engineering-utilities"><a href="/engineering/">工程记录</a><a href="/archives/">归档</a><a href="/tags/">标签</a></widget>

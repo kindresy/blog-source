@@ -1,0 +1,18 @@
+<%
+const currentPath = '/' + (page.path || '');
+const navItems = [
+  ['首页', '/', is_home()],
+  ['技术专题', '/categories/', page.layout === 'categories' || (page.category && page.category !== '生活记录' && !currentPath.includes('/life-record/'))],
+  ['工程记录', '/engineering/', currentPath.startsWith('/engineering/')],
+  ['生活', '/categories/life-record/', currentPath.includes('/life-record/')],
+  ['关于', '/about/', currentPath.startsWith('/about/')]
+];
+%>
+<nav class="engineering-nav" aria-label="主导航">
+  <% for (const [label, href, active] of navItems) { %>
+    <a href="<%= url_for(href) %>"<%- active ? ' aria-current="page"' : '' %>><%= label %></a>
+  <% } %>
+  <button type="button" data-site-search aria-label="打开站内搜索" title="搜索文章">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  </button>
+</nav>

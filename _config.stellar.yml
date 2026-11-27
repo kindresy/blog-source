@@ -1,0 +1,27 @@
+logo:
+  avatar: '[/images/water_lihu.png](/about/)'
+  title: '[庐山东林的晚钟](/)'
+  subtitle: '协议、驱动与调试现场'
+dependencies:
+  jquery: /js/vendor/jquery-3.7.1.min.js
+site_tree:
+  home:
+    leftbar: recent
+  index_blog:
+    leftbar: recent
+  post:
+    leftbar: related
+    rightbar: toc
+  page:
+    leftbar: recent
+    rightbar: toc
+style:
+  prefers_theme: auto
+  color:
+    theme: '#397871'
+    accent: '#a57b4f'
+    link: '#33786f'
+  leftbar:
+    background-image: none
+    background-color: var(--card)
+    background-opacity: 1

@@ -1,0 +1,52 @@
+<%
+const profile = engineering_profile();
+const firstPage = is_home() && (!page.current || page.current === 1);
+const topic = profile.topics.find(t => t.name === page.category);
+const allPosts = site.posts.toArray();
+const findPost = id => allPosts.find(p => engineering_slug(p) === id);
+%>
+<%- partial('_partial/main/navbar/nav_tabs_blog') %>
+<% if (firstPage) { %>
+  <section class="home-intro">
+    <div class="home-intro-copy">
+      <span class="eyebrow">Luyuan / 工程手记</span>
+      <h1>在协议与代码之间，<br>把问题弄明白。</h1>
+      <p>记录读规范、写驱动、抓波形的过程，<br class="desktop-break">也留下问题暂时没跑通的现场。</p>
+      <a class="text-link" href="/about/">关于我与这个博客 <span aria-hidden="true">↗</span></a>
+    </div>
+    <aside class="current-project" aria-label="当前工程">
+      <span class="eyebrow">当前工程 / <%= profile.current.date %></span>
+      <h2><%= profile.current.title %></h2>
+      <p><span class="status-dot" aria-hidden="true"></span><%= profile.current.status %></p>
+      <div><a href="<%= profile.current.architecture %>">双端架构</a><a href="<%= profile.current.testcases %>">验收计划</a></div>
+    </aside>
+  </section>
+  <section class="home-topics" aria-label="主要技术专题">
+    <% for (const topic of profile.topics.slice(0, 4)) {
+      const category = site.categories.toArray().find(c => c.name === topic.name);
+      if (!category) continue;
+    %>
+      <a href="<%= url_for(category.path) %>"><span class="topic-mark"><%= topic.mark %></span><strong><%= topic.name %></strong><span><%= category.posts.length %> 篇 · 从原理到实践</span></a>
+    <% } %>
+  </section>
+  <section class="featured-reading" aria-labelledby="featured-title">
+    <div class="section-heading"><h2 id="featured-title">值得从头读的几篇</h2><a href="/categories/">全部专题 ↗</a></div>
+    <div class="featured-list">
+      <% for (const id of profile.featured) { const post = findPost(id); if (!post) continue; %>
+        <a href="<%= url_for(post.path) %>"><span><%= engineering_meta(post).topic?.mark || '笔记' %></span><strong><%= post.title %></strong><span aria-hidden="true">↗</span></a>
+      <% } %>
+    </div>
+  </section>
+  <div class="section-heading latest-heading"><h2>最近发布</h2><a href="/archives/">按日期查找 ↗</a></div>
+<% } else if (topic) { %>
+  <%- partial('engineering/topic-intro', {topic}) %>
+  <div class="section-heading"><h2>全部文章</h2><a href="/categories/">返回专题</a></div>
+<% } else if (page.category || page.tag) { %>
+  <section class="list-intro"><span class="eyebrow"><%= page.category ? '分类' : '标签' %></span><h1><%= page.category || page.tag %></h1><p>在这里继续寻找相关的文章与实践记录。</p></section>
+<% } %>
+<div class="post-list post engineering-post-list">
+  <% page.posts.each(function(post) { if (post.indexing === false) return; %>
+    <a class="post-card post" href="<%= url_for(post.link || post.path) %>"><%- partial('_partial/main/post_list/post_card', {post}) %></a>
+  <% }) %>
+</div>
+<%- partial('_partial/main/post_list/paginator') %>

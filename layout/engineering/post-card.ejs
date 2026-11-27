@@ -1,0 +1,7 @@
+<% const meta = engineering_meta(post); %>
+<article class="md-text engineering-entry">
+  <div class="entry-kicker"><span class="article-type"><%= meta.type %></span><% if (meta.topic) { %><span><%= meta.topic.name %></span><% } %></div>
+  <h2 class="post-title"><%= post.title %></h2>
+  <p class="engineering-excerpt"><%= truncate(strip_html(post.description || post.excerpt || post.content || ''), {length: 120, omission: '…'}) %></p>
+  <div class="entry-meta"><span><%= date(post.date, 'YYYY-MM-DD') %></span><% if (meta.evidence) { %><span class="evidence-badge"><%= meta.evidence.label %></span><% } %></div>
+</article>

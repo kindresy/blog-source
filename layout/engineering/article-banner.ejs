@@ -1,0 +1,8 @@
+<%- partial('_partial/main/navbar/nav_tabs_blog') %>
+<%- partial('_partial/main/navbar/original_article_banner') %>
+<% if (page.layout === 'post') { const meta = engineering_meta(page); %>
+  <div class="engineering-reading-tools">
+    <span><%= meta.type %><% if (meta.evidence) { %><span class="evidence-badge"><%= meta.evidence.label %></span><% } %></span>
+    <button type="button" data-reading-width aria-pressed="false">宽屏阅读</button>
+  </div>
+<% } %>
