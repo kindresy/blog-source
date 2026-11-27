@@ -1,0 +1,22 @@
+digraph G {
+graph [bgcolor="white",pad="0.25",nodesep="0.3",ranksep="0.35"];node [shape=box,style="rounded,filled",fillcolor="#eaf0e9",color="#8fa69d",fontname="Noto Sans CJK SC",fontsize=13,margin="0.15,0.12"];edge [color="#627c72",fontname="Noto Sans CJK SC",fontsize=11];
+rankdir=TB;
+subgraph cluster0 {label="一个 Function 的 4 KiB 配置空间";fontname="Noto Sans CJK SC";color="#bccdc5";
+H[label="0x000–0x03f
+标准 Configuration Header"];C[label="0x040–0x0ff
+PCI-compatible Capability 区域"];E[label="0x100–0xfff
+PCIe Extended Capability 区域"]; {rank=same;H;C;E;}H->C->E [arrowhead=none];}
+S[label="Status.Capabilities List = 1
+Capabilities Pointer = 0x50"];
+PM[label="0x50 PM
+ID + Next = 0x70"];MSIX[label="0x70 MSI-X
+ID + Next = 0x90"];PCIE[label="0x90 PCI Express
+ID + Next = 0"];
+X[label="从 0x100 读取
+Extended Header"];AER[label="0x100 AER
+ID + Version + Next = 0x140"];ARI[label="0x140 ARI
+ID + Version + Next = 0x180"];RBAR[label="0x180 Resizable BAR
+ID + Version + Next = 0"];
+{rank=same;S;PM;MSIX;PCIE;}{rank=same;X;AER;ARI;RBAR;}
+H->S [style=dashed,label="传统链起点"];S->PM->MSIX->PCIE;E->X [style=dashed,label="扩展链起点"];X->AER->ARI->RBAR;S->X [style=invis];
+}

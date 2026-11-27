@@ -7,7 +7,7 @@
     <details class="reading-route" open>
       <summary>建议从这里开始</summary>
       <ol>
-        <% for (const post of ordered) { %>
+        <% for (const post of ordered.slice(0, topic.readingLimit || ordered.length)) { %>
           <li><a href="<%= url_for(post.path) %>"><%= post.title %></a><span class="route-type"><%= engineering_meta(post).type %></span></li>
         <% } %>
       </ol>

@@ -1,0 +1,12 @@
+digraph G {
+graph [bgcolor="white",pad="0.25",nodesep="0.3",ranksep="0.35"];node [shape=box,style="rounded,filled",fillcolor="#eaf0e9",color="#8fa69d",fontname="Noto Sans CJK SC",fontsize=13,margin="0.15,0.12"];edge [color="#627c72",fontname="Noto Sans CJK SC",fontsize=11];rankdir=TB;
+A[label="取得起始 offset
+传统链来自 Capabilities Pointer
+扩展链从 0x100 开始"];
+B[label="配置读取成功？",shape=diamond];C[label="offset 合法且对齐？",shape=diamond];D[label="offset 已访问
+或超过最大步数？",shape=diamond];
+E[label="记录 visited，保存原始 header"];F[label="解析 ID、Version、Next"];G[label="认识此 ID？",shape=diamond];H[label="按已知版本解析支持字段"];I[label="保留原始数据
+未知 ID 不视为错误"];J[label="Next = 0？",shape=diamond];K[label="正常到达链尾"];L[label="offset = Next"];
+X1[label="停止：config access error",fillcolor="#f5e9dc"];X2[label="停止：坏指针",fillcolor="#f5e9dc"];X3[label="停止：self-loop / cycle",fillcolor="#f5e9dc"];
+A->B;B->X1[label="否"];B->C[label="是"];C->X2[label="否"];C->D[label="是"];D->X3[label="是"];D->E[label="否"];E->F->G;G->H[label="是"];G->I[label="否"];H->J;I->J;J->K[label="是"];J->L[label="否"];L->B;
+}

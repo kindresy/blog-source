@@ -1,0 +1,17 @@
+digraph G {
+graph [bgcolor="white",pad="0.25",nodesep="0.3",ranksep="0.35"];node [shape=box,style="rounded,filled",fillcolor="#eaf0e9",color="#8fa69d",fontname="Noto Sans CJK SC",fontsize=13,margin="0.15,0.12"];edge [color="#627c72",fontname="Noto Sans CJK SC",fontsize=11];rankdir=TB;
+A[label="发现 Capability
+ID / Version / Next"];B[label="检查本 Function 的
+support bits 与限制"];C[label="检查上游路径和平台
+是否支持相同机制"];D[label="确认 firmware / OS policy
+以及 subsystem owner"];E[label="准备 BAR、IOMMU、
+IRQ domain、queue 等依赖"];F[label="按规定 quiesce / invalidate
+再写 Enable / Control"];G[label="读回状态并执行
+受控 transaction 验证"];
+A->B->C->D->E->F->G;
+M1[label="MSI-X：Table size、BIR、offset",fillcolor="#f5e9dc"];M2[label="MSI-X：分配 vector
+写 Table、解除 mask",fillcolor="#f5e9dc"];T1[label="ATS：Page-aligned request、STU",fillcolor="#f5e9dc"];T2[label="ATS：RC / IOMMU
+Translation Agent",fillcolor="#f5e9dc"];T3[label="ATS：domain binding
+与 invalidation",fillcolor="#f5e9dc"];
+B->M1[style=dashed];B->T1[style=dashed];C->T2[style=dashed];E->M2[style=dashed];E->T3[style=dashed];
+}
