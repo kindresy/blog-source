@@ -1,0 +1,44 @@
+
+digraph G {
+
+graph [bgcolor="#ffffff", pad="0.3", nodesep="0.28", ranksep="0.48",
+       fontname="Noto Sans CJK SC", fontsize=21];
+node [shape=box, style="rounded,filled", fillcolor="#f1f5f9", color="#94a3b8",
+      fontname="Noto Sans CJK SC", fontsize=17, margin="0.18,0.12"];
+edge [fontname="Noto Sans CJK SC", fontsize=14, color="#64748b", arrowsize=0.8];
+ rankdir=TB;
+label="Target 生命周期，与 Host 身份代次分开管理"; labelloc=t;
+closed [label="CLOSED
+没有活动外设会话", fillcolor="#e2e8f0"];
+prep [label="取得所有权 → 开钟 → wrapper
+复位/PAD → IP 配置 → 发布 ENABLE"];
+enabling [label="ENABLING
+写请求已提交，仍需观察确认"];
+wait [label="WAIT_DA
+enable_ack 有效，地址尚未建立"];
+idle [label="IDLE
+DA 有效 / 队列静止 / 可开始业务", fillcolor="#dcfce7"];
+active [label="BUS_ACTIVE / 子请求活动
+RX / TX / IBI / DMA / reset 等"];
+closing [label="CLOSING
+请求 disable → 等确认 → BSP finish"];
+fault [label="错误锁存 / NEEDS_PLATFORM_RESET
+保留 last_error 与 cleanup_error", fillcolor="#fee2e2"];
+identity [label="两端各自编号
+Host epoch：设备描述符代次
+Host session：FD owner 会话
+Target generation：外设会话代次
+run / step：执行表中的一次实验", fillcolor="#dbeafe"];
+closed -> prep -> enabling;
+enabling -> wait [label="使能确认"];
+wait -> idle [label="枚举 / DA / quiet"];
+idle -> active [label="begin / 执行业务"];
+active -> idle [label="完成且收尾"];
+idle -> closing [label="无在途请求才 close"];
+closing -> closed [label="disable ack + finish 成功"];
+active -> fault [label="错误 / 身份失效"];
+enabling -> fault [style=dashed, label="非可续等错误"];
+fault -> prep [style=dashed, label="明确的外设恢复策略
+不能盲目重发原请求"];
+identity -> idle [style=dotted, dir=none];
+}

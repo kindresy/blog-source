@@ -1,0 +1,47 @@
+E03 | 2026-09-27 | 接收中断
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–42 ---
+# I3C case_006：RX/Response中断验证报告
+
+> 2026-09-28 复现审查：本文前部保留原实验轮次；新增的“人工回归与版本校正”及“Host脚本全文”附录为人工执行入口。历史PASS不自动沿用到其他版本；路径和日志已逐项检查。
+
+## 结论与范围
+
+2026-09-27，EMU Target与i.MX93 Host完成独立case_006，scope=rx_response_irq：两次4字节Private Write，分别验证屏蔽时不进入ISR、开放后真实ISR送达；按Response→RX顺序消费队列，验证两个条件事件逐项解除，最终finish返回DONE/LOCAL_PASS、active=0、cleanup_error=0，Target保持IDLE和DA44。
+
+本次通过不代表全部中断类型、RAS、IBI、DMA、SMBus、001/008的IRQ扩展或长时间中断压力通过。无重复IRQ结论仅覆盖第二轮清源重开至finish的观察窗口，未测量窗口墙钟时长。未取得新的线上抓波；本文协议波形描述均为预期，实测结论来自两端日志及寄存器读回。
+
+## master复现基线与产物
+
+按要求先提交、合入并推送两端master，再编写本报告。远端refs/heads/master已核对：
+
+| 端 | master提交 | 功能提交 | 合入内容 |
+| --- | --- | --- | --- |
+| baremetal Target | `568e68537ff8b409336de89794a7ff442d9c3f3e` | `866848d` | 独立006、IRQ适配、CLI、模型测试，以及I3C/SMBus source ID修正 |
+| linux_imx Host | `0689938db8d6ee7028df644e33fa35aa05f3c251` | `b74812963` | 清理SVC模式软件节点，覆盖卸载、probe失败及旧节点遗留 |
+
+两端均使用明确的merge commit。baremetal保留远端新增SPI提交`0c8cbb9`；合入后I3C目录及IRQ头文件与功能提交一致，Linux合并树与功能提交完全一致。硬件实验发生于提交前对应工作区，不能描述为在合并后重新跑过整机回归。baremetal本地build_gsp_firmware.sh和知识图谱目录未提交/上传。
+
+复现以各仓库根目录为基准，分别checkout上述完整master提交。Target构建使用：
+
+```sh
+./build.sh -c gsp -p emu -i gsp-only -m i3c
+```
+
+只选择I3C CMD模块及基础CLI；基础平台对象随构建生成，不是启用全部CMD模块。实测固件通过本地build_gsp_firmware.sh调用该构建命令并复制四份产物。固件启动保持CLI，不自动运行004。
+
+- 实测BIN路径：以用户主目录为基准，`SambaShare/gsp_firmware/gsp-bm.bin`，同目录elf/asm/map同步并逐字节校验。
+- 编译标识：`2026-09-27 17:17:58 +0800`。
+- BIN SHA256：`249cdc4e8694f799bddb0b4dba9c23ef295b9027f6a821a36d27f70e8e1480b7`。
+- Host包：以板端文件系统根目录为基准，`opt/frdm/modules/mode-node-fix-20260927`；KO匹配`6.6.36-moduledev`。
+- Host日志时钟显示20260915，与工作站报告日期不一致；原始日志不改日期，不做跨端时间差推算。
+
+Linux上传前默认产品DTB检查通过：SPI root 100kHz、上限50kHz、pcal6408 GPIO provider可用，pinctrl-assert-gpios依赖保留，SPI驱动与`8cbce8635`一致；2kHz实验DTB独立。这是静态/DTB检查，不是新增SPI硬件测试。
+
+## 配置与原理
+
+| 配置 | 本次值/行为 | 作用 |
+| --- | --- | --- |
+| Host时钟 | FCLK=93750Hz，PP=1994.681Hz，OD=1953.125Hz | 沿用EMU低速实验配置 |

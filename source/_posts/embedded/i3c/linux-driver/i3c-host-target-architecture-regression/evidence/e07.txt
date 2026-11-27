@@ -1,0 +1,35 @@
+E07 | 2026-10-06 | 综合 33 步
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–31 ---
+# CCC综合互操作33步自动回归实验报告
+
+实验日期：2026-10-06。环境：i.MX93 Host → I3C → EMU Target。Target串口由用户操作，Host由助手操作；板端时钟未与本地日期对齐，保留日志原时间戳，以run号关联本轮。
+
+## 1. 结论
+
+**run=39646的33步full，两端PASS。** Host完成33步并正确释放会话；Target完成同一run的33步，最终回到IDLE、地址有效、无错误、RX/response为空。第17步RSTDAA交接不再因READY通知的软件收尾遇到预期地址失效而中止。
+
+|核对项|本轮实测|
+|---|---|
+|Host收尾|completed=33、requested=33、ret=0、cleanup=0、HOST_PASS|
+|Target收尾|completed=33、requested=33、active=0、ret=0、cleanup_error=0、LOCAL_PASS|
+|初始化与重启|Target generation从1变为2；最终DA=44，enumerated=1|
+|长度交接|第11/15/33步均resume_issued=1、ccc=0、ret=0|
+|地址失效交接|第17步READY收尾ibi_phase=DONE、request=0004a500、response=00000001、da_lost=1|
+|Pattern会话|patterns=4；两次RSTACT均解码ccc=2a、action=00；四轮各irq_count=1|
+|通知门控|gate_rejected=1，DISEC期间业务IBI被本地拒绝，ENEC后继续|
+|最终Target|IDLE、enable_ack=1、da_valid=1、last_error=0、cleanup_error=0、rx=0、response=0、ext_free=4、present=0、ccc=0|
+
+这份PASS只覆盖本报告定义的33步。17字节超限是Host软件预检拒绝，不能证明Target对线上超长包的处理。Pattern验收检测和RSTACT 00解码，不代表软件执行了外设/SoC复位动作。第27步是BSP执行I3C外设reset/open，CPU和测试上下文保留，不是整机独立重启。没有总线波形，ACK、接收字节及事件完成依据控制器日志和Target快照。
+
+Host原始日志〔原记录内链已省略〕与Target完整截图〔原记录内链已省略〕是本轮主要证据。软件模型的33步PASS单独保存在构建目录，不作为本轮实机证据。
+
+## 2. 为什么要这样测试
+
+单独Private读写通过，只能说明某一次数据传输正常。这个实验把身份查询、修改限制、IBI门控、地址失效、重新枚举、Pattern检测及外设重启连成一条流程，每次改变状态后立即检查业务能否恢复，减少反复人工重启EMU的成本。
+
+第一版full在第11步失败：Host SETMRL后立即GET，Target却因合法SETMRL更新进入HALT。独立实验确认空队列条件下可以由Target显式RESUME，再GET和读数据。因此第11、15、33步改为Target先设防，Host只发SETMRL，等恢复通知后才回读。
+
+修复长度交接后，run=60861的前16步通过，第17步Target报ESTALE（-116），Host等DONE超时（-110）。源码存在READY被Host收到后，RSTDAA早于Target软件收尾的窗口：旧IBI poll要求原DA仍有效。新实现只为第17步建立预期RSTDAA通知会话，要求本次IBI有成功完成证据，再允许DA失效，并把实际观察记录交给重新枚举流程。普通IBI仍检查原地址。本轮新诊断实际记录了READY收尾期间的da_lost=1，33步随后完成。

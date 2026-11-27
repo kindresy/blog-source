@@ -1,0 +1,91 @@
+E17 | 2026-11-20 | DMA 用例配合的 Host 记录
+仅能证明 Host 发出/读回相应数据，不能单独证明 Target 的 DMA 完成或缓存维护正确。
+
+host.log / dma-rx12-epoch15-cqlQdC
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+issuing one 12-byte write: 20 21 22 23 24 25 26 27 28 29 2a 2b
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+[I3C][HOST] command=claim op=2 epoch=15 session=10 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=resume op=5 epoch=15 session=10 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=write op=7 epoch=15 session=10 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=release op=3 epoch=0 session=0 peer=0 ret=0 cleanup=0 da=0x00 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+
+
+host.log / dma-rx16-epoch15-Sf6eyD
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+issuing one 16-byte write: 20 21 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+[I3C][HOST] command=claim op=2 epoch=15 session=11 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=resume op=5 epoch=15 session=11 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=write op=7 epoch=15 session=11 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=release op=3 epoch=0 session=0 peer=0 ret=0 cleanup=0 da=0x00 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+
+
+host.log / dma-rx4-FBlbom
+[I3C][HOST] command=info op=1 epoch=13 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+issuing one write: 20 21 22 23
+[I3C][HOST] command=info op=1 epoch=13 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+[I3C][HOST] command=claim op=2 epoch=13 session=7 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=resume op=5 epoch=13 session=7 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=write op=7 epoch=13 session=7 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=release op=3 epoch=0 session=0 peer=0 ret=0 cleanup=0 da=0x00 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+
+
+host.log / dma-rx4-epoch15-GtJLP1
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+issuing one write: 20 21 22 23
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+[I3C][HOST] command=claim op=2 epoch=15 session=8 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=resume op=5 epoch=15 session=8 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=write op=7 epoch=15 session=8 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=release op=3 epoch=0 session=0 peer=0 ret=0 cleanup=0 da=0x00 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+
+
+host.log / dma-rx8-epoch15-eZQiaN
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+issuing one 8-byte write: 20 21 22 23 24 25 26 27
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+[I3C][HOST] command=claim op=2 epoch=15 session=9 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=resume op=5 epoch=15 session=9 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=write op=7 epoch=15 session=9 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=release op=3 epoch=0 session=0 peer=0 ret=0 cleanup=0 da=0x00 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+
+
+host.log / dma-tx12-epoch15-u3m01P
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+issuing one 12-byte read
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+[I3C][HOST] command=claim op=2 epoch=15 session=14 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=resume op=5 epoch=15 session=14 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=read op=6 epoch=15 session=14 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=12 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 data=101112131415161718191a1b
+[I3C][HOST] command=release op=3 epoch=0 session=0 peer=0 ret=0 cleanup=0 da=0x00 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+
+
+host.log / dma-tx16-epoch15-APSTKe
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+issuing one 16-byte read
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+[I3C][HOST] command=claim op=2 epoch=15 session=15 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=resume op=5 epoch=15 session=15 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=read op=6 epoch=15 session=15 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=16 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 data=101112131415161718191a1b1c1d1e1f
+[I3C][HOST] command=release op=3 epoch=0 session=0 peer=0 ret=0 cleanup=0 da=0x00 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+
+
+host.log / dma-tx4-epoch15-jcQKh6
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+issuing one 4-byte read
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+[I3C][HOST] command=claim op=2 epoch=15 session=12 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=resume op=5 epoch=15 session=12 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=read op=6 epoch=15 session=12 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=4 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 data=10111213
+[I3C][HOST] command=release op=3 epoch=0 session=0 peer=0 ret=0 cleanup=0 da=0x00 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+
+
+host.log / dma-tx8-epoch15-sQEsVn
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+issuing one 8-byte read
+[I3C][HOST] command=info op=1 epoch=15 session=0 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 pid=<TARGET_PID> caps=0x7f max_read=255 max_write=260 max_ibi=16
+[I3C][HOST] command=claim op=2 epoch=15 session=13 peer=0 ret=0 cleanup=0 da=0x44 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=resume op=5 epoch=15 session=13 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0
+[I3C][HOST] command=read op=6 epoch=15 session=13 peer=0 ret=0 cleanup=0 da=0x44 paused=0 actual=8 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0 data=1011121314151617
+[I3C][HOST] command=release op=3 epoch=0 session=0 peer=0 ret=0 cleanup=0 da=0x00 paused=1 actual=0 status=0x0000 ibi=0 queued=0 received=0 dropped=0 invalid=0

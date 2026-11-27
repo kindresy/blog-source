@@ -1,0 +1,48 @@
+E14 | 2026-11-16 | all 阶段 2 READY 超时
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–43 ---
+# I3C all Smoke 实验结果：2026-11-16 run03
+
+## 实验结论
+
+**整体 FAIL，完成 1/9。阶段 1 irq-check 双端通过；阶段 2 long-rx 在 Host 等待 READY IBI 时超时，32 字节测试数据未发送。** 阶段 3–9 未执行，不能记为硬件失败。没有重放失败包。
+
+| 项目 | 本轮记录 |
+| --- | --- |
+| Host 会话 | epoch=2，session=1，generation=1，nonce=42505 |
+| 身份 / 地址 | PID=<TARGET_PID>，静态地址 0x44，经 SETDASA 配置动态地址 0x44 |
+| 时钟 | 驱动配置计算 PP=1994.681 Hz，OD=1953.125 Hz，FCLK=93750 Hz，SKEW=4；没有波形测量 |
+| 阶段 1 | Host HOST_PASS；Target LOCAL_PASS，irq_count=1，irq_eiid=65，irq_status=0x12 |
+| IRQ 映射 | 用户确认新 RTL 使用 APLIC10 source 89；截图编码 0x000a0059；不沿用旧 source 81 |
+| 阶段 2 | Host 控制写 ret=0，随后未收到 READY，ret=-110；Target 截图停在 LONG_RX_READY |
+| 总结 | completed=1，requested=9，ret=-110，cleanup=-5，result=FAIL |
+| 清理异常 | 退出时 DISEC(0x81) 的 0x7e/W 地址阶段 NACK，0x44/W 阶段未开始 |
+| 未验证 | Long RX 数据正确性、后续 7 个阶段、DMA、I2C、波形、硬件故障恢复 |
+
+Target 截图中两轮 IRQ 状态均为 `0x12 → 0x02 → 0x00`，response=0x04010018，data=0x44332211。Target 截图不含 nonce，按用户说明对应本轮；没有宣称已经核对两端 nonce。
+
+## 日志及解读
+
+- Host 完整应用日志〔原记录内链已省略〕，与 板端采集副本〔原记录内链已省略〕 逐字节一致。
+- 本轮内核摘录〔原记录内链已省略〕，原样截取自 完整内核快照〔原记录内链已省略〕 第 862–1004 行；完整快照还保留以前轮次和旧会话卸载告警。
+- 启动前内核快照〔原记录内链已省略〕。日志环形缓冲会变化，不能按两个文件的行数直接判断新增内容。
+- Target 用户截图〔原记录内链已省略〕，保存原始图片；属于日志与分析汇总截图，不是本地取得的完整 UART 文本。
+- 机器可读结果〔原记录内链已省略〕、运行产物哈希〔原记录内链已省略〕。
+- 详细代码分析〔原记录内链已省略〕。
+
+Host 收到的四个 IBI 依次为：
+
+| 原始 payload（含 MDB） | 含义 |
+| --- | --- |
+| d701000000 | BOOT，generation=1 |
+| d609a60101 | nonce=42505，阶段 1 READY |
+| d609a60103 | 阶段 1 SECOND |
+| d609a60102 | 阶段 1 DONE |
+
+随后发出的 write 是阶段 2 的 16 字节控制包。期望的 `d609a60201` 未交付给 Host 应用；Host 没有调用 32 字节 `smoke_long()` 数据写。写日志中的 `actual=0` 不表示发送零字节，该字段不提供写入长度确认。
+
+`I3C_LONG_RX_READY` 在 Target 源码中位于 `i3c_all_ready(I3CS_RX)` 之前，不能用该打印证明 IBI 发布成功。具体卡在发布前、总线完成或 Host 接收交付，现有证据不能唯一判断。Host 60 秒使用 CLOCK_MONOTONIC；Target 使用未校准的 EMU tick，不能要求两端同时退出。清理 DISEC NACK 晚于主等待超时。
+
+## 版本、重建及保存范围

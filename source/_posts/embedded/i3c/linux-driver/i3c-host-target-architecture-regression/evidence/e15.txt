@@ -1,0 +1,83 @@
+E15 | 2026-11-18 | all Host 9/9，Target 终态待补
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–78 ---
+{
+  "profile": "smoke",
+  "host": "<LAB_ADDRESS>",
+  "bundle": "R4",
+  "kernel": "6.6.36-moduledev",
+  "host_exit": 0,
+  "host_result": "[I3C][ALL_RESULT] profile=smoke completed=9 requested=9 generation=4 nonce=14360 ret=0 cleanup=0 result=HOST_PASS waveform=NOT_VERIFIED hardware_recovery=NOT_TESTED",
+  "stages": [
+    {
+      "stage": 1,
+      "name": "irq-check",
+      "generation": 1,
+      "ret": 0,
+      "result": "HOST_PASS"
+    },
+    {
+      "stage": 2,
+      "name": "long-rx",
+      "generation": 1,
+      "ret": 0,
+      "result": "HOST_PASS"
+    },
+    {
+      "stage": 3,
+      "name": "long-tx",
+      "generation": 1,
+      "ret": 0,
+      "result": "HOST_PASS"
+    },
+    {
+      "stage": 4,
+      "name": "early-read-recovery",
+      "generation": 1,
+      "ret": 0,
+      "result": "HOST_PASS"
+    },
+    {
+      "stage": 5,
+      "name": "long-write",
+      "generation": 1,
+      "ret": 0,
+      "result": "HOST_PASS"
+    },
+    {
+      "stage": 6,
+      "name": "bandwidth-write",
+      "generation": 1,
+      "ret": 0,
+      "result": "HOST_PASS"
+    },
+    {
+      "stage": 7,
+      "name": "bandwidth-read",
+      "generation": 1,
+      "ret": 0,
+      "result": "HOST_PASS"
+    },
+    {
+      "stage": 8,
+      "name": "full",
+      "generation": 2,
+      "ret": 0,
+      "result": "HOST_PASS"
+    },
+    {
+      "stage": 9,
+      "name": "hotjoin-loop",
+      "generation": 4,
+      "ret": 0,
+      "result": "HOST_PASS"
+    }
+  ],
+  "full_steps_completed": 33,
+  "hot_join_rounds_completed": 2,
+  "target_uart_result": "pending",
+  "waveform": "NOT_VERIFIED",
+  "hardware_recovery": "NOT_TESTED"
+}

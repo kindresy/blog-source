@@ -1,0 +1,55 @@
+
+digraph G {
+
+graph [bgcolor="#ffffff", pad="0.3", nodesep="0.28", ranksep="0.48",
+       fontname="Noto Sans CJK SC", fontsize=21];
+node [shape=box, style="rounded,filled", fillcolor="#f1f5f9", color="#94a3b8",
+      fontname="Noto Sans CJK SC", fontsize=17, margin="0.18,0.12"];
+edge [fontname="Noto Sans CJK SC", fontsize=14, color="#64748b", arrowsize=0.8];
+ rankdir=TB;
+label="I3C Host / Target：程序、驱动与总线的职责边界"; labelloc=t;
+subgraph cluster_h {
+ label="Host · Linux / i.MX93"; color="#93c5fd"; style=rounded;
+ app [label="Host · Linux / i.MX93
+i3c-host
+命令解析 / 会话 / 自动执行表", fillcolor="#dbeafe"];
+ api [label="字符设备 + ioctl
+固定大小 UAPI / poll 等待"];
+ client [label="companion 驱动
+owner / session / IBI 事件副本"];
+ core [label="I3C core
+设备描述符 / PID / DA / epoch"];
+ svc [label="SVC controller driver
+FIFO / CCC / PIO / IBI / HJ"];
+ app -> api -> client -> core -> svc;
+}
+wire [label="SCL / SDA
+Private / CCC
+IBI / Hot-Join", shape=ellipse, fillcolor="#fef3c7"];
+subgraph cluster_t {
+ label="Target · Current Proj / baremetal"; color="#86efac"; style=rounded;
+ ip [label="I3C Target IP
+RX/响应队列 / EXT TX queue0"];
+ pio [label="Target driver / HAL
+PIO 请求 / 完成 / IBI / 错误"];
+ state [label="生命周期与所有权
+generation / 状态 / cleanup"];
+ runner [label="Target · Current Proj / baremetal
+i3c_test / 自动执行器
+校验 / READY / DONE", fillcolor="#dcfce7"];
+ bsp [label="BSP + wrapper
+时钟 / 复位 / PAD / 身份配置"];
+ dma [label="独立 DMA 用例
+内存 ↔ I3C 数据端口", fillcolor="#f3e8ff"];
+ runner -> state -> pio -> ip [dir=both];
+ bsp -> state [style=invis, weight=8];
+ bsp -> ip [style=dashed, label="初始化与明确恢复", constraint=false];
+ dma -> ip [dir=both, style=dashed, constraint=false];
+}
+{rank=same;app;runner}
+{rank=same;api;bsp}
+{rank=same;client;state}
+{rank=same;core;pio;dma}
+{rank=same;svc;wire;ip}
+svc -> wire -> ip [dir=both, constraint=false];
+}

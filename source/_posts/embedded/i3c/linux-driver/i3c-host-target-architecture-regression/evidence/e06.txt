@@ -1,0 +1,84 @@
+E06 | 2026-10-01 | 自动四步握手
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–38 ---
+# i3c-host 与 EMU Target 自动流程验证报告
+
+实验日期：2026-10-01。环境：i.MX93 Host → I3C → EMU Target。结论：本轮正常路径双端 PASS，四项业务全部完成，随后释放会话并恢复空闲。
+
+## 1. 本次证明了什么
+
+以前每次读写都需要人工先在Target准备，再在Host发起。本次把准备点写进双方的事件表：Host下发控制帧，Target准备好后用IBI通知；Host收到并核对本轮编号、步骤号、事件类型后才发业务。这样既保留了顺序检查，也不再需要人在四个业务之间接力。
+
+| 步骤 | 业务 | 本轮证据与结论 |
+| --- | --- | --- |
+| 1 | Host Private Write 4字节 | Host写成功，收到Target DONE；Target整轮完成，写入内容按表校验为11223344 |
+| 2 | Host Private Read 4字节 | Host `actual=4 data=11223344`，比较通过 |
+| 3 | Target单次MDB加Payload IBI | Host收到 `a511223344`，长度5、内容比较通过 |
+| 4 | GETSTATUS | Host `ret=0 status=0x0000`，收到Target DONE |
+| 收尾 | FINISH、FINAL、释放Host会话 | Host `HOST_PASS cleanup=0`；Target `DONE active=0 LOCAL_PASS`，普通状态回到IDLE |
+
+双方关联编号为run=11873，Target generation=1，Host epoch=2、session=1。Host收到10条IBI，序号1至10连续，dropped和invalid始终为0。本轮没有抓波；协议时序说明是代码行为和设计预期，不能当作逻辑分析仪证据。
+
+本报告验证的是自动调度正常路径，覆盖已有Private读写、IBI和GETSTATUS的组合。不能据此给完整CCC互操作、Target重启恢复、异常退出、IBI队列溢出或FPGA通路打勾。故障注入只做过离线测试。
+
+## 2. 可复现基线与实际实验版本
+
+| 端 | 正式源码基线分支 | 完整commit |
+| --- | --- | --- |
+| baremetal | master | `dc08c998ef8e4fcde99e051702d3a2ab7680e7b9` |
+| linux_imx | master | `a48c49220ab158a0719a504b272ae6bb7d01e434` |
+
+Target构建发生在提交前，基于master `348f02c72c42300f3a0fd8e6830bc72f06223c19` 加自动执行器、IBI通知接口及相关测试改动。提交时12个相关文件逐字节匹配本轮构建快照。未纳入当前工作树的UART修改、build_gsp_firmware.sh及编辑器文件，避免把FPGA控制台配置混进EMU实验。
+
+Host APP构建基于master `beaef806c545cf93744de3f31f3e9ddbacccc8ac` 加自动模式。改动此前保存于 `70f01a1ddf42cf1fd1745caec5c1b2fd5ce69e1a`，本次仅将该代码提交移植到master，得到上表commit；没有纳入FPGA 375kHz分支的时钟改动。APP源码、协议头、Makefile、测试和UAPI与构建快照一致。配套KO沿用已有ioctl构建，没有因本次自动APP重新编译。
+
+**状态区分：两端源码已进入master；相关源码与实测构建快照一致；本轮提交前产物已经硬件通过；未在新commit之后重新构建、部署或重新进行master硬件回归。** 新基线的提交后构建回归仍待补齐。比较清单见附录，不改变历史构建清单中的“当时尚未部署”记录。
+
+| 环境或参数 | 本轮值 |
+| --- | --- |
+| Host连接 | <LAB_ADDRESS>，原EMU实验板，不是新迁移FPGA板 |
+| 内核 | 6.6.36-moduledev，aarch64 |
+| KO vermagic | 6.6.36-moduledev SMP preempt mod_unload modversions aarch64 |
+
+--- 原材料行 72–111 ---
+    H->>T: PREPARE step1
+    T-->>H: READY IBI
+    H->>T: Private Write 11223344
+    T-->>H: DONE IBI
+    H->>T: PREPARE step2
+    T-->>H: READY IBI
+    H->>T: Private Read 4
+    T-->>H: 11223344，然后DONE IBI
+    H->>T: PREPARE step3
+    T-->>H: READY，再发送a5加11223344业务IBI
+    H->>T: COMMIT step3
+    T-->>H: DONE IBI
+    H->>T: PREPARE step4
+    T-->>H: READY IBI
+    H->>T: GETSTATUS，成功后COMMIT
+    T-->>H: DONE IBI
+    H->>T: FINISH step5
+    T-->>H: FINAL IBI
+    Note over H: RELEASE，关闭IBI并释放会话
+    Note over T: DONE，恢复IRQ配置，返回CLI
+```
+
+控制帧是16字节Private Write，包含magic、协议版本、操作、run、步骤、表版本、generation和校验。通知IBI为 `a5 + run低字节 + run高字节 + step + event`。本轮run=11873即0x2e61，所以首条通知是 `a5 61 2e 01 01`。业务IBI内容固定为 `a5 11 22 33 44`，不把它当成通知。
+
+Host session表示APP对驱动资源的独占所有权；epoch检查Host设备生命周期；Target generation检查Target初始化代次；run关联本轮业务。它们作用不同，不能互相代替。Target收到中断只记录有工作，前台读取FIFO、校验控制帧后才推进，不是“每次中断无条件下一步”。
+
+## 4. 人工复现步骤
+
+以下Host命令的工作目录均为**板端文件系统根目录**，相对路径从该目录解析。Target命令输入EMU CLI。开始前使用干净Target，确认CLOSED、DA无效；Host没有I3C模块或其他业务进程。本轮起点正是此状态。如已有会话，不直接运行加载命令覆盖现场，应先保存日志并按既有清理流程结束。
+
+### 4.1 配置Target和枚举
+
+Target：
+
+```text
+i3c_test log debug
+i3c_test status
+i3c_test run case_004
+```

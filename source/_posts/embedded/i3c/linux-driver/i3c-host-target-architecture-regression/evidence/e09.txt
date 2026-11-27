@@ -1,0 +1,50 @@
+E09 | 2026-10-13 | 软件复位与旧地址隔离
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–45 ---
+# I3C 软件触发外设复位、旧动态地址隔离与业务恢复实验报告
+
+实验日期：2026-10-13。Host：i.MX93/Linux；Target：Current Proj EMU/baremetal。实验入口：独立 `swreset`，复位前后各运行一次 AUTO table1；不是 full 33 步或 RSTACT01 测试。
+
+## 1. 结论与验收范围
+
+**本轮软件观测范围内，外设复位、旧地址隔离及业务恢复双端通过。** 复位前 run=25712、generation=1、DA=`0x30`；复位后 run=39141、generation=2、DA=`0x31`。两轮 Host 均为 `HOST_PASS`，Target 均为 `LOCAL_PASS`，各完成 4/4 步。
+
+| 验收点 | 实测证据 | 判定 |
+| --- | --- | --- |
+| 复位前数据与事件通路 | Write4、Read4、IBI4、GETSTATUS；两端 run=25712 通过 | PASS |
+| 旧 TX 已发布后允许复位 | STAGED：`free=0x00040004 cmd=0x00010001 length=0x00040000`，随后 BEGIN | PASS，修复 free=4 的误拒绝 |
+| 复位原始状态 | 配置 IP 前：`ctrl=0 addr=0x00008044 rx=0 response=0 ext_free=0x00040004 ext_cmd=0 intr=0` | PASS，DA 有效位和待发命令清除 |
+| 重新开启且尚未枚举 | `generation=2 enable_ack=1 da_valid=0 state=WAIT_DA` | PASS |
+| 重新枚举前旧地址隔离 | 对 `0x30/W`：`NACK stop=idle payload=0` | 软件判断 PASS；波形待补 |
+| 重新枚举及迁移地址 | 直接 ENTDAA，Host epoch 2→3；Linux 先恢复 `0x30`，随后 SETNEWDA 到 `0x31` | PASS |
+| 新地址建立后旧地址隔离 | 再探测 `0x30/W`：`NACK stop=idle payload=0` | 软件判断 PASS；波形待补 |
+| 新业务不受旧 TX 污染 | 两端 run=39141 通过；Host 实收 `11223344`，不是 `d1d2d3d4` | PASS |
+| 最终状态 | IDLE、enumerated=1、DA31、generation=2、RX/response=0、last_error/cleanup_error=0 | PASS |
+
+原验收方案包含两次旧地址 NACK 的外部波形，当前未提供，因此**完整波形验收仍待补齐**。这里不宣称 FIFO 物理存储的每一位均被清零；证据是复位后的队列/命令状态与正确的新数据读回。未覆盖传输中途强制复位、CPU/SRAM/SoC 复位、`RESET_CTRL[0]`、RSTACT 动作、旧 Host 句柄/请求队列隔离，或新自动化路径。
+
+## 2. 环境、实际版本与 master 基线
+
+文档链接相对本报告。命令以注明的工作目录为基准。工作区根指本地 `code_wave_hw`；Target 操作在 EMU 控制台，Host 操作由助手经 SSH 在板端执行，本轮连接地址为 `<LAB_ADDRESS>`。
+
+Host 内核实测为 `6.6.36-moduledev`；本轮加载配套三个 KO 和 APP，未更换启动 Image/DTB。Target 使用 EMU/UART0、GSP-only、I3C 模块固件。启动 Image/DTB 的文件指纹、本轮 DTB 参数读回和外部实测 SCL 频率未归档，不能据历史配置补写成已测值。跨环境复现还需补齐这些平台材料。
+
+| 记录类型 | Target | Host |
+| --- | --- | --- |
+| 实际实验源码 | master 基底 `af9ee9e22681745f82918d081c648d7b03366ec1`＋当时未提交的 free4 补丁〔原记录内链已省略〕 | 干净 master 提交 `9cff8daa324e5e75409887962004718e4f4e328d` |
+| master 历史中的源码复现基线 | `d376a61bca2244d156f2749a16aae7fe4b946479`，两处 C 修改与实测补丁字节一致 | `9cff8daa324e5e75409887962004718e4f4e328d` |
+| 本次推送后的 master | `6308638d011290c481f3df965a6f6eddc7fbb574` | `9cff8daa324e5e75409887962004718e4f4e328d` |
+| 源码工作树 | 实测关联 Target〔原记录内链已省略〕 | 实测 Host〔原记录内链已省略〕 |
+
+两端代码已推送远端 master。Target 推送前远端新增 6 个同事提交，已无冲突合并；合入后的 I3C 目录与 `d376a61` 一致，但其他启动/DDR/构建代码发生变化，**不能将新 master 整体镜像当作本轮实测镜像**。本地用户的 UART3 等修改未纳入提交。Host 普通默认 DTS 保留 pcal6408@20、SPI GPIO 依赖、100 kHz root 和 50 kHz 上限，本次提交未修改 DTS/SPI；未开展新的 SPI 实机验证。
+
+Target 修复提交后未重新构建、部署或实机回归；本报告只证明提交源码与原实验快照一致。正式源码基线已进入 master，master 新构建和硬件回归状态分别为待执行。Host 本轮产物确实由上述 master 提交构建并加载。历史提交关联〔原记录内链已省略〕中的“未推送”是当时状态；推送记录〔原记录内链已省略〕补充后续事实。
+
+### 产物指纹
+
+| 文件 | SHA256 |
+| --- | --- |
+| Target `gsp-bm.bin` | `26c784260fe46aa4b6780dcae8c685d1780ab08b746528444f6013651bc0cc6c` |
+| Host `i3c.ko` | `909cb9de2cd2077acea32bb95d86705d748df9e1702db45fa87c97e4faa566c4` |

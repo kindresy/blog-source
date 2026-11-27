@@ -1,0 +1,91 @@
+E13 | 2026-11-03 | FPGA 带宽摘要
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–86 ---
+# I3C 双向 PIO 工作带宽与软件负载对照实验报告
+
+归档日期：2026-11-03。实验日期、操作者及板卡编号未提供。本文记录用户回传的 FPGA 结果摘要，不宣称本次由助手执行了硬件回归。
+
+## 1. 结论与验收边界
+
+16 字节、50 个计量包、每组另有 1 个预热包，Write/Read 分别比较 WORK=0、1、15。数据调用吞吐约 10.2 kB/s，P95 约 1.58–1.59 ms；WORK 从 0 增至 15 时，含握手吞吐下降约 25%，两个方向每包端到端耗时均增加约 2.66 ms，符合负载位于数据完成后、DONE 通知前的设计。
+
+**状态：性能摘要已归档；完整硬件正确性验收及运行版本关联 PENDING。** 两张附件是用户提供的汇总截图，不是完整 Host/Target 原始日志。未取得六组 HOST_PASS、LOCAL_PASS、计数、校验、cleanup、timing_valid 原始记录，不将表格独立认定为六组完整 PASS。未测实际 SCL 波形、DMA 带宽或连续无握手峰值带宽。
+
+## 2. 环境、版本与保存范围
+
+用户提供的配置说明：设备树 `i3c-scl-hz = 100000`，使用 FPGA 100 kHz timing 配置。100 kHz 是配置值；没有示波器/逻辑分析仪实测佐证。实际 FCLK、SKEW、内核 release、KO 指纹、日志级别及板卡标识待补齐，不从旧实验继承。
+
+| 项目 | 当前可核验内容 | 与本次实验的关系 |
+| --- | --- | --- |
+| Host 开发分支 | `feature/i3c-bandwidth-load-20261103`，`f6f0a66b761e0a7aa9ba10d85650701360a82b92` | 已推送；尚未取得本次部署指纹 |
+| Target 开发分支 | 同名分支，`36b736999463d9d098b1596d981a0fdcf678fd62` | 已推送；尚未取得本次部署指纹 |
+| Host master 起点 | `495583aabffa498f881bc77d8e5cd5feec0a3a7f` | 开发起点，不代表增强已合入 |
+| Target master 起点 | `f2ba9ce92bf456674fa46b4d2ccca94d424b728e` | 开发起点，不代表增强已合入 |
+
+正式“可复现 master 基线”待补齐：本功能目前位于开发分支，不能将起点或历史 PASS 写成本增强的 master 硬件验收。本文未执行合并或推送。
+
+工作区基准为 `code_wave_hw`。Host 源码位于 `worktrees/linux-imx-case020-full-start-merge-20261020`；Target 源码位于 `build/i3c-hotjoin-hostfix-regression-20261021/target-source`。源码已推送至各自远端，见 Host 提交〔原记录内链已省略〕 和 Target 提交〔原记录内链已省略〕。
+
+本地构建记录见 manifest〔原记录内链已省略〕。Host 工具 SHA256 为 `04b81dbe9d6d00c86db4bcdafc47d8bb305cb49c8887e8522d1001b103833ee5`；本地 EMU gsp-only 固件 SHA256 为 `44ef9d03bf3c7a5e46fcf2758b2ff8abe0f4ff16030bf502653bc2a4aecf1b04`。**该 EMU 固件不能当作本次 FPGA 固件证据。** manifest 中 hardware=NOT_RUN 仍是本地构建记录的真实状态，不用用户截图覆盖它。
+
+报告和附件保存于本地文档目录，本次未进入 Git；构建目录为本地材料，不能据此认为远端 Git 含二进制。板端部署目录及获取实际 FPGA 二进制的方式待提供。
+
+## 3. 测量口径与结果
+
+Host 使用 CLOCK_MONOTONIC。`transfer_ns` 为已确认成功的计量包数据调用耗时之和；`wall_ns` 从预热结束的 NEXT 控制写之后，到最后计量包 DONE 被接收为止。后者包含逐包准备、IBI、计量包之间的控制交接、软件处理和调度，排除初始枚举、START、预热以及最终 FINISH/FINAL 与 release。最终交接失败仍使结果无效。
+
+计量有效载荷为 16×50=800 字节，预热不计入速率。数据吞吐=800/transfer_seconds；含握手吞吐=800/wall_seconds。P95 为已确认计量包调用耗时排序后的 ceil(0.95×50)=第48项，不是端到端 P95。表内平均时间由截图吞吐反算，存在四舍五入误差。
+
+| 方向（Host 视角） | WORK | 数据调用 B/s | 含握手 B/s | 调用 P95 ms | 推算调用均值 ms | 推算每包端到端 ms |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Write | 0 | 10173.7 | 2046.7 | 1.587 | 1.573 | 7.817 |
+| Write | 1 | 10153.0 | 1997.7 | 1.586 | 1.576 | 8.009 |
+| Write | 15 | 10202.1 | 1526.2 | 1.583 | 1.568 | 10.484 |
+| Read | 0 | 10177.8 | 2107.8 | 1.591 | 1.572 | 7.591 |
+| Read | 1 | 10198.7 | 2054.9 | 1.581 | 1.569 | 7.786 |
+| Read | 15 | 10173.5 | 1561.5 | 1.585 | 1.573 | 10.247 |
+
+WORK=0→15：Write 含握手吞吐下降 25.4%，Read 下降 25.9%；每包端到端分别增加约 2.67、2.66 ms。数据调用吞吐变化不足 0.3%，不能把小幅上升解释为 WORK 改善总线性能。仅 50 包且缺少多次重复测量，暂不建立显著性或稳定性阈值。
+
+## 4. 理论对照与解释
+
+按截图采用的简化模型，100 kHz 每周期 10 μs，SDR 每字节按 8 位数据加 1 个协议位计，数据段上限约为 100000/9=11111 B/s。16 字节数据段约 1.44 ms。该模型忽略寻址、起止条件及软件开销，不能直接充当整个事务的精确理论值。
+
+实测摘要中的数据调用约 1.57 ms，约为上述数据段上限的 91%–92%，数量级合理。额外约 0.13 ms 不能仅归因于某一个寄存器或总线阶段。截图还称 WORK=1 的长度扫描每增加 1 字节增加约 90.4–90.9 μs；此项只有文字摘要，没有逐长度结果，作为用户观察保留，不作为本报告独立拟合结论。
+
+含握手吞吐约 1.5–2.1 kB/s，是逐包 IBI 流控的有效工作吞吐。每包均经历 READY、数据调用、Target 校验/工作负载、DONE、NEXT；不是连续占满总线。WORK 的额外延迟也包含调度与交接影响，不能全部当作纯 CRC 运算耗时。软件计时不能证明实际 SCL 恰为 100 kHz。
+
+## 5. 命令作用与实现
+
+| 执行端与命令 | 前提、参数与目的 | 内部动作、线上行为与完成条件 |
+| --- | --- | --- |
+| Target：`i3c_test bandwidth run write 16 50 W` | 已枚举、IDLE、队列可用；16=字节，50=计量包，W=0/1/15 | CLI→bandwidth run→控制接收及逐包状态机；READY 日志表示等待 Host START，不是测试通过。Write 接收 FIFO/response 并检查期望内容；完成后执行 WORK 再发 DONE IBI |
+| Target：同上改 `read` | 参数须与 Host 一致 | 逐包准备期望 TX 数据和发送队列，等待 Host Private Read 完成，再执行 WORK 和 DONE；由 Host 比较完整16字节 |
+| Host：`./i3c-host -d "$NODE" auto bandwidth "$GEN" DIR 16 50 60000 W` | Target READY，NODE 为当前字符设备，GEN 为实际代次；60000 为事件等待超时毫秒 | CLI→bandwidth_load→claim/prepare events→START→READY/数据 ioctl/DONE→NEXT 或 FINISH→FINAL→release。读写使用已有 PIO 驱动路径，无 DMA；失败不自动重跑 |
+| Host：`uname -a`、`sha256sum ./i3c-host` | 部署包目录 | 只读系统与文件，不触发 I3C 总线事务；用于版本归档 |
+
+控制 START/NEXT/FINISH 本身通过 Private Write 发送，有控制 CRC；START opcode 携带方向与 WORK。软件 START 控制帧不是物理 START 条件的同义词。数据由 run/generation/sequence/direction 确定，Write 在 Target 检查，Read 在 Host 检查；控制与通知同时校验顺序和会话。
+
+协议预期：Private 数据事务包含 START、动态地址及 R/W、地址 ACK/NACK、数据及 SDR 协议位、结束条件；Write 的第9位按写方向规则处理，不能逐字节笼统描述成 ACK；Read 的 T-bit/终止由读方向规则处理。READY/DONE 为 Target 发起、Host 接收的 IBI；控制写还产生额外总线事务。是否含额外广播头、Repeated START 以及实际 STOP 边界需以当前驱动和抓波确认，本轮没有抓波，不将预期描述为实测。
+
+WORK 每轮执行64字节 CRC/内存更新，放在数据完成之后、DONE 之前；没有额外 sleep 或逐包打印，未主动屏蔽 IRQ。这是协作式处理负载，不是 CPU 利用率百分比，也不等同于并发生产业务。完整成功时 calls=(50+1)×WORK，分别应为0、51、765；这些是验收期望，并非截图已测字段。
+
+正常完成须 Host HOST_PASS、timing_valid=1、ret=cleanup=0、completed=50，与 Target LOCAL_PASS、completed=50 参数相符。READY/等待通知仅为 pending。超时或校验失败停止该组，Host 尝试 release；不得认为失败自动保留了全部 FIFO 现场，需保存错误及 cleanup 日志，禁止无记录重跑。
+
+## 6. 人工复现步骤
+
+本节为根据当前源码整理的复现流程，不是本次历史执行命令记录。Host 工作目录为**实际部署包目录**，其中须有匹配的 `i3c-host` 和已验证内核/KO；该目录尚未提供，不猜测包路径或 insmod 参数。Target 使用板卡 UART CLI，无文件工作目录要求。
+
+1. 记录板卡、FPGA bitstream、两端 commit/工作树差异、内核/KO/固件 SHA256、SCL/SKEW 和日志级别。使用已有验证的枚举流程，确认动态地址有效、Target IDLE、无残留错误；不能直接把新工具加载成功当作内核兼容验证。
+2. 每组先由 Target 执行下表命令。出现 `I3C_BANDWIDTH_READY` 且参数正确后，才执行对应 Host 命令。GEN 使用实际值，不固定填1；NODE 由当前设备节点确定。
+3. 两端命令均完成并满足上述成功条件后保存原始日志，再继续下一组；异常立即停止，保留日志，不自动复位或重放。
+
+Host 先在部署包目录设置已确认的 `NODE`、`GEN` 环境变量。以下六组分开执行，不能先运行全部 Target 命令或盲目循环 Host：
+
+| 顺序 | Target 命令 | 随后的 Host 命令 |
+| --- | --- | --- |
+| 1 | `i3c_test bandwidth run write 16 50 0` | `./i3c-host -d "$NODE" auto bandwidth "$GEN" write 16 50 60000 0` |
+| 2 | `i3c_test bandwidth run write 16 50 1` | `./i3c-host -d "$NODE" auto bandwidth "$GEN" write 16 50 60000 1` |
+| 3 | `i3c_test bandwidth run write 16 50 15` | `./i3c-host -d "$NODE" auto bandwidth "$GEN" write 16 50 60000 15` |

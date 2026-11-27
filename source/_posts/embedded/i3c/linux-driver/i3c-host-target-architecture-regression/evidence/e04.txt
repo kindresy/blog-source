@@ -1,0 +1,82 @@
+E04 | 2026-09-28 | IBI 长度边界
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–78 ---
+# case_017：IBI Payload长度与超限保护实验报告
+
+> 2026-09-28 复现审查：本文前部保留原实验轮次；新增的“人工回归与版本校正”及“Host脚本全文”附录为人工执行入口。历史PASS不自动沿用到其他版本；路径和日志已逐项检查。
+
+实验日期：2026-09-28。本报告与case_016报告〔原记录内链已省略〕共用同一r2会话、代码/产物基线和两端原始证据。
+
+## 结论
+
+**PASS（限定当前寄存器供数接口：额外Payload 0～4字节，以及5字节提交前拒绝）。** 不能将此标记扩展为完整IBI协议长度协商验收。
+
+0、1、2、3、4字节均实际发送并由Host比较正确；5字节返回-90/EMSGSIZE，不截断为4字节，不消费新的软件sequence，原完成结果保留，Target维持IDLE。Host超限前后received=3、stored=3，invalid/dropped均0；随后2、3字节继续成功，证明本次拒绝未破坏后续合法发送。
+
+“没有新增Host接收”是日志实测；“校验先于MMIO、不会发布SIR”是源码和模型测试证据。本轮没有抓波或MMIO总线跟踪，不能将二者写成外部波形实测。
+
+## 基线与配置
+
+| 项目 | 本次基线 |
+| --- | --- |
+| Target分支/提交 | lab/i3c-ibi-recovery / ac0ff66ed5d5ed39d60f24c6579a986d6108a640 |
+| Host分支/提交 | lab/imx93-i3c-ibi-recovery / e7d06fc1af50d2d6cdfd98a5aeadef99b4231e74 |
+| 固件SHA256 | f2214709bb2abbc665c535b6b312505fd328d3af3530335c7663c0eead5fec2b |
+| Host包 | 相对板端根目录：opt/frdm/modules/ibi-20260928-r2 |
+| 环境 | PP约1994.681 Hz、OD约1953.125 Hz、SKEW4；DA44，PID <TARGET_PID>，BCR3e；TS0、Target index0、PEC关闭 |
+| 接口上限 | 额外Payload最多4字节，线上总字节数包含MDB，最多5字节 |
+| Host容量 | 每接收槽16字节、4个槽；软件记录16条；容量不等于协议协商上限 |
+
+完整KO校验、工作区源码快照、复现准备步骤见016“可复现基线”和“操作顺序”。上述提交在实验后创建，相关源码/测试与实验快照逐文件一致；未改变已验证源码或运行产物。复现采用上述完整提交，尚未合入master或推送。见提交核对记录〔原记录内链已省略〕。
+
+## 命令作用与实现
+
+本阶段前提：016中的枚举、on/active、IBIRULES=4和ENEC已完成；Target已结束上一笔、全局IDLE、DA有效。所有Target命令在EMU CLI执行。Host命令以板端根目录为工作目录，设置 `dut=sys/bus/i3c/devices/0-<TARGET_PID>`。设置变量仅为shell操作，不触发总线。
+
+| 命令/执行端 | 参数与内部实现 | 总线行为与判据 |
+| --- | --- | --- |
+| Target `i3c_test ibi caps` | get_caps报告max_payload4、max_wire_bytes5、SIR许可及pending；只读现场 | 不产生新事务；不能以静态caps替代实际发送验证 |
+| Target `i3c_test ibi send A5 <payload> 5000` | MDB两位hex；Payload连续hex，-表示0；超时是Target tick毫秒。CLI解析后submit首先检查长度，合法时才校验会话、acquire、写94和8c、置SIR | 合法长度触发IBI：START/仲裁44/R、Host ACK、MDB和Payload、读数据T-bit/结束握手、STOP；Host自动接收 |
+| Target `i3c_test ibi send A5 1122334455 5000` | 5字节超限；submit在MMIO之前返回EMSGSIZE，不写供数或请求、不截断、不覆盖前一结果 | 设计上无IBI；实测CLI -90、Host计数不变，未抓波 |
+| Target `i3c_test ibi poll` | 仅合法发布后需要；检查当前SIR完成和响应剩余长度，安全释放所有权 | 不重新发送；PENDING仅重复poll，不重复send；超限后无需poll新请求 |
+| Target `i3c_test ibi status` | result读取缓存 | 无总线；超限后必须仍为上一笔seq3/length4/DONE |
+| Target `i3c_test status` | 查询全局硬件和软件会话状态 | 不主动发送；超限后IDLE、DA有效、last_error/cleanup_error为0 |
+| Host `cat "$dut/ibi_result"` | 读取回调缓存计数和数据，不取硬件FIFO | 无总线；超限前后计数相同且无新增记录；合法发送新增长度=Payload+1 |
+
+合法发送使用普通SLV_SIR_DATA寄存器，不是往Target TX FIFO推送。SLV_INTR_REQ长度[23:16]不含MDB，使用32位MMIO；Host接收通过RX FIFO、IBI槽和回调缓存完成。不能把Host length与Target payload_len直接比较而漏算MDB。
+
+## 实际步骤与结果
+
+每个合法命令后执行poll、IBI status和全局status，再由Host读取结果；没有并发在途请求。
+
+| 顺序 | Target send参数 | Target证据 | Host新增记录/计数 | 判定 |
+| --- | --- | --- | --- | --- |
+| 1 | A5 - 5000 | 用户仅确认phase=DONE | seq1 length1 a5 | 接收基线通过 |
+| 2 | A5 11 5000 | 完整DONE/ret0/remaining0 | seq2 length2 a511 | 通过 |
+| 3 | A5 11223344 5000 | 完整DONE/ret0/remaining0，回到IDLE | seq3 length5 a511223344；计数3 | 最大合法长度通过 |
+| 4 | A5 1122334455 5000 | -90；旧seq3/length4保留，全局IDLE | 计数仍3，未新增 | 超限拒绝通过 |
+| 5 | A5 1122 5000 | 用户确认符合预期，无完整原始字段 | seq4 length3 a51122 | 合法长度及拒绝后继续发送通过 |
+| 6 | A5 112233 5000 | 完整DONE/ret0/remaining0，回到IDLE | seq5 length4 a5112233 | 通过 |
+
+2字节和MDB-only的Target字段证据不足部分不能由其他长度的日志替代。错误输入未增加sequence，随后合法2字节使用sequence4，与拒绝前sequence3连续。
+
+## 超限流程泳道图
+
+```mermaid
+sequenceDiagram
+    participant T as EMU Target（用户）
+    participant H as i.MX93 Host（助手）
+    Note over T,H: 已完成4字节IBI，Target seq3 DONE，Host received3
+    T->>T: send A5 1122334455 5000
+    T->>T: CLI解析5字节，submit长度检查
+    T->>T: 返回EMSGSIZE(-90)，保留旧结果
+    Note over T,H: 不发布SIR是源码/模型结论；本轮未抓波
+    T->>T: ibi status仍seq3，整体IDLE
+    H->>H: 读取缓存：received3、stored3，没有新增
+    T->>H: 随后合法2/3字节IBI
+    H->>H: 新增seq4/5，数据比较正确
+```
+
+## 失败退出、问题和未覆盖项

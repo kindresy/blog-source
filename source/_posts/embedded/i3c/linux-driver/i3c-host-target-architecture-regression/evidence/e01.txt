@@ -1,0 +1,79 @@
+E01 | 2026-09-24 | 枚举起点
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–75 ---
+# I3C case_004 软硬件联调复盘
+
+> 2026-09-28 复现审查：本文前部保留原实验轮次；新增的“人工回归与版本校正”及“Host脚本全文”附录为人工执行入口。历史PASS不自动沿用到其他版本；路径和日志已逐项检查。
+
+日期：2026-09-24。用户已确认 **case_004 通过**。最终配置为：Baremetal DV Target 初始化，i.MX93 约 2 kHz，三次前置 placeholder，SETDASA → ENTDAA，PP SKEW=4。
+
+本文按“配置 → 操作 → 问题与修复 → 版本复现”组织，依据当前源代码、已保存部署记录、手册和用户实测反馈。用户确认通过是本轮硬件结果；文中的寄存器写值、理论时间和验收示例不冒充新采集的实测数据。本次仅整理和核对资料，没有重新编译、部署、执行 load 或触发总线。
+
+路径约定：文件链接相对本文所在的 `docs/` 目录；仓库内代码路径相对对应仓库根目录；板端部署路径相对板端文件系统根目录。板端命令使用命令名调用，运行环境的 PATH 应包含其安装目录。
+
+## 1. 软件配置流程：配置什么、为什么配置
+
+### 1.1 两端分工
+
+```text
+i.MX93 Linux                         EMU / Target
+board-modules-load                  i3c_test run case_004
+  i3c.ko：I3C core                    CLI / Target 会话管理
+  svc-i3c-master.ko：控制器驱动        SoC BSP：clock、strap、reset、monitor、PAD
+  i.MX93 SVC I3C 控制器               DWC I3C Target：DEVICE_ADDR、DEVICE_CTRL
+            SCL/SDA → 外部连接及 EMU 桥接 → Target 输入
+            SDA ACK/数据 ← Target 输出及返回路径
+```
+
+Host 产生 SCL、START/STOP、CCC 和地址分配事务。Target 软件准备硬件，Target IP 完成地址识别、ACK 和相应 CCC 响应。Target 的 case_004 不发送 placeholder、SETDASA 或 ENTDAA，也不配置 Host 的 SCL 分频。
+
+### 1.2 Target 的实际初始化顺序
+
+入口：i3c_target_cli.c:221〔原记录内链已省略〕 → i3c_target_open_dv004():342〔原记录内链已省略〕 → i3c_bsp_prepare_dv_target():261〔原记录内链已省略〕。这是 DV 专用入口；`i3c_test open` 使用另一套普通枚举配置。
+
+| 顺序 | 配置 / 检查 | 当前值 | 作用 |
+|---|---|---|---|
+| 1 | 检查软件会话，保存原配置 | 新会话要求 `CLOSED`；仅 enable 超时允许原请求续等 | 避免在活动事务中再次复位硬件；保留失败处理所需的所有权信息 |
+| 2 | I3C0 内部时钟门控 | `<PLATFORM_ADDRESS>[0]=1` | 允许内部逻辑工作和寄存器访问；这不是外部 SCL |
+| 3 | 读取 wrapper I3C0_STATUS | `<PLATFORM_ADDRESS>` | 当前代码只读并丢弃值，没有用它轮询就绪 |
+| 4 | wrapper CTRL0 | `<PLATFORM_ADDRESS>`，受控字段值 `0x2002` | 设置模式与能力输入，逐字段见下表 |
+| 5 | wrapper CTRL1 | `<PLATFORM_ADDRESS>=0xBEEE00C4` | PID 高 16 位、DCR、静态地址使能和静态地址 |
+| 6 | wrapper PID_LO | `<PLATFORM_ADDRESS>=0x00000101` | 与高位组成 PID `0x<TARGET_PID>` |
+| 7 | SoC I3C0 软件复位 | `<PLATFORM_ADDRESS>[30]`：置 1 → 名义等待 1 µs → 清 0 | 清理 IP 初始状态，让本轮初始化在复位边界后开始；读改写保留其他模块复位位 |
+| 8 | MMIO 顺序屏障 | RISC-V `fence iorw, iorw` | 保证释放复位的写操作先于后续 monitor/PAD 访问；不等于对内部复位同步完成的轮询 |
+| 9 | 保存复位后的 PAD/monitor，关闭外部 monitor | `<PLATFORM_ADDRESS>[0]=0`，即本次讨论的 `smbus_enable=0` | 按实验配置关闭 SMBus/I3C first-byte monitor 的使能；保留其他位，打印读回 |
+| 10 | SCL/SDA pinmux | 两个 PAD 的 `FUNC_SEL[11:8]=1` | 选择 `MGMT_I3C0_SCL/SDA` 功能；只改功能选择，保留其他 PAD 字段 |
+| 11 | 读取 IP 初始快照 | 检查 disabled、队列/状态空闲、PID、能力、地址初值 | 确认本轮配置可继续；不把能力寄存器整字覆盖为猜测值 |
+| 12 | IP DEVICE_ADDR | `<PLATFORM_ADDRESS>=0x00008044`，并校验读回 | `[6:0]=0x44`、bit15=1；动态地址及其有效位初始为 0 |
+| 13 | IP DEVICE_CTRL | `<PLATFORM_ADDRESS>=0x88000000` | bit31 请求使能；bit27 启用 ADAPTIVE_I2C_I3C |
+| 14 | 等待使能确认 | 先名义等待 20 µs，再每 100 µs 读 bit31，名义预算 1 ms | 等待 bit31 **读到 1**；成功只说明 enable ack，之后还要检查动态地址 |
+
+**顺序重点：wrapper 身份/能力在复位前设置；monitor 和 FUNC_SEL 的所有访问，包括备份读取，都在释放复位之后。** 这符合本次调试后确认的要求，不再机械照抄 DV 截图最初的先后顺序。
+
+当前生成头文件给出的两个 PAD 地址是 `<PLATFORM_ADDRESS>`、`<PLATFORM_ADDRESS>`。DV 原截图使用的基址是 `<PLATFORM_ADDRESS>`，二者不可在文档中混写为相同地址；这里记录的是当前代码实际使用的地址，未将两个窗口判定为硬件别名。
+
+`smbus_enable=0` 关闭的是 SoC 外围 monitor，并不关闭 DWC Target 内部识别 START/STOP 的逻辑。
+
+### 1.3 CTRL0、CTRL1 和 DEVICE_CTRL 的含义
+
+| CTRL0 字段 | 位 | 值 | 含义 |
+|---|---|---:|---|
+| PENDING_INT | [19:16] | 0 | 配置值清零；不能当作通用 W1C 清中断动作解释 |
+| SLV_CLK_DATA_TURN_TIME | [14:12] | 2 | GETMXDS 相关的时钟到数据转换时间能力编码；不是 2 µs，也不是 Host 的 SDA hold 寄存器 |
+| SLV_MAX_WR_SPEED | [10:8] | 0 | 最大写速率能力编码，不是把 SCL 设为 0 Hz |
+| SLV_MAX_RD_SPEED | [6:4] | 0 | 最大读速率能力编码 |
+| SLV_STOP_PERMIT_BW_WR | [2] | 0 | 写转读之间允许 STOP 的能力声明；不是禁用 STOP 检测 |
+| SLV_DEF_BYTE_SUPPORT | [1] | 1 | Defining Byte 支持能力声明 |
+| MODE_I2C | [0] | 0 | 不强制固定为 I2C，允许按 I3C 流程取得动态地址 |
+
+CTRL0 对其余位做保留式读改写；`0x2002` 是被配置字段的结果，完整寄存器只有在其他位为零时才等于 `0x00002002`。截图中 `[14:16]` 已按用户确认修正为 `[14:12]`，mask 为 `0x7000`。这些能力输入与 GETMXDS 的关系见 DWC databook §4.2.4.3；是否经相应响应暴露还受综合配置和 BCR 能力位影响。
+
+CTRL1 的 `[31:16]=0xBEEE`、`[15:8]=0`、bit7=1、`[6:0]=0x44`。wrapper 的静态地址使能是 **bit7**，而 IP DEVICE_ADDR 的静态地址使能是 **bit15**，二者不应混淆。
+
+DEVICE_CTRL bit27 的含义是自适应 I2C/I3C 行为：配合 `mode_i2c=0`，在识别总线类型之前约束自动 Hot-Join，并按手册规定处理首次 `0x7E/W` 与 glitch-filter 控制；取得有效动态地址后进入相应 I3C 工作状态。它既不是静态地址使能，也不是 SDA 推挽使能的直接开关。依据为 DWC databook §4.2.1，印刷页 178。
+
+本例不通过 Target 软件逐位切换 OD / 高阻 / PP；协议阶段中的接收、ACK 和 SDA 驱动切换由 IP 完成。
+
+### 1.4 Host 的配置及最终时序

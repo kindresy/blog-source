@@ -1,0 +1,60 @@
+E02 | 2026-09-26 | 短包双向收发
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–55 ---
+# I3C Private Read / Write 整体验证报告
+
+> 2026-09-28 复现审查：本文前部保留原实验轮次；新增的“人工回归与版本校正”及“Host脚本全文”附录为人工执行入口。历史PASS不自动沿用到其他版本；路径和日志已逐项检查。
+
+记录日期：2026-09-26。平台：i.MX93 Linux Host ↔ EMU Baremetal I3C Target。范围：PIO SDR Private传输，长度1、3、4、5字节，固定非对称图样。
+
+本报告汇总已完成实验及用户补充日志，不代表重新执行测试。报告整理期间未操作板端、发起总线事务、修改驱动或部署固件。
+
+## 1. 验证结论
+
+**Target的1/3/4/5字节RX和TX，共8个长度/方向功能点，均有成功结果；其中7项具备已归档的Host与Target双方日志，3字节Write缺少Host原始返回记录。**
+
+- **Read / Target TX：** 1、3、4、5字节均双端通过。Host实际长度恰好为N、数据逐字节正确；Target得到新完成事件，剩余长度和错误均为0。
+- **Write / Target RX：** 四个长度均有Target `DONE/LOCAL_PASS`，Response长度、copied和payload正确。1、4、5字节另有Host `ret=0`；3字节Target接收功能通过，Host返回码未归档，不补写为0。
+- **边界处理：** 1/3字节验证单word内的有效尾部；4字节验证整word；5字节验证跨两个word并只处理尾部1字节。
+- **完整用例状态：** case_007、case_010保持“部分覆盖”。长度功能覆盖齐全不等于规定轮次、缓冲区哨兵、原前置及波形验收全部完成。
+
+| Host方向 / Target功能 | N | 图样 | Host证据 | Target证据 | 本报告判定 |
+| --- | ---: | --- | --- | --- | --- |
+| Write / RX | 1 | `11` | ret=0 | copied=1、data=11、LOCAL_PASS | 双端数据功能通过 |
+| Write / RX | 3 | `112233` | **原始返回未归档** | copied=3、data=112233、LOCAL_PASS | Target接收通过；Host日志待补 |
+| Write / RX | 4 | `11223344` | write_exit=0、ret=0 | copied=4、data正确、LOCAL_PASS | 双端数据功能通过 |
+| Write / RX | 5 | `1122334455` | write_exit=0、ret=0 | copied=5、data正确、LOCAL_PASS | 双端数据功能通过 |
+| Read / TX | 1 | `11` | ret=0、actual=1、data正确 | queued=1、新completion=1、ERR=0、remaining=0 | 双端数据功能通过 |
+| Read / TX | 3 | `112233` | ret=0、actual=3、data正确 | queued=3、新completion=1、ERR=0、remaining=0 | 双端数据功能通过 |
+| Read / TX | 4 | `11223344` | read_exit=0、ret=0、actual=4、data正确 | queued=4、新completion=1、ERR=0、remaining=0 | 双端数据功能通过 |
+| Read / TX | 5 | `1122334455` | read_exit=0、ret=0、actual=5、data正确 | queued=5、新completion=1、ERR=0、remaining=0 | 双端数据功能通过 |
+
+完整可用日志见本文附录A、B，截图及来源索引见附录C。截图是原始图像证据，转录文本是便于检索的派生记录；没有把期望打印伪装成raw日志。
+
+## 2. 目标、依据与计数口径
+
+依据人工验证计划〔原记录内链已省略〕的M2：
+
+| 用例 | 本轮验证目的 | 本轮尚未覆盖的正式条件 |
+| --- | --- | --- |
+| case_007：短Private Write / PIO RX | 正确接收N字节，解析Format 2 Response，检查图样、尾字节、队列和会话 | 3字节Host原始返回、缓冲区哨兵证据、DA/W ACK与第九位波形、规定轮次、原前置003/M1的独立验收 |
+| case_010：预置数据后Private Read / PIO TX | 预填EXT queue0后发布有限长度命令，检查Host实收、新completion、ERR和剩余长度 | DA/R ACK及合法结束波形、规定轮次、原前置003/M1的独立验收 |
+
+计划§3要求每方向先smoke 10轮，再功能100轮。本报告按每个长度/方向一笔可辨识证据计数，不把`rx status`/`tx status`重复输出计为重复测试，不从sequence补推未展示的操作。旧计划的默认身份及早期实现进度描述不作为本次实测配置；本轮使用已经验证的case_004身份。
+
+## 3. 软件和硬件基线
+
+### 3.1 实验配置
+
+| 项目 | 已记录的配置 / 观测 |
+| --- | --- |
+| Host / 内核 | i.MX93，`6.6.36-moduledev` |
+| Host控制器 | SVC / Silvaco I3C，设备`44330000.i3c-master`，总线`i3c-0` |
+| Host参考时钟 | FCLK=93750 Hz |
+| 总线频率 | PP=1994.681 Hz，OD=1953.125 Hz，名义约2 kHz |
+| 输出时序 | SKEW=4，MCONFIG写入/读回均为`0x0901ff01` |
+| 枚举 | 3次placeholder → SETDASA → ENTDAA → GETPID/GETBCR/GETDCR/GETMRL/GETMWL/GETHDRCAP |
+| 设备身份 | PID=`<TARGET_PID>`、BCR=`3e`、DCR=`00`、HDR能力=`01` |
+| 静态 / 动态地址 | 均为`0x44`；Private操作使用动态地址 |

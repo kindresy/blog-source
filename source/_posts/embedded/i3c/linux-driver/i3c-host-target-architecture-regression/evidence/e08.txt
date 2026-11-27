@@ -1,0 +1,79 @@
+E08 | 2026-10-13 | RSTACT01 触发外设复位
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–43 ---
+# I3C 综合33步回归：RSTACT 01触发外设复位与业务恢复
+
+实验日期：2026-10-13。环境：i.MX93 SVC Host＋EMU Target。实验编号：table4，run=21119。
+
+## 1. 结论与验收范围
+
+**本轮33步双端通过。** Host完成33/33，`HOST_PASS`；Target完成33/33，`LOCAL_PASS`。第27步由Host发出的广播RSTACT `01`＋Target Reset Pattern触发Target软件执行一次I3C外设复位，generation从1增加到2；重新枚举后，身份查询、Private Write、Private Read、IBI和状态查询恢复，最后恢复传输长度配置。
+
+这次补上的关键证据是“总线请求导致复位”：原table2第27步由测试流程主动重启；本轮table4第27步必须先收到本会话的RSTACT动作和Pattern，前台才调用复位接口。其余32个步骤复用原流程。步骤23—26仍为观察模式，没有执行外设复位。
+
+| 验收点 | 本轮证据 | 结论 |
+| --- | --- | --- |
+| 正常数据通路及CCC | 步骤1—16全部PASS | 通过 |
+| RSTDAA重新枚举与业务恢复 | 步骤17—22，da_lost=1 | 通过 |
+| 多轮Pattern及RSTACT00检测 | 步骤23—26，四个独立sequence | 通过；观察模式 |
+| RSTACT01触发外设复位 | 步骤27，action=1、pattern=1、apply_count=1 | 通过 |
+| 复位硬件状态与身份重建 | reopen时DA valid=0，随后generation=2并重新枚举 | 通过 |
+| 复位后业务 | 步骤28—33全部PASS | 通过 |
+| 最终清理 | active=0、IDLE、RX/response=0、last_error=0、cleanup_error=0 | 通过 |
+
+范围限于受控会话中的广播RSTACT01与I3C外设复位，不涵盖CPU/SoC重启、Timed Reset、任意RSTACT动作组合或动作跨其他事务的有效期。`action_lifetime_verified=0`仍然有效。本轮没有抓波，ACK/T-bit及Pattern电气时序只能说明软件设计预期和控制器日志，不能写成示波器验收通过。也不能将本轮结果扩展为所有复位类case均通过。
+
+## 2. 环境、代码与可复现基线
+
+以下路径除另有说明，均相对本报告；命令另行注明工作目录。Host运行内核为`6.6.36-moduledev`，本轮只部署三个KO及APP，未更换Image、DTB。运行后保存的DTB配置`i3c-scl-hz=2000`；这是软件配置值，没有实测SCL频率。Target使用EMU/UART0固件，不是FPGA/UART3固件。
+
+| 端 | 实际源码分支 | 完整commit | 工作目录 |
+| --- | --- | --- | --- |
+| Target | lab/i3c-full-rstact-20261013 | c301d005dba170ec217f4f2e9be4bde672a9937d | Target仓库〔原记录内链已省略〕 |
+| Host | lab/i3c-full-rstact-20261013 | 873483c485f98668e242a53ab984176e856509e4 | Host仓库〔原记录内链已省略〕 |
+
+构建发生在提交之前；提交时核对了源码快照、差异与新增文件的一致性，部署的是这批已有产物，**没有在提交之后重新构建**。提交关联记录〔原记录内链已省略〕中的“未部署、未回归”是当时状态，本报告补充之后的实测，不改写原记录。构建目录中的`target-commit.txt`和`host-commit.txt`记录的是构建时基底，不能误当成本轮最终提交。
+
+**正式master可复现基线：待补齐。** 本次检查两个提交均仅在lab分支，尚未进入对应master。不能声称master已回归，也不能拿旧master提交代替本轮代码。后续合入后记录完整master提交；从master重建、部署、回归分别记录，不能只改版本号沿用本次结论。
+
+产物指纹如下。Host加载日志校验了板端产物；Target固件指纹来自本地构建，本轮未从EMU回读固件验证哈希，Target关联依据为用户加载操作和回传的table4日志。
+
+| 文件 | SHA256 |
+| --- | --- |
+| gsp-bm.bin | 40553555c0a8eeb82ed1022c9ce9a2244421ba33e7df9c827a57fb327bacd820 |
+| i3c.ko | be7a369d0f9042a013695f7ba7e786e5a4523ca490c45181dc3e87bb59e4fae7 |
+| svc-i3c-master.ko | ae0c6be0345962f9d324fce1f8a132dc9cf9651f46ec25f83accffdb07a489f2 |
+| target_recovery.ko | 44a8f0f9ca8e333f0ff6ea9c3e8575f0ba6a0dc5b1224449d60e817b0cf0ecf4 |
+
+--- 原材料行 64–92 ---
+| 18—22 | reenum-identity/write5/read5/ibi/status | 地址重建后的身份、数据、事件与GETSTATUS |
+| 23 | pattern1 | 第一次单独Pattern检测 |
+| 24 | rstact00-pattern1 | 广播RSTACT00＋Pattern检测，不复位 |
+| 25、26 | pattern2、rstact00-pattern2 | 重复会话，检查事件清理和sequence隔离 |
+| 27 | rstact01-peripheral-reset | 本轮RSTACT01＋Pattern到达后，软件应用一次外设复位 |
+| 28—32 | rejoin-identity/write5/read5/ibi/status | Hot-Join及枚举恢复后的身份、业务与状态 |
+| 33 | final-restore-limits | 将MRL/MWL和IBI长度恢复至起始配置 |
+
+表中的名称是执行器步骤名，不是用户需要逐条输入的CLI。控制消息使用16字节Private Write；IBI携带步骤确认。普通数据沿用原33步图样`11、22……`，没有采用独立15步实验的run/generation数据图样。因此“无旧会话误推进”的证据来自协议序号、会话及generation检查，不额外宣称数据本身带有本轮唯一标记。
+
+### 第27步的双端时序
+
+```mermaid
+sequenceDiagram
+    participant H as Host APP与SVC
+    participant T as Target前台执行器
+    participant I as Target IRQ
+    H->>T: 控制帧：准备第27步
+    T-->>H: READY确认
+    Note over H: 释放旧IBI资源，准备HJ监听
+    H->>T: 广播RSTACT 0x2A，动作01
+    H->>I: 紧接Target Reset Pattern
+    I-->>T: 保存中断证据，通知前台
+    Note over T: 核对sequence、动作和Pattern；只允许应用一次
+    T->>T: 释放观察会话，BSP复位I3C外设
+    T->>T: open，generation 1→2，HJ_EN=1
+    H->>T: 按需提供SCL
+    T-->>H: Hot-Join请求
+    H->>T: 重新枚举及地址建立

@@ -1,0 +1,65 @@
+E11 | 2026-10-17 | STOP 交接后 Host 100/100
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–61 ---
+# case_026：Hot-Join STOP 交接修复与逐轮变频实验报告
+
+日期：2026-10-17。实验标识：`case026-hj-stop-handoff-20261017-r4`。
+
+**当前结论：Host 完成 100/100 轮、600/600 步，`HOST_PASS`，进程退出码为 0；Target 最终日志与返回 CLI 的确认待补齐。尚未满足双端验收及用户“本轮 OK 后提交”的条件，当前代码未提交。** 本文不会把 Host 的成功通知推定为已经取得 Target 最终打印。
+
+## 1. 目的、范围和结果
+
+验证 Host 在每次 Target 外设重启后，完成 Hot-Join 收尾、DAA、重新绑定及业务恢复；同时在每轮开始前按请求频率 `2100 → 2000 → 2100 → … Hz` 交替切换。每轮固定六步：`restart-hotjoin`、`identity`、`write5`、`read5`、`ibi4`、`status`。没有加入 case_020，也没有更改 full 33 步。
+
+| 验收项 | 本轮实测或证据状态 |
+| --- | --- |
+| Host 轮数、步骤 | 100/100、600/600，全部 PASS |
+| 最终 run / generation / epoch | 5546 / 101 / 102；初始 run=5447、generation=1、epoch=2 |
+| Host ret / cleanup / 进程退出码 | 0 / 0 / 0 |
+| 内核 Hot-Join | 100 次成功，0 次 handoff failure |
+| 分频切换 | 100 次严格交替，两档各 50 次 |
+| 每次 HJ 后第一次 CCC 前 MERRWARN | 100 次均为 0 |
+| Target 准备证据 | 用户确认 `table=5 protocol=2 generation=1`；不是完整 Target 原始日志 |
+| Target 最终结果 / CLI | 待用户回传；没有要求额外执行 status 命令 |
+| 总线波形 | 未采集；本文线上行为均是设计预期，不是波形实测 |
+
+Host 原始收尾摘录：
+
+```text
+[I3C][LOOP_ROUND] round=100 run=5546 generation=101 step=7 completed=100 requested=100 pid=<TARGET_PID> da=0x44 epoch_before=101 epoch_after=102 ret=0 result=SUCCESS
+[I3C][LOOP] end table=5 round=100 step=7 generation=101 completed=100 requested=100 ret=0 cleanup=0 result=HOST_PASS
+HOST_PROCESS_EXIT=0
+```
+
+一轮 100 次通过说明该候选在本轮配置下通过 Host 验证，不构成长时间稳定性保证。历史失败结果仍保留在此前报告〔原记录内链已省略〕，没有用本轮结果覆盖。
+
+## 2. 问题原因、修改和证据边界
+
+旧交接路径等待 `MCTRLDONE`，随后 W1C 清除 `MCTRLDONE/COMPLETE/IBIWON`，再等待三者都为 0 后提交 DAA。**“完成标志读回为零”不能证明尚未到达的完成事件已经结束。** ACK 控制完成与消息完成异步到达：若 COMPLETE 晚于清除，会造成清零等待超时；若清零读取早于 COMPLETE，则可能提前放行 DAA。
+
+历史九点采样的 100 个成功样本中，95 次在第一次等待后为 DONE=1、COMPLETE=0，随后 DAA 前才出现 COMPLETE=1。此前 r3 变频实验完成 22 轮后在第 23 轮 DAA 等待失败；末态 `MERRWARN=0x80000` 是 **INVREQ（bit 19）**，不是硬件 TIMEOUT（bit 20）。这些证据支持交接竞争方向，但没有失败轮完整波形，因此不能宣称已证明每次历史失败的唯一原因。详见源码与手册核查〔原记录内链已省略〕第 12 节。
+
+本轮相对 r3 只修改 SVC 的 HJ worker 并增加已有 STOP helper 的声明：
+
+```text
+等待 MCTRLDONE && COMPLETE
+  → 通过已有 STOP helper 建立 IDLE 边界
+  → 等待 IDLE && MCTRLDONE，确认 STOP 请求完成
+  → 消费旧完成标志
+  → 解锁，进入 core DAA
+```
+
+STOP helper 已经处于 IDLE 时不会再次发 STOP；未处于 IDLE 才提交 STOP 请求。helper 原有实现未改。交接错误按 `ack-complete`、`stop-idle`、`stop-complete` 分阶段记录，设置 `recovery_required` 并禁用控制器中断，不清错后盲目重试。DAA 内部原有失败处理没有在本次扩展。
+
+相对尚未包含变频的提交基线，本次待提交内容还包括可选参数 `hj_scl_cycle_2k_2p1k`、循环 runner 和离线检查。参数默认关闭，仅在 PURE、FCLK=93750 Hz、名义 I3C/I2C 均为 2000 Hz 的实验总线上允许切换。它在 HJ_LISTEN、Target COMMIT 之前检查 IDLE、传输队列、worker、错误及 FIFO，再更新 MCONFIG。它不是每个 SCL 周期内的调频。
+
+| 请求档位 | MCONFIG | PP 计算频率 | OD 计算频率 |
+| --- | --- | --- | --- |
+| 2100 Hz，奇数轮 | `0x0901fe01` | 2083.333 Hz | 2083.333 Hz |
+| 2000 Hz，偶数轮 | `0x0901ff01` | 1994.681 Hz | 1953.125 Hz |
+
+这些频率由分频值计算并有寄存器读回，尚无本轮波形测频。超时计算使用原名义 2000 Hz 的保守预算。本轮没有九点逐阶段采样，也没有更换 Target 固件或增加 Target 调试输出。
+
+历史九点采样成功实验中，同一“首次 CCC 前”观察点的 100 次 MERRWARN 均为 `0x80000`；本轮均为 0，见对比统计〔原记录内链已省略〕。两组还存在采样及频率配置差异，因此这是交接行为改善的证据，不是单变量根因证明。

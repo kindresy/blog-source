@@ -1,0 +1,64 @@
+E10 | 2026-10-17 | Hot-Join 97/100 候选失败
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–34 ---
+# Current Proj-D0-I3C-026：Hot Join 重复压测与 DAA 交接实验报告
+
+**日期：** 2026-10-17
+**状态：** 地址槽问题已修复；HJ 到 DAA 的偶发超时仍未闭环。本轮正式候选版本完成 97/100 轮后失败，不能标记为通过。
+**范围：** Target 外设重启、Hot Join、Host DAA、随后 identity / Private Write / Private Read / IBI / 状态检查的重复联调。
+
+## 1. 目的与结论
+
+case_026 每轮让 Target 关闭并重新打开 I3C 外设，以 Hot Join 回到总线；Host 侦听 HJ、执行 DAA，并恢复业务。此前反复失败曾固定在约第 24 轮。代码审计确认 Linux I3C core 在同 PID 重连时没有把复用的动态地址标记为已占用，导致临时动态地址槽逐轮消耗。
+
+本次提交修复了地址槽占用更新，并在 SVC Host 的 HJ ACK 后增加控制器完成标志清零确认。地址槽的核心逻辑单测通过；硬件上，多次 100 轮可以完整通过，但同一候选实现也在第 98 轮出现 `i3c_master_do_daa()` 超时。因此，现阶段结论是：
+
+| 项目 | 结论 | 证据 |
+| --- | --- | --- |
+| 同 PID 重连的地址槽泄漏 | 已修复 | 100 次替换单测均复用 `0x09`，见第 4 节 |
+| 原“约第 24 轮”确定性失败 | 已消除 | 后续失败位置变为第 39、50、98 轮，亦有多次 100/100 |
+| HJ→DAA 交接 | 仍存在偶发故障 | 第 98 轮 `ENTDAA rc=-110`，见第 5 节 |
+| case_026 100 轮验收 | 未通过 | 正式候选仅完成 97 轮 / 582 步 |
+
+没有抓取本轮的逻辑分析仪波形。下文的总线行为是设计及软件日志推断；实际硬件证据只包括 Host/Target 日志和 Target 截图。
+
+## 2. 版本、构建与边界
+
+本报告的 Host 源码在分支 `fix/i3c-hotjoin-addrslots-20261016`，提交为：
+
+```text
+46aaeaaad47bfecfad8382f2599702cc535de215
+i3c: synchronize hotjoin DAA handoff
+```
+
+该提交尚未作为 `master` 硬件回归基线；它是本轮候选版本。正式回归使用的三份 Host 模块与该提交源码一致，SVC 模块 SHA-256 为：
+
+```text
+svc-i3c-master.ko  9d379b2138cbf2ce6d8747ece34b91da699faed4e8f2d512e715f10d7b4d3fb8
+
+--- 原材料行 55–77 ---
+### 3.2 SVC Host：HJ ACK 到 PROC_DAA 的交接确认
+
+`drivers/i3c/master/svc-i3c-master.c` 中的 HJ worker 原先等待 `MCTRLDONE`，写 `MSTATUS` 清除 `MCTRLDONE | COMPLETE | IBIWON` 后立刻调用 `i3c_master_do_daa()`。本次增加一次轮询，确认上述完成标志已不再置位，才解除 mutex 并发出 PROC_DAA 请求。
+
+该轮询不在线上新增 I3C 命令；它读取 Host 控制器 MMIO 状态寄存器。目的在于避免软件在前一笔自动 IBI ACK 的完成状态仍可见时立即提交 PROC_DAA。第 5 节实验表明，这个条件本身不足以消除偶发超时。
+
+## 4. 静态验证与构建验证
+
+在 Host 源码根目录执行：
+
+```sh
+python3 vendor/platform/tests/test-core-addrslots.py
+```
+
+输出：
+
+```text
+PASS: actual core helpers reuse DA 0x09 for 100 replacements per profile; active DA reserved, SETDASA, unchanged DA, collision and callback cleanup
+```
+
+该测试把实际 core helper 编译进 C harness，覆盖同 PID 100 次替换、活动地址保留、SETDASA、地址未变、冲突和回调清理。它证明地址槽计算正确；它不覆盖 I3C 总线、SVC IRQ 或 Target 外设重启时序。
+
+模块构建完成且 `vermagic`、符号版本和 SHA-256 已在 Host 部署脚本中复核。代码风格检查 `git diff --check` 通过。上述检查都不是硬件通过结论。

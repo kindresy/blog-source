@@ -1,0 +1,87 @@
+E05 | 2026-09-28 | GETCAPS 实际长度
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–82 ---
+# 0x95能力响应长度与后续广播头NACK：定位及修复记录
+
+日期：2026-09-28。本文记录历史故障、用户提供的RTL信息、Host源码核对、三字节对照实验及后续正式修复。**三字节实验Host通过；正式“最大4字节、实际长度解析”已实现，软件检查、构建及本轮018两端验证通过。用户明确说明本轮没有抓波形。**
+
+文档链接相对本文目录；Host命令路径相对板端文件系统根目录，运行前切到该根目录。源码路径相对各自仓库根目录。
+
+## 1. 起因与症状
+
+018自动HJ后，ENTDAA已分配DA09，GETPID/BCR/DCR/MRL/MWL和日志名为GETHDRCAP的0x95查询成功。然而紧接的SETNEWDA在首个0x7E/W被NACK，无法把地址改成设备树预留44。历史Target出现BUS_ACTIVE、present=0x700、SLV_INSTANT_STATUS=0x47；有DA不代表后续业务恢复。
+
+历史证据：0927回归日志〔原记录内链已省略〕、0928重新加入日志〔原记录内链已省略〕。后者还包含旧设备IBI资源恢复流程，不能把所有历史日志都简化成同一CCC顺序。
+
+原先把怀疑方向放在STOP/CCC收尾和CCC ongoing残留上。该状态可以指示过程未结束，但尚不能证明其直接阻止地址ACK。用户要求检索历史后确认类似症状以前存在，尚未解决。
+
+## 2. 用户提供的信息及其意义
+
+以下是用户提供的静态RTL分析，不冒充助手重新审阅的RTL或实测波形：
+
+- 当前<RTL_BUILD>生成RTL把0x95按GETCAPS处理；无defining byte时返回序列是 **01 F1 18**。Host只读01结束，不代表Target原本只准备发送一个字节。
+- `slv_rxc_ccc_ong_r`在匹配7E后、接收CCC首bit阶段即可置位，不必等待完整CCC接收。它经跨时钟域同步映射到SLV_INSTANT_STATUS bit6。
+- ongoing可由规定的Restart条件、parity error或RXC局部复位清除。STOP通过`slv_ibm_p_det`等信号拉低局部`rst_n_gen`，并非ongoing存储逻辑中直接写STOP分支。
+- **CCC ongoing未直接进入ACK生成逻辑。** 后续0x7E应分别检查 `7e_match → wr_req_ack → txc_full_clk_ack → SDA oe/out`；不能直接把ongoing残留写成NACK根因。
+- 用户明确表示三字节实验没有抓波，认可用静态RTL和软件对照结果分析。报告不再声称获得T-bit、STOP、内部复位或ACK驱动波形。
+
+这些信息把调查重点从“ongoing直接屏蔽ACK”改为“能力响应长度与提前终止/收尾的兼容问题”。具体哪个RTL/控制器终止环节异常仍不能由日志单独决定。
+
+## 3. Linux原本如何处理
+
+本次Linux源码基线为master **7bd2b7cd6f403877e90ccbc8572c618e1d51bed0**。原始路径：
+
+1. `include/linux/i3c/ccc.h`定义`struct i3c_ccc_gethdrcap { u8 modes; }`，大小1字节。
+2. `drivers/i3c/master.c`的`i3c_master_gethdrcap_locked()`按该大小分配响应；发送0x95，要求实际响应长度恰为1，把首字节保存到`info->hdr_cap`。
+3. SVC定向CCC读取把请求长度传入`actual_len`初值，随后写`MCTRL.RDTERM=1`。
+4. SVC日志`rx=1/1 bytes=01`表明完成了软件要求的一字节读取，不能解释为Target整个GETCAPS自然结束。
+
+长度由**core决定**，不是SVC只支持读1字节，也不是SVC识别到数值01便结束。现有通用I3C和SVC设备树binding没有GETCAPS长度属性，查询路径也不读取此类DTS配置。随意增加DTS字段不会生效。
+
+## 4. 规范核对
+
+| 情况 | 0x95含义 | 响应 |
+| --- | --- | --- |
+| I3C v1.0 | GETHDRCAP | 1字节HDR能力 |
+| I3C v1.1及以后，无defining byte | GETCAPS Format 1 | 2～4字节，旧v1.0设备的一字节响应仍须兼容 |
+| GETCAPS带defining byte | Format 2 | 长度和格式取决于defining byte，不在本次修改范围 |
+
+MIPI官方FAQ Q18.13解释v1.1及以后至少返回2字节，而v1.0 GETHDRCAP可只返回GETCAP1；v1.1.1对应§5.1.9.3.19，v1.2对应§4.3.7.3.19和§5.4。本文依据公开官方FAQ及实现资料，不声称已逐页审阅会员完整规范。
+
+参考：MIPI官方FAQ〔原记录内链已省略〕、MIPI v1.1.1公开FAQ PDF〔原记录内链已省略〕、Microchip最多4字节能力接口〔原记录内链已省略〕、Zephyr旧/新版能力结构〔原记录内链已省略〕。
+
+因此三字节长度合法；`hdr_cap`一字节字段仅表示首字节HDR位图，不等于完整GETCAPS长度。长度不同也不能直接证明Host提前终止在协议上违法。
+
+## 5. 对照实验与实际结果
+
+| 项目 | 原一字节路径 | 三字节实验 |
+| --- | --- | --- |
+| 读取策略 | 请求1字节、RDTERM=1 | 参数getcaps_3bytes=1，请求3字节、RDTERM=3 |
+| Host实际接收 | 01 | 01 F1 18 |
+| 后续SETNEWDA首个7E/W | 历史日志NACK | 本轮ACK |
+| SETNEWDA结果 | -6，保持DA09 | rc=0，最终DA44 |
+| 证据 | 历史Host日志及用户Target信息 | 本轮Host原始日志；Target最终状态尚未回传，无波形 |
+
+两列为历史与本轮对照，不是同一固件现场立即切换参数的严格单变量A/B。Target在本轮此前完成了统一open修改，Host新包也重新构建；这些版本差异必须保留，不能抹去。结果结合RTL强烈支持长度/终止处理相关方向，但不能进一步指认ongoing是直接ACK门控。
+
+本轮Host原始日志：监听配置〔原记录内链已省略〕、供钟命令结果〔原记录内链已省略〕、完整新增内核日志〔原记录内链已省略〕。
+
+关键原始片段：
+
+```text
+I3C DAA ENTDAA rc=0 assigned=1
+I3C CCC seq=6 GETHDRCAP(0x95) OK rc=0
+I3C CCC seq=6 rx=3/3
+I3C CCC seq=6 bytes=01 f1 18
+I3C GETCAPS experiment da=0x09 rx=3 bytes=01f118
+I3C CCC seq=7 SETNEWDA(0x88) OK rc=0
+I3C CCC seq=7 phase=1 addr=0x7e/W hw_ack=ACK stage=done
+I3C CCC seq=7 phase=2 addr=0x09/W hw_ack=ACK stage=done
+I3C HOTJOIN result rc=0
+```
+
+## 6. 命令作用与实现
+
+本轮已执行的三字节实验顺序如下；Target前提是CLOSED、DA无效。保留脚本完整内容于下方附录，不只引用板端文件。

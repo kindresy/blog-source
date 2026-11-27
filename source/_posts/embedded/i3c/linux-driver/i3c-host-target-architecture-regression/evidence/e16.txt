@@ -1,0 +1,103 @@
+E16 | 2026-11-19 | 独立回归 12 项
+公开脱敏摘录。项目名、内部地址、账户和本机路径已泛化；历史内链省略。
+这不是本轮新执行日志，不可将脱敏命令当作直接可执行脚本。
+
+--- 原材料行 1–99 ---
+# I3C 手动回归实测记录 · EMU Target / i.MX93 Host · 2026-11-19
+
+**实测 12 项，双端通过 12 项。** 在同一次 EMU 会话内先完成枚举和两项 4 B 轮询收发，再从独立命令执行快速 smoke 的全部 9 个阶段。最后一个用例完成后，Target 为 generation 4，Hot-Join 两轮均通过。读写方向均以 Host 为准。
+
+| 顺序 | 实测用例 | Host 实测 | Target 串口验收 |
+|---|---|---|---|
+| 1 | 枚举 | 三次供钟均 ACK，SETDASA 成功，GETPID 收齐 6 B，GETCAPS 实收 3 B。日志〔原记录内链已省略〕 | IDLE，静态地址和 DA 均为 0x44，PID 为 <TARGET_PID> |
+| 2 | Poll Write 4 B | 写一次 `11 22 33 44`，退出及清理均为 0。日志〔原记录内链已省略〕 | DONE，copied=4，data=11223344，RX 与 response 均清空 |
+| 3 | Poll Read 4 B | 实读 4 B，逐字节匹配 `11 22 33 44`。日志〔原记录内链已省略〕 | DONE，queued=4，remaining=0，err=0 |
+| 4 | IRQ Write | 屏蔽轮和使能轮各写一次相同 4 B。第 1 笔〔原记录内链已省略〕 · 第 2 笔〔原记录内链已省略〕 | ISR 计数分别为 0、1。使能轮实际 EIID=65，两轮状态均按 0x12 → 0x02 → 0x00 清除 |
+| 5 | Long RX，32 B × 1 | 单包写完成，日志标为 HOST_ONLY_PASS。日志〔原记录内链已省略〕 | copied=32，实收与计算 CRC 均为 0x483f6ede，两侧保护区完好 |
+| 6 | Long TX，32 B × 1 | actual=32，全包 compare=PASS。日志〔原记录内链已省略〕 | queued=32，completed=1，remaining=0，err=0 |
+| 7 | Early Read Recovery，M=5 | 短读 10…14，两次 GETSTATUS，再完整读回 a0…af 和 50…54。短读〔原记录内链已省略〕 · 最终状态〔原记录内链已省略〕 | EARLY_CAPTURED → 恢复 → 两个新包完成，最终 DONE、active=0、LOCAL_PASS |
+| 8 | Long Write，256 B，应用层 CRC 恢复 | run=9689，统计包通过，APPLICATION_CRC_PASS。日志〔原记录内链已省略〕 | baseline=1，stress=1，verified=16，captured=1，recovered=1，short_ok=1 |
+| 9 | PIO 带宽写，16 B × 1 | run=9354，调用 205.900 B/s，含握手 52.870 B/s。日志〔原记录内链已省略〕 | 预热 1 包，计量 1/1，WORK=0，LOCAL_PASS |
+| 10 | PIO 带宽读，16 B × 1 | run=2723，调用 205.745 B/s，含握手 55.713 B/s。日志〔原记录内链已省略〕 | 预热 1 包，计量 1/1，WORK=0，LOCAL_PASS |
+| 11 | Full 表 2 | run=40214，第 1～33 步连续 PASS，包括第 26 步 rstact00-pattern2。日志〔原记录内链已省略〕 | 33/33，patterns=4，da_lost=1，gate_rejected=1，ret=0，cleanup_error=0 |
+| 12 | Hot-Join 表 5，两轮 | run=2834、2835，epoch 4 → 5 → 6，12 步均 PASS。日志〔原记录内链已省略〕 | generation 2 → 3 → 4，2/2 轮、12 步，ret=0，cleanup_error=0 |
+
+**原始证据。** 第 1～7 项的 Target 结果在第一张图，第 8～12 项的终态在第二张图。两图在 256 B 长写的 READY 处衔接。另保留了较早提供的 Poll Write 截图。Host 原始日志在上表逐项链接，附录列出实际脚本、复现命令与构建入口。校验清单收录 84 个文件，包含板测记录、执行脚本、原图以及独立标注的离线测试材料。所有链接以本文所在目录为基准，可在此目录执行 `sha256sum -c EVIDENCE_SHA256SUMS` 核实本轮原始材料。Target 原图一〔原记录内链已省略〕 · Target 原图二〔原记录内链已省略〕 · 单独 Poll Write 截图〔原记录内链已省略〕 · Host 执行附录〔原记录内链已省略〕 · 证据校验清单〔原记录内链已省略〕
+
+## 版本、产物和本轮状态
+
+| 端 | 本机从服务器核验的 master | 产物及状态 |
+|---|---|---|
+| EMU Target | `platform/chiptest/baremetal` · `81ab42cb027f470de5f31e9785bd656ce9f25641` | GSP 固件〔原记录内链已省略〕，EMU、GSP-only、I3C、跳过 DDR 初始化。横幅构建时间 `2026-11-19 09:57:37 +0800`，SHA-256 `4832436c79609747433a0a3ec6352ab533e0d1b1f259d4463645bcb8772fc778`。本轮保留现场已有固件。此文件是可重建的 master 候选，实际装载版本见下文。 |
+| i.MX93 Host | `platform/linux_imx93` · `c053d9bb31abbd4a040dd4c2ae22765b931d5aa1` | 三个 KO、APP、两种长包工具和脚本〔原记录内链已省略〕。板端以 **root 用户主目录**为基准，已复制到 `i3c-master-regression-20261119/host-c053d9bb3`，逐文件 SHA-256 校验通过。运行内核仍为 `6.6.36-moduledev #2`；本次局部构建 Host 工具和模块。 |
+
+部署前，板端加载的三个模块的 GNU build ID 均匹配旧 R4。第一次枚举时已经切换到下文记录的 master 构建。Host 的 14 组离线测试全部通过。Target 的 9 组本机模型中，8 组直接通过；TX DMA 的第二段编译漏了 SoC 头文件路径，在源码根设置 `CPATH="$PWD/components/chip_riscv_c908_common/include"` 后整组通过。离线模型的结果单独统计。本轮 12 项使用当前 EMU 固件和 Host master 模块。部署前旧模块对照〔原记录内链已省略〕 · 板端交付校验〔原记录内链已省略〕 · Host 符号 CRC〔原记录内链已省略〕 · Target 构建记录〔原记录内链已省略〕 · 原样离线结果〔原记录内链已省略〕 · TX DMA 补跑〔原记录内链已省略〕
+
+**实际版本与可复现基线。** Host 在 i.MX93（<LAB_ADDRESS>）上沿用已经启动的内核 Image，本轮 probe 加载了从上表 Host master 重建的三个 KO，装载后的 build ID 可在枚举日志复核。驱动打印 FCLK=93,750 Hz、PP=1,994.681 Hz、OD=1,953.125 Hz、SKEW=4，MCONFIG 写入及读回均为 0x901ff01。两项 SCL 频率是驱动配置推算值，本轮没有抓波。枚举日志〔原记录内链已省略〕 · 内核、符号版本与模块比对〔原记录内链已省略〕 · Host 产物指纹〔原记录内链已省略〕
+
+实际 Target 为本轮已运行的 V95 EMU 固件。串口打印 `V95 target-enable counter/clock/reset must be ready; DAA is separate`，IRQ 检查两轮使用 APLIC10 source **89**（0x000a0059），使能轮收到 EIID 65。上表 baremetal master 候选打印 `HOST must provide SCL`，其 ELF 使用 source **90**。现场未取得 loader 的固件 SHA-256、对应完整提交及实际装载的硬件 DB 标识。因此两端 master 的指定组合仅有源码与构建记录，本轮 12 项结论归属于实测组合。Hot-Join 独立入口的 Host APP 差异在下文单列。原图、日志、构建材料已存本地工作区，本记录未发布到远端。Target 原图一〔原记录内链已省略〕 · 候选 ELF 反汇编〔原记录内链已省略〕 · 候选 Target 重建脚本〔原记录内链已省略〕 · Host 重建与依赖〔原记录内链已省略〕
+
+## Host 分支核对
+
+远端的五条 `feature/` 中，三条已按提交历史进入 master，包括 `all-smoke`。另外两条中，`feature/i3c-bandwidth-load-20261103` 的整棵 Git 树与 master 一致；`feature/lpi2c1-smbus-20261116` 尚有两个独有提交，分别增加独立 LPI2C1 设备树配置和 SMBus 测试工具。本地 `feature/i3c-long-write-20261019` 的补丁已等价合入。逐分支核对结果〔原记录内链已省略〕
+
+与手动 I3C 回归直接相关的未合入改动还有两条。`fix/i3c-long-tx-result-export-20261116` 修复独立工具的长读结果导出和比对。`lab/i3c-single-placeholder-20261118` 将枚举起始的三个供钟地址头缩为一个。当前手册按 master 的 64 B 导出边界和三次供钟编写。Host 构建说明与适配条件〔原记录内链已省略〕
+
+## 第一次 Host 枚举实测
+
+操作员确认已执行本轮 Target 准备命令后，Host 卸载 R4，使用上述 master 模块发起一次 probe。三个已加载模块的 GNU Build ID 均与本次构建匹配。Host 日志记录三次供钟均为 ACK、stop=idle；SETDASA 成功，ENTDAA 返回 `rc=0 assigned=0`，GETPID 收齐 `<TARGET_PID>`，GETCAPS 返回 `01 f1 18`（最大 4 B，实际 3 B）。Host 确认 DA=0x44、BCR=0x3e、DCR=0x00，设备节点建成，info 返回 0。此处记录 **Host 枚举通过**。Target 截图确认枚举后 IDLE、DA=0x44，RX/response 均为空；本阶段没有采集外部波形。本次原始 Host 日志〔原记录内链已省略〕 · 实际执行脚本〔原记录内链已省略〕
+
+### 第一次 4 B Poll Write
+
+Target 操作员回报 RX READY，Host 核对三个模块 build ID、PID 和 DA，向 0x44 执行一次 `write 11223344`。本轮 `epoch=2 session=1`，写操作及清理均返回 0。Host 写操作的 `actual=0` 字段不提供 Target 已接收的字节数。Target 串口显示 generation=1、sequence=1，`rx poll` 完成，`rx status` 读回同一结果。响应为 `0x04010018`、err=0、copied=4、last_word=0x44332211、data=11223344、LOCAL_PASS。最终状态 IDLE，DA=0x44，rx=0、response=0、ext_free=4，last_error 和 cleanup_error 都是 0。**本次单包收发通过。** 截图中较早的 `target-init status` 返回 -22，因为这个子命令未定义；随后正确的 `i3c_test status` 返回 0。Target 原始串口截图〔原记录内链已省略〕 · 本次 Host 日志〔原记录内链已省略〕 · 实际执行脚本〔原记录内链已省略〕
+
+### 第一次 4 B Poll Read
+
+按操作员要求，沿用上述现场和既有 DA。Target 执行 `i3c_test tx 4` 并回报 TX READY 后，Host 向 0x44 发起一次 `read 4`。本轮 `epoch=2 session=2`，Host 返回 `ret=0 cleanup=0 actual=4 data=11223344`，读出的四个字节与预期逐一相同；会话已释放。Target 截图中的 `tx poll` 和 `tx status` 均为 DONE、queued=4、completion=1、remaining=0、err=0、LOCAL_PASS。Host 的逐字节比较补齐了 Target 打印的 host_compare_required=1。Target 原图一〔原记录内链已省略〕 · Host 原始日志〔原记录内链已省略〕 · 实际执行脚本〔原记录内链已省略〕
+
+### IRQ Write
+
+第一轮由操作员确认 READY，Host 对 DA 0x44 写一次 `11 22 33 44`，`epoch=2 session=3 ret=0 cleanup=0`。操作员随后确认 `round=2 irq_output=enabled` 已 READY，Host 在 `epoch=2 session=4` 向同一 DA 写入相同四字节一次，`ret=0 cleanup=0`。两次命令均正常退出。Target 屏蔽轮为 MASKED_DONE、irq_count=0。开启轮先在 WAIT_IRQ 提前执行了 `finish`，此时 ISR 计数已为 1，前台尚未消费第二轮响应，返回 -16（EBUSY）。随后 `poll` 到 IRQ_DONE，再 `finish` 到 DONE，active=0、ret=0、cleanup_error=0、LOCAL_PASS。两轮均读到 response=0x04010018、data=0x44332211，读响应和数据后状态依次从 0x12 降到 0x02、0x00。期间 Host 共写两笔。Target 原图一〔原记录内链已省略〕 · 第一轮 Host 原始日志〔原记录内链已省略〕 · 第二轮 Host 原始日志〔原记录内链已省略〕 · 实际执行脚本〔原记录内链已省略〕
+
+### Long RX，32 字节单包
+
+Target 操作员回报 READY 后，Host 在同一地址 0x44 发送 generation=1、sequence=1 的一包 32 B 数据，CRC 为 `0x483f6ede`。Host 实测 `attempted=1 completed=1 write_ret=0 result_ret=0 pause_ret=0`，耗时字段 `elapsed_us=149963`，结果为 HOST_ONLY_PASS。Target 实收 1/1 包，copied=32，CRC 实收和计算均为 0x483f6ede，guard_before=1、guard_after=1，最终 RX/response 均清零，LOCAL_PASS。Target 原图一〔原记录内链已省略〕 · Host 原始日志〔原记录内链已省略〕 · 实际执行脚本〔原记录内链已省略〕
+
+### Long TX，32 字节单包
+
+Target 操作员回报 TX READY 后，Host 对 DA 0x44 发起一次 32 B Private Read。按 generation=1、sequence=1 构造期望包，包含 CRC `0x483f6ede`；实际读回 `actual=32 compare=PASS`，全包一致。Host 日志记录 `attempted=1 completed=1 read_ret=0 result_ret=0 elapsed_us=150138`，结果为 HOST_PASS。Target 完成 1/1 包，queued=32，CRC=0x483f6ede，final_free=4，completion=1，remaining=0，err=0，LOCAL_PASS。Target 原图一〔原记录内链已省略〕 · Host 原始日志〔原记录内链已省略〕 · 实际执行脚本〔原记录内链已省略〕
+
+### 提前终止读，M=5
+
+操作员确认 EARLY READY 后，Host 在 DA 0x44 执行一次 `read-terminated 5`，`epoch=2 session=5 ret=0 cleanup=0 actual=5 data=1011121314`。Target 回报 `EARLY_CAPTURED`，执行 `recover` 后进入 `FLUSHING`。短读前缀正确，外部 T-bit 和重复 START 的相对位置待波形验证。短读原始日志〔原记录内链已省略〕 · 执行脚本〔原记录内链已省略〕
+
+| 次序 | 供钟前 Target 回报 | 本次 Host GETSTATUS 实测 |
+|---|---|---|
+| 1 | FLUSHING | epoch=2、session=6、status=0x0200、ret=0、cleanup=0。原始日志〔原记录内链已省略〕 |
+| 2 | RESUMING、resume_issued=1 | epoch=2、session=7、status=0x0000、ret=0、cleanup=0，累计两次。原始日志〔原记录内链已省略〕 |
+
+操作员随后回报 Target 进入 `WAIT_NEW16`，说明恢复后的新 16 B 包已就绪。Host 在相同 epoch 和 DA 上读一次，`session=8 actual=16 ret=0 cleanup=0`，全部字节与 `a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 aa ab ac ad ae af` 一致。操作员回报 Target 已到 `NEW16_DONE`，恢复后的 16 B 新包双端校验通过。16 B 读取原始日志〔原记录内链已省略〕
+
+操作员回报 `WAIT_NEW5` 后，Host 使用普通 Private Read 读回完整的 `50 51 52 53 54`，`epoch=2 session=9 actual=5 ret=0 cleanup=0`。Host runner 已到 `DONE / HOST_PASS`，全程共两次 GETSTATUS 供钟。操作员随后确认 Target 最终返回 `phase=DONE active=0 ret=0 result=LOCAL_PASS`，本轮 M=5 提前终止及同一会话恢复已双端功能通过。串口原图补齐了 Target 快照。捕获时 err=0xa、remaining=10，随后 resume_issued=1，后续两个新包的检查依次到 NEW16_DONE 和 DONE。中途 ret=-115 表示该会话仍在推进。终态 packet=2、ret=0。Target 原图一〔原记录内链已省略〕 · 5 B 读取原始日志〔原记录内链已省略〕 · 最终 Host 会话状态〔原记录内链已省略〕
+
+### 256 B 长写与应用层 CRC 恢复
+
+操作员回报 Target READY 后，Host 在原 DA 0x44 执行 `auto long-write 1 256 1 60000 recover`。本轮 run=9689、generation=1。Host 读回 16 B 统计包并校验统计 CRC，确认基线 1 包、负载 1 包、恢复后连续 16 包、target_work=1。Host 收到最后一条 IBI 时记录 `received=28 dropped=0 invalid=0`，释放会话成功。最终 `recovery=APPLICATION_CRC_PASS ret=0 cleanup=0 result=HOST_PASS`；覆盖应用层坏 CRC 的捕获与恢复，硬件故障恢复未测。Target 同一 run 捕获注入的 CRC 0xa7e73928，期望 0xa7e73929，随后 captured=1、recovered=1、short_ok=1，verified=16、work_calls=4、LOCAL_PASS。四阶段记录的 RX 高水位均为 64、response 高水位均为 8。Target 原图二〔原记录内链已省略〕 · Host 原始日志〔原记录内链已省略〕 · 实际执行脚本〔原记录内链已省略〕
+
+### PIO 写带宽 smoke，16 B × 1
+
+Target 回报 READY 后，Host 使用 DA 0x44、generation=1、WORK=0，跑一次 `auto bandwidth 1 write 16 1 60000`。本轮 run=9354，先预热 1 包，再对 1 包 16 B 计时。Host 记录写调用 77.708 ms（205.900 B/s），含逐包 IBI 握手的窗口为 302.632 ms（52.870 B/s）。`completed=1 timing_valid=1 ret=0 cleanup=0 result=HOST_PASS`。Target 同一 run 报 requested=1、completed=1、sequence=1、warmup=1、LOCAL_PASS。两方向各计量一包，仅作为本次 smoke 样本。Target 原图二〔原记录内链已省略〕 · Host 原始日志〔原记录内链已省略〕 · 实际执行脚本〔原记录内链已省略〕
+
+### PIO 读带宽 smoke，16 B × 1
+
+Target 回报 READ_READY 后，Host 在同一地址 0x44、generation=1、WORK=0 执行读方向，run=2723。先预热 1 包，再计量 1 包；Host 校验返回长度及全部 16 字节。读调用 77.766 ms（205.745 B/s），含逐包 IBI 握手的窗口为 287.185 ms（55.713 B/s）。`completed=1 timing_valid=1 ret=0 cleanup=0 result=HOST_PASS`。Target 同一 run 的 status 保留 completed=1、sequence=1、warmup=1、LOCAL_PASS。Target 原图二〔原记录内链已省略〕 · Host 原始日志〔原记录内链已省略〕 · 实际执行脚本〔原记录内链已省略〕
+
+### Full 33 步和独立 Hot-Join 循环入口
+
+操作员回报 FULL READY 后，Host 执行 `auto full 1 60000 2000`。Run 40214 的 1～33 步逐项 PASS，最终 `completed=33 requested=33 ret=0 cleanup=0 result=HOST_PASS`。第 17 步完成 RSTDAA/ENTDAA，第 23～26 步四次 pattern 均返回成功，第 27 步完成外设重启和 Hot-Join，第 33 步恢复限值。最后一次重入后，Host 日志为 DA 0x44、epoch=4、peer=2。Target 逐步报告 1～33 PASS，终态 generation=2、step=34、completed=33、requested=33、active=0、ret=0、cleanup_error=0。step=34 是完成后的游标。四次 pattern 均有快照，本轮没有零号 claim 命中证据。Target 原图二〔原记录内链已省略〕 · 本次 Host 日志〔原记录内链已省略〕 · Host 执行脚本〔原记录内链已省略〕
+
+为手动跑最后的两轮，在原 Host 工具之外编译了一份测试 APP。孤立副本中仅新增 `auto hotjoin-loop GEN ROUNDS TIMEOUT_MS DWELL_MS` 的命令分派，调用当前 master 已有的 `hotjoin_loop()`。Host 继续使用原 master KO。以板端 root 用户主目录为基准，APP 位于 `i3c-master-regression-20261119/table5-c053d9bb3/i3c-host-table5`。新 APP 的 2 轮成功、BEGIN 错误和输入校验均经过离线 ioctl 模型验证；板端已确认文件哈希和只读节点发现，并使用该入口完成了下面两轮真实循环。独立 APP 的 SHA-256 为 `ab726ed23f110aa9b25141311fd57cae5f896eba3057124ebf805f409c1ed36e`。独立 APP 指纹〔原记录内链已省略〕 · 独立入口补丁〔原记录内链已省略〕 · 局部构建〔原记录内链已省略〕 · 离线验证〔原记录内链已省略〕 · 板端校验〔原记录内链已省略〕
+
+### 独立 Hot-Join 两轮实测
+
+Target 操作员回报 LOOP READY 后，Host 从 generation=2、epoch=4 开始。两轮分别完成外设重启与 Hot-Join、身份核对、5 B 写、5 B 读、IBI、GETSTATUS，共 12 步均 PASS。第一轮 run=2834，generation=3，epoch 4→5；第二轮 run=2835，generation=4，epoch 5→6。两轮重新发现的 PID 均为 <TARGET_PID>，DA 均为 0x44。最终 completed=2、requested=2、ret=0、cleanup=0、HOST_PASS。Target 首次误输 `hotjoin-loopo run 2`，CLI 当即返回 -22。更正为 `hotjoin-loop run 2` 后出现 LOOP_READY。两轮分别检查到 rx=0、response=0、ext_free=4，最终 table=5、steps_completed=12、active=0、ret=0、cleanup_error=0、LOCAL_PASS。Target 原图二〔原记录内链已省略〕 · Host 原始日志〔原记录内链已省略〕 · 实际执行脚本〔原记录内链已省略〕

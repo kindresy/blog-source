@@ -1,0 +1,48 @@
+
+digraph G {
+
+graph [bgcolor="#ffffff", pad="0.3", nodesep="0.28", ranksep="0.48",
+       fontname="Noto Sans CJK SC", fontsize=21];
+node [shape=box, style="rounded,filled", fillcolor="#f1f5f9", color="#94a3b8",
+      fontname="Noto Sans CJK SC", fontsize=17, margin="0.18,0.12"];
+edge [fontname="Noto Sans CJK SC", fontsize=14, color="#64748b", arrowsize=0.8];
+ rankdir=TB;
+label="自动回归的一步：READY 交接成功后，才发业务数据"; labelloc=t;
+h0 [label="Host：CLAIM / 开启 IBI
+核对 epoch、Target generation", fillcolor="#dbeafe"];
+t0 [label="Target：准备 16 B 控制接收
+等待本轮控制帧", fillcolor="#dcfce7"];
+{rank=same;h0;t0}
+h1 [label="Host：发送 PREPARE
+run / step / table / generation"];
+t1 [label="Target：校验控制帧
+准备本步 RX、TX 或观察器"];
+{rank=same;h1;t1}
+h2 [label="Host：收到并匹配 READY
+检查事件序号及丢弃计数"];
+t2 [label="Target：发布 READY IBI
+跟踪本地通知完成"];
+{rank=same;h2;t2}
+h3 [label="Host：执行一笔业务
+Private Write / Read / CCC"];
+t3 [label="Target：处理数据和完成状态
+必要时等待 Host COMMIT"];
+{rank=same;h3;t3}
+h4 [label="Host：核对 DONE
+才允许进入下一步"];
+t4 [label="Target：准备下一控制 RX
+然后发布 DONE IBI"];
+{rank=same;h4;t4}
+h5 [label="Host：FINISH → 等 FINAL → RELEASE
+分别记录 ret 与 cleanup", fillcolor="#dbeafe"];
+t5 [label="Target：完成最终收尾
+检查队列 / active / error", fillcolor="#dcfce7"];
+{rank=same;h5;t5}
+h0 -> h1 -> h2 -> h3 -> h4 -> h5 [style=invis, weight=20];
+t0 -> t1 -> t2 -> t3 -> t4 -> t5 [style=invis, weight=20];
+h1 -> t1 [label="Private Write", color="#2563eb", constraint=false];
+t2 -> h2 [label="IBI：READY", color="#16a34a", constraint=false];
+h3 -> t3 [label="业务请求 / 返回", dir=both, color="#2563eb", constraint=false];
+t4 -> h4 [label="IBI：DONE", color="#16a34a", constraint=false];
+h5 -> t5 [label="FINISH / FINAL", dir=both, constraint=false];
+}

@@ -1,0 +1,668 @@
+代码阅读摘录（脱敏、非独立可编译源文件）
+
+Host 阅读版本：c053d9bb31abbd4a040dd4c2ae22765b931d5aa1
+Target 阅读版本：33e17bc171c09418eaa844797ef19a9976a27390
+这两份源码用于解释架构，不代表所有历史实测均加载这套版本。
+项目目录/前缀已泛化，不能把摘录直接用于构建或上板。
+
+
+H1 | Host UAPI | i3c_host.h
+
+--- 原文件行 46–60 ---
+  46  struct i3ch_request {
+  47  	__u32 abi, op;
+  48  	__aligned_u64 epoch, session, pid;
+  49  	__u32 length, actual;
+  50  	__s32 status, cleanup_error;
+  51  	__u32 caps, max_read, max_write, max_ibi;
+  52  	__u32 da, bcr, dcr, paused;
+  53  	__u32 ibi_enabled, ibi_requested, received, dropped, invalid, queued;
+  54  	__u32 event_sequence, device_status;
+  55  	__u32 reserved[4];
+  56  	__u8 data[I3CH_DATA_MAX];
+  57  	__u32 reserved_tail; /* Explicit tail padding; must be zero. */
+  58  };
+  59  #define I3CH_IOC_EXEC _IOWR(0xBC, 1, struct i3ch_request)
+  60  #endif
+
+H2 | Host owner 与 epoch 门控 | target_recovery.c
+
+--- 原文件行 450–510 ---
+ 450  static long recovery_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 451  {
+ 452  	struct recovery_session *s = file->private_data;
+ 453  	struct recovery_client *c = s->client;
+ 454  	struct i3ch_request in, out = { .abi = I3CH_ABI };
+ 455  	struct i3c_host_operation_data d = {};
+ 456  	void __user *ptr = (void __user *)arg;
+ 457  	unsigned long flags;
+ 458  	bool consume = false;
+ 459  	int ret = 0;
+ 460
+ 461  	if (cmd != I3CH_IOC_EXEC)
+ 462  		return -ENOTTY;
+ 463  	if (copy_from_user(&in, ptr, sizeof(in)))
+ 464  		return -EFAULT;
+ 465  	if (in.abi != I3CH_ABI || in.reserved_tail ||
+ 466  	    memchr_inv(in.reserved, 0, sizeof(in.reserved)))
+ 467  		return -EINVAL;
+ 468  	if (in.op < I3CH_INFO ||
+ 469  	    (in.op > I3CH_READ_TERMINATED &&
+ 470  	     (in.op < I3CH_TEST_SETDA || in.op > I3CH_TEST_REDAA)))
+ 471  		return -EOPNOTSUPP;
+ 472  	if (in.op != I3CH_INFO && in.op != I3CH_RESULT &&
+ 473  	    (!(file->f_mode & FMODE_WRITE) || !capable(CAP_SYS_RAWIO)))
+ 474  		return -EPERM;
+ 475  	/* Validate sizes before any state change or bus operation. */
+ 476  	if (((in.op == I3CH_READ || in.op == I3CH_READ_TERMINATED) &&
+ 477  	     (!in.length || in.length > RECOVERY_MAX_READ)) ||
+ 478  	    (in.op == I3CH_WRITE && (!in.length || in.length > RECOVERY_MAX_WRITE)) ||
+ 479  	    ((in.op == I3CH_SETMRL || in.op == I3CH_SETMWL ||
+ 480  	      in.op == I3CH_SETMRL_ONLY || in.op == I3CH_SETMWL_ONLY) &&
+ 481  	     (!in.length || in.length > 65535)) ||
+ 482  	    (in.op != I3CH_READ && in.op != I3CH_READ_TERMINATED && in.op != I3CH_WRITE &&
+ 483  	     in.op != I3CH_SETMRL && in.op != I3CH_SETMWL &&
+ 484  	     in.op != I3CH_SETMRL_ONLY && in.op != I3CH_SETMWL_ONLY && in.op != I3CH_TEST_SETDA &&
+ 485  	     in.op != I3CH_TEST_PROBE_NACK && in.length))
+ 486  		return -EINVAL;
+ 487  	out.op = in.op;
+ 488  	mutex_lock(&c->lock);
+ 489  	if (c->offline) {
+ 490  		ret = -ENODEV;
+ 491  		goto done;
+ 492  	}
+ 493  	if (in.op == I3CH_RESULT) {
+ 494  		out = s->last;
+ 495  		goto copy;
+ 496  	}
+ 497  	if (in.op != I3CH_INFO && in.op != I3CH_CLAIM && in.op != I3CH_CLEANUP) {
+ 498  		if (c->owner != s || !s->id || in.session != s->id) {
+ 499  			ret = -EPERM;
+ 500  			goto done;
+ 501  		}
+ 502  		if (in.epoch != s->epoch) {
+ 503  			ret = -ESTALE;
+ 504  			goto done;
+ 505  		}
+ 506  		d.epoch = s->epoch;
+ 507  	}
+ 508  	/* RELEASE must remain possible after descriptor replacement. */
+ 509  	if (in.op == I3CH_RELEASE) {
+ 510  		ret = recovery_release_owner(s);
+--- 原文件行 522–539 ---
+ 522  	case I3CH_CLAIM:
+ 523  		if (c->owner || c->cleanup_error || d.ibi_requested) {
+ 524  			ret = -EBUSY;
+ 525  			break;
+ 526  		}
+ 527  		if (!in.epoch || in.epoch != d.epoch) {
+ 528  			ret = -ESTALE;
+ 529  			break;
+ 530  		}
+ 531  		c->owner = s;
+ 532  		s->id = atomic64_inc_return(&recovery_session_id);
+ 533  		s->epoch = d.epoch;
+ 534  		atomic_set(&c->paused, 1);
+ 535  		spin_lock_irqsave(&c->ibi_lock, flags);
+ 536  		c->ibi_count = c->ibi_received = c->ibi_dropped = c->ibi_invalid = 0;
+ 537  		spin_unlock_irqrestore(&c->ibi_lock, flags);
+ 538  		break;
+ 539  	case I3CH_CLEANUP:
+
+H3 | IBI 回调与拷贝后出队 | target_recovery.c
+
+--- 原文件行 64–87 ---
+  64  /* The callback never takes the command mutex: disable waits for callbacks. */
+  65  static void recovery_ibi_handler(struct i3c_device *target,
+  66  				 const struct i3c_ibi_payload *payload)
+  67  {
+  68  	struct recovery_client *c = i3cdev_get_drvdata(target);
+  69  	struct recovery_ibi_record *r;
+  70  	unsigned long flags;
+  71
+  72  	spin_lock_irqsave(&c->ibi_lock, flags);
+  73  	c->ibi_received++;
+  74  	if (!payload->len || payload->len > RECOVERY_IBI_BYTES) {
+  75  		c->ibi_invalid++;
+  76  	} else if (c->ibi_count == RECOVERY_IBI_RECORDS) {
+  77  		c->ibi_dropped++;
+  78  	} else {
+  79  		r = &c->ibi_records[c->ibi_count++];
+  80  		r->sequence = c->ibi_received;
+  81  		r->len = payload->len;
+  82  		memcpy(r->data, payload->data, payload->len);
+  83  	}
+  84  	spin_unlock_irqrestore(&c->ibi_lock, flags);
+  85  	wake_up_interruptible(&c->event_wait);
+  86  }
+  87
+--- 原文件行 690–714 ---
+ 690  	recovery_snapshot(c, &out, &d);
+ 691  done:
+ 692  	if (ret && ret != -EAGAIN && c->owner == s)
+ 693  		atomic_set(&c->paused, 1);
+ 694  	out.session = s->id;
+ 695  	out.status = ret;
+ 696  	out.cleanup_error = c->cleanup_error;
+ 697  	out.paused = atomic_read(&c->paused);
+ 698  	/* Queries must not overwrite the result of a potentially ambiguous send. */
+ 699  	if (in.op != I3CH_INFO)
+ 700  		s->last = out;
+ 701  copy:
+ 702  	if (copy_to_user(ptr, &out, sizeof(out))) {
+ 703  		ret = -EFAULT;
+ 704  	} else if (consume) {
+ 705  		/* c->lock excludes another consumer; callbacks only append. */
+ 706  		spin_lock_irqsave(&c->ibi_lock, flags);
+ 707  		c->ibi_count--;
+ 708  		memmove(c->ibi_records, c->ibi_records + 1,
+ 709  			c->ibi_count * sizeof(c->ibi_records[0]));
+ 710  		spin_unlock_irqrestore(&c->ibi_lock, flags);
+ 711  	}
+ 712  	mutex_unlock(&c->lock);
+ 713  	return ret;
+ 714  }
+
+H4 | 自动控制帧与等待逻辑 | i3c-host.c
+
+--- 原文件行 174–197 ---
+ 174  		int ret;
+ 175  		if (interrupted)
+ 176  			return -EINTR;
+ 177  		/* Periodic check catches a same-device descriptor replacement even
+ 178  		 * if no IBI is delivered to wake poll. */
+ 179  		ret = call(s, &info, true);
+ 180  		if (ret)
+ 181  			return ret;
+ 182  		if (info.epoch != s->epoch) {
+ 183  			s->stopped = true;
+ 184  			return -ESTALE;
+ 185  		}
+ 186  		ret = poll(&p, 1, left <= 0 ? 0 : left > 250 ? 250 : (int)left);
+ 187  		if (ret < 0)
+ 188  			return -errno;
+ 189  		if (p.revents & (POLLERR | POLLHUP | POLLNVAL)) {
+ 190  			s->stopped = true;
+ 191  			return -ENODEV;
+ 192  		}
+ 193  		if (p.revents & POLLIN) {
+ 194  			*event = (struct i3ch_request){ .op = I3CH_IBI_DEQUEUE };
+ 195  			return call(s, event, quiet);
+ 196  		}
+ 197  		if (milliseconds() >= deadline)
+--- 原文件行 210–280 ---
+ 210  /* Table 1 is intentionally fixed; no scripts are executed on the Target. */
+ 211  static int auto_control(struct session *s, uint8_t op, uint16_t run,
+ 212  			uint8_t step, uint32_t generation)
+ 213  {
+ 214  	struct i3ch_request r = { .op = I3CH_WRITE, .length = I3CA_FRAME };
+ 215  	i3ca_frame(r.data, op, run, step, generation);
+ 216  	return call(s, &r, false);
+ 217  }
+ 218  static int auto_event(struct session *s, unsigned long timeout, uint16_t run,
+ 219  		      uint8_t step, uint8_t event, uint32_t *sequence, bool business)
+ 220  {
+ 221  	struct i3ch_request r = {};
+ 222  	uint8_t expected[] = {I3CA_MDB, (uint8_t)run, (uint8_t)(run >> 8), step, event};
+ 223  	static const uint8_t data[] = {I3CA_MDB, 0x11, 0x22, 0x33, 0x44};
+ 224  	int ret = receive_event(s, timeout, &r);
+ 225  	if (ret) return ret;
+ 226  	if (r.actual != 5 || r.dropped || r.invalid || r.event_sequence != *sequence + 1U ||
+ 227  	    memcmp(r.data, business ? data : expected, 5)) return -EPROTO;
+ 228  	*sequence = r.event_sequence;
+ 229  	return 0;
+ 230  }
+ 231  static int auto_normal(struct session *s, uint32_t generation, unsigned long timeout)
+ 232  {
+ 233  	struct i3ch_request info = { .op = I3CH_INFO };
+ 234  	uint16_t run = 0;
+ 235  	uint32_t sequence = 0;
+ 236  	unsigned completed = 0;
+ 237  	int ret;
+ 238  	/* Fresh FD/claim: never take over an interactive session's IBI queue. */
+ 239  	if (s->id || s->stopped) return -EBUSY;
+ 240  	if (getrandom(&run, sizeof(run), 0) != sizeof(run)) return -EIO;
+ 241  	if (!run) run = 1;
+ 242  	s->peer = generation;
+ 243  	ret = claim(s);
+ 244  	if (!ret) ret = call(s, &info, false);
+ 245  	if (!ret && (info.max_write < I3CA_FRAME || info.max_read < 4 || info.max_ibi < 5))
+ 246  		ret = -EMSGSIZE;
+ 247  	if (!ret) ret = operation(s, I3CH_IBI_CLEAR);
+ 248  	if (!ret) ret = operation(s, I3CH_IBI_ON);
+ 249  	if (!ret) ret = operation(s, I3CH_RESUME);
+ 250  	printf("[I3C][AUTO] begin table=1 run=%u peer=%u timeout_ms=%lu\n", run, generation, timeout);
+ 251  	for (uint8_t step = 1; !ret && step <= I3CA_STEPS; ++step) {
+ 252  		if (interrupted) { ret = -EINTR; break; }
+ 253  		ret = auto_control(s, I3CA_PREPARE, run, step, generation);
+ 254  		if (!ret) ret = auto_event(s, timeout, run, step, I3CA_READY, &sequence, false);
+ 255  		if (!ret && step <= 2) {
+ 256  			struct i3ch_request r = { .op = step == 1 ? I3CH_WRITE : I3CH_READ, .length = 4,
+ 257  				.data = {0x11, 0x22, 0x33, 0x44} };
+ 258  			static const uint8_t expected[] = {0x11, 0x22, 0x33, 0x44};
+ 259  			ret = call(s, &r, false);
+ 260  			if (!ret && step == 2 && (r.actual != 4 || memcmp(r.data, expected, 4))) ret = -EBADMSG;
+ 261  		} else if (!ret && step == 3) {
+ 262  			ret = auto_event(s, timeout, run, step, 0, &sequence, true);
+ 263  		} else if (!ret) {
+ 264  			ret = operation(s, I3CH_GETSTATUS);
+ 265  			if (!ret) ret = operation(s, I3CH_RESUME);
+ 266  		}
+ 267  		if (!ret && step >= 3) ret = auto_control(s, I3CA_COMMIT, run, step, generation);
+ 268  		if (!ret) ret = auto_event(s, timeout, run, step, I3CA_DONE, &sequence, false);
+ 269  		printf("[I3C][AUTO] step=%u ret=%d result=%s\n", step, ret, ret ? "FAIL" : "PASS");
+ 270  		fflush(stdout);
+ 271  		if (!ret) completed++;
+ 272  	}
+ 273  	if (!ret) ret = auto_control(s, I3CA_FINISH, run, I3CA_STEPS + 1, generation);
+ 274  	if (!ret) ret = auto_event(s, timeout, run, I3CA_STEPS + 1, I3CA_FINAL, &sequence, false);
+ 275  	/* Release is also attempted on failure; it may send DISEC but never
+ 276  	 * sends a second test command or resets either endpoint. */
+ 277  	int cleanup = s->id ? operation(s, I3CH_RELEASE) : 0;
+ 278  	if (!ret) ret = cleanup;
+ 279  	printf("[I3C][AUTO] end run=%u completed=%u requested=%u ret=%d cleanup=%d result=%s\n",
+ 280  	       run, completed, I3CA_STEPS, ret, cleanup, ret ? "FAIL" : "HOST_PASS");
+
+T1 | Target 初始化与发布使能 | i3c_target.c
+
+--- 原文件行 472–532 ---
+ 472  static int target_open(i3c_target_t *t, bool nonblocking)
+ 473  {
+ 474      struct snapshot before, after;
+ 475      struct config_change {
+ 476          uint32_t off, saved, wanted, mask;
+ 477      } changes[6];
+ 478      unsigned count = 0, touched = 0;
+ 479      int ret;
+ 480
+ 481      if (t != &target) {
+ 482          return -EINVAL;
+ 483      }
+ 484      /* 仅ENABLE等待本身超时可续等，不能把后续PIO/IBI超时当作初始化。 */
+ 485      if (!nonblocking && t->state == I3C_TARGET_NEEDS_PLATFORM_RESET && t->enable_attempted &&
+ 486          t->enable_wait_timed_out && !t->hotjoin_enable) {
+ 487          return i3c_target_wait_enable_ack(t, true);
+ 488      }
+ 489      if (t->state != I3C_TARGET_CLOSED) {
+ 490          return -EBUSY;
+ 491      }
+ 492      ret = i3c_target_session_claim();
+ 493      if (ret) {
+ 494          return ret;
+ 495      }
+ 496      uint32_t generation = t->generation;
+ 497      bool hotjoin_enable = t->hotjoin_enable;
+ 498      memset(t, 0, sizeof(*t));
+ 499      t->generation = generation;
+ 500      t->hotjoin_enable = hotjoin_enable;
+ 501      t->instance.instance_type = INSTANCE_SLAVE;
+ 502
+ 503      const i3c_wrapper_config_t wrapper = {
+ 504          .ctrl0 = 0x00002002U,
+ 505          .ctrl1 = 0xbeee00c4U,
+ 506          .pid_lo = 0x00000101U,
+ 507      };
+ 508      /* 所有入口沿用已验证顺序：开钟 -> wrapper身份 -> reset -> monitor/PAD。 */
+ 509      ret = i3c_bsp_config(&t->instance, &t->bsp, I3C_BSP_CLOCK_ONLY);
+ 510      if (!ret) {
+ 511          ret = i3c_wrapper_config(&t->bsp, &wrapper, &t->wrapper);
+ 512      }
+ 513      if (!ret) {
+ 514          ret = i3c_bsp_config(&t->instance, &t->bsp, I3C_BSP_RESET_AND_PINS);
+ 515      }
+ 516      if (ret) {
+ 517          return config_failed(t, ret);
+ 518      }
+ 519      ++t->generation;
+ 520      ret = take_snapshot(t, &before);
+ 521      if (ret) {
+ 522          failed(t, ret);
+ 523          return ret; /* 无可靠disabled快照，不猜测可以回滚断钟。 */
+ 524      }
+ 525      if (i2c_static_no_da.capture) {
+ 526          ret = i2c_static_no_da_capture_reset(t, &before);
+ 527          if (ret) {
+ 528              failed(t, ret);
+ 529              return ret; /* 禁止后续ADDR覆盖；保留原始复位现场。 */
+ 530          }
+ 531      }
+ 532      if (generation) {
+--- 原文件行 615–652 ---
+ 615      t->ctrl_shadow = ENABLE;
+ 616      t->enable_attempted = true;
+ 617      t->state = I3C_TARGET_ENABLING;
+ 618      I3C_LOG_INFO("I3C_TARGET_OPEN: generation=%u pid=0x%012llx static_addr=0x44 "
+ 619                    "response_fragment=32 hj_en=%u adaptive=0\n",
+ 620                    t->generation, (unsigned long long)I3C_TARGET_PID, t->hotjoin_enable);
+ 621      ret = write_reg(t, CTRL, t->ctrl_shadow);
+ 622      if (ret) {
+ 623          failed(t, ret);
+ 624          return ret;
+ 625      }
+ 626      if (nonblocking || t->hotjoin_enable || i2c_static_no_da.capture) {
+ 627          return -EINPROGRESS; /* 沿用018：不阻塞等Host/DAA，不产生伪超时。 */
+ 628      }
+ 629      udelay(20U);
+ 630      return i3c_target_wait_enable_ack(t, false);
+ 631
+ 632  cleanup:
+ 633      failed(t, ret);
+ 634      if (take_snapshot(t, &after) || after.ctrl || (after.addr & ENABLE) || !quiet(&after)) {
+ 635          return ret;
+ 636      }
+ 637      while (touched) {
+ 638          uint32_t value = 0;
+ 639          --touched;
+ 640          int wr = write_reg(t, changes[touched].off, changes[touched].saved);
+ 641          int rd = read_reg(t, changes[touched].off, &value);
+ 642          if (wr || rd || ((value ^ changes[touched].saved) & changes[touched].mask)) {
+ 643              t->cleanup_error = -EIO;
+ 644          }
+ 645      }
+ 646      if (t->cleanup_error) {
+ 647          return ret; /* 保留时钟、会话和恢复快照供平台恢复。 */
+ 648      }
+ 649      return config_failed(t, ret);
+ 650  }
+ 651
+ 652  int i3c_target_open(i3c_target_t *t)
+
+T2 | Target RX/TX 状态契约 | i3c_target_pio.h
+
+--- 原文件行 1–84 ---
+   1  /* SPDX-License-Identifier: Apache-2.0 */
+   2  #ifndef I3C_TARGET_PIO_H
+   3  #define I3C_TARGET_PIO_H
+   4  #include "i3c_target.h"
+   5  #define I3C_TARGET_PIO_MAX_BYTES 16U
+   6  /* 单笔1～16-byte Private Write。缓冲由驱动拥有，跨CLI返回仍有效。
+   7   * 接口须前台串行调用；begin不会门控Host，Host必须按READY提示只发送一笔。 */
+   8  typedef enum {
+   9      I3C_TARGET_RX_NONE,
+  10      I3C_TARGET_RX_WAIT_RESPONSE,
+  11      I3C_TARGET_RX_WAIT_DATA,
+  12      I3C_TARGET_RX_WAIT_IDLE,
+  13      I3C_TARGET_RX_DONE,
+  14      I3C_TARGET_RX_FAULT,
+  15      I3C_TARGET_RX_CANCELED
+  16  } i3c_target_rx_phase_t;
+  17  typedef struct {
+  18      i3c_target_rx_phase_t phase;
+  19      int status; /* -EINPROGRESS等待；0协议接收成功；其他负值为终止原因。 */
+  20      uint32_t generation, sequence, response, rx_word;
+  21      uint32_t response_level, rx_level;
+  22      uint8_t da, data[I3C_TARGET_PIO_MAX_BYTES], copied, length, requested, err;
+  23      bool response_valid, err_valid, i2c_static;
+  24  } i3c_target_rx_result_t;
+  25  int i3c_target_rx_begin(i3c_target_t *t); /* 兼容默认4字节。 */
+  26  int i3c_target_rx_begin_length(i3c_target_t *t, unsigned length);
+  27  /* 单次有限服务，不保证时间上限；每次至多pop一条响应、一个数据word。
+  28   * HAL错误可能发生在pop后，终止后不重试读取该端口。 */
+  29  int i3c_target_rx_step(i3c_target_t *t);
+  30  int i3c_target_rx_result(i3c_target_t *t, i3c_target_rx_result_t *out);
+  31  /* 仅取消软件等待，绝不abort/清FIFO/reset/断钟。已完成时为无副作用操作。 */
+  32  int i3c_target_rx_cancel(i3c_target_t *t);
+  33  bool i3c_target_rx_active(i3c_target_t *t);
+  34  const char *i3c_target_rx_phase_name(i3c_target_rx_phase_t phase);
+  35  /* queue0有限长度Private Read。begin复制源数据并预填，随后发布命令。
+  36   * 前台串行调用；Host只在begin成功后发起一次匹配长度的Read。
+  37   * 当前上限16字节（4个FIFO word），0不是空包，禁止进入无限长度模式。 */
+  38  typedef enum {
+  39      I3C_TARGET_TX_NONE,
+  40      I3C_TARGET_TX_WAIT_COMMAND,
+  41      I3C_TARGET_TX_WAIT_IDLE,
+  42      I3C_TARGET_TX_DONE,
+  43      I3C_TARGET_TX_FAULT,
+  44      I3C_TARGET_TX_CANCELED,
+  45      I3C_TARGET_TX_EARLY_TERMINATED,
+  46      I3C_TARGET_TX_FLUSHING,
+  47      I3C_TARGET_TX_RESUMING,
+  48      I3C_TARGET_TX_RECOVERED
+  49  } i3c_target_tx_phase_t;
+  50  typedef struct {
+  51      uint32_t queue_reset, command, completion, ext_free, ccc, present, instant;
+  52      uint32_t rx_level, response_level;
+  53      bool completion_valid, resume_issued;
+  54  } i3c_target_tx_recovery_t;
+  55  typedef struct {
+  56      i3c_target_tx_phase_t phase;
+  57      int status;
+  58      uint32_t generation, sequence, command, length_reg, completion, stale_completion;
+  59      uint8_t da, data[I3C_TARGET_PIO_MAX_BYTES], requested, queued, err;
+  60      uint16_t remaining;
+  61      bool published, completion_valid, command_valid, length_valid, i2c_static;
+  62      bool recoverable;
+  63      uint32_t addr_before, ctrl_before;
+  64      uint64_t pid;
+  65      i3c_target_tx_recovery_t recovery;
+  66  } i3c_target_tx_result_t;
+  67  int i3c_target_tx_begin(i3c_target_t *t, const uint8_t *data, unsigned length);
+  68  /* 显式允许Host提前结束有限Read。仅新completion=1、ERR=0xA且HALT时
+  69   * 进入EARLY_TERMINATED；其他错误仍锁存故障。普通begin保持严格长度语义。
+  70   * step每次有限推进，活动等待上限为Target名义60秒；Host须串行配合。 */
+  71  int i3c_target_tx_begin_recoverable(i3c_target_t *t, const uint8_t *data, unsigned length);
+  72  /* 仅EARLY_TERMINATED可调用：撤销queue0命令并清队列，后续step确认清空
+  73   * 后发布一次RESUME。Host须提供SCL；RECOVERED表示原包已丢弃且可重新begin，
+  74   * 不表示原包完整发送。原始完成与清理完成分别保留在result中。 */
+  75  int i3c_target_tx_recover(i3c_target_t *t);
+  76  int i3c_target_tx_step(i3c_target_t *t);
+  77  int i3c_target_tx_result(i3c_target_t *t, i3c_target_tx_result_t *out);
+  78  int i3c_target_tx_cancel(i3c_target_t *t);
+  79  /* i2c_static_no_da专用4-byte静态地址入口，不放宽普通Private API的枚举前提。 */
+  80  int i3c_target_i2c_static_no_da_i2c_rx_begin(i3c_target_t *t);
+  81  int i3c_target_i2c_static_no_da_i2c_tx_begin(i3c_target_t *t);
+  82  bool i3c_target_tx_active(i3c_target_t *t);
+  83  const char *i3c_target_tx_phase_name(i3c_target_tx_phase_t phase);
+  84  #endif
+
+T3 | Target close 的两阶段收尾 | i3c_target.c
+
+--- 原文件行 868–928 ---
+ 868  int i3c_target_close(i3c_target_t *t)
+ 869  {
+ 870      struct snapshot s;
+ 871      int ret;
+ 872      if (t != &target) {
+ 873          return -EINVAL;
+ 874      }
+ 875      if (t->state == I3C_TARGET_CLOSED) {
+ 876          return 0;
+ 877      }
+ 878      /* 即使Host尚未来、FIFO为空，也不能关闭仍有软件收发请求的会话。
+ 879       * PIO可先cancel解除等待；IBI不能写0撤销，必须完成或平台复位。 */
+ 880      if (t->ibi_owned || t->reset_owned || t->dma_owned || t->mrl.active ||
+ 881          i3c_target_rx_active(t) || i3c_target_tx_active(t)) {
+ 882          return -EBUSY;
+ 883      }
+ 884      ret = take_snapshot(t, &s);
+ 885      if (ret) {
+ 886          return ret; /* 不在读回失败时猜测已停止。 */
+ 887      }
+ 888      if (!quiet(&s)) {
+ 889          return -EBUSY;
+ 890      }
+ 891      if (t->state != I3C_TARGET_CLOSING) {
+ 892          /* ack尚为0可能只是ENABLE请求未跨到SCL域，不能据此断钟。
+ 893           * 先让Host提供SCL并观察到ack=1，再请求关闭，才能判关闭ack。
+ 894           * 本M1阶段没有reset/强制abort兜底，也不会清任何队列。 */
+ 895          if (!(s.ctrl & ENABLE)) {
+ 896              return -EAGAIN;
+ 897          }
+ 898          if (!t->enable_attempted) {
+ 899              return -EBUSY;
+ 900          }
+ 901          t->ctrl_shadow &= ~ENABLE;
+ 902          /* MMIO报错不保证写请求未生效。先记录已尝试关闭，保留所有权，
+ 903           * 后续close仍可接受迟到的ack=0；ack不降时保持pending，由Host
+ 904           * 提供SCL或执行板级恢复，不能因软件报错直接断钟。 */
+ 905          t->state = I3C_TARGET_CLOSING;
+ 906          ret = write_reg(t, CTRL, t->ctrl_shadow);
+ 907          if (ret) {
+ 908              t->last_error = ret;
+ 909              return ret;
+ 910          }
+ 911          I3C_LOG_DEBUG("I3C_RTL_CLOSE_NEED_HOST_CLOCK: disable_requested=1 stopped=0\n");
+ 912          return -EINPROGRESS;
+ 913      }
+ 914      if (s.ctrl & ENABLE) {
+ 915          return -EINPROGRESS;
+ 916      }
+ 917      ret = i3c_bsp_finish(t->bsp.clock_was_enabled);
+ 918      t->cleanup_error = ret;
+ 919      if (ret) {
+ 920          return ret; /* 保留CLOSING和所有权，可再次close重试平台收尾。 */
+ 921      }
+ 922      t->state = I3C_TARGET_CLOSED;
+ 923      i3c_target_session_release();
+ 924      return 0;
+ 925  }
+ 926
+ 927  /* 独立IRQ测试的受限访问。FIFO仍通过原PIO读口，由前台唯一消费。 */
+ 928  int i3c_target_irq_io(uint32_t generation, uint32_t offset, uint32_t *value, bool write)
+
+T4 | 自动控制帧 | i3c_auto_protocol.h
+
+--- 原文件行 1–42 ---
+   1  /* SPDX-License-Identifier: MIT */
+   2  #ifndef I3C_AUTO_PROTOCOL_H
+   3  #define I3C_AUTO_PROTOCOL_H
+   4  #include <stdint.h>
+   5  #define I3CA_FRAME 16U
+   6  #define I3CA_VERSION 1U
+   7  #define I3CA_TABLE 1U
+   8  #define I3CA_STEPS 4U
+   9  #define I3CA_MDB 0xa5U
+  10  #define I3CA_PREPARE 1U
+  11  #define I3CA_COMMIT 2U
+  12  #define I3CA_FINISH 3U
+  13  #define I3CA_READY 1U
+  14  #define I3CA_DONE 2U
+  15  #define I3CA_FINAL 3U
+  16  /* Table 1: WRITE4, READ4, IBI4, GETSTATUS. Endpoints must match this revision. */
+  17  static inline uint32_t i3ca_get32(const uint8_t *p)
+  18  {
+  19      return (uint32_t)p[0] | (uint32_t)p[1] << 8 | (uint32_t)p[2] << 16 | (uint32_t)p[3] << 24;
+  20  }
+  21  static inline void i3ca_put32(uint8_t *p, uint32_t v)
+  22  {
+  23      for (unsigned i = 0; i < 4; ++i) p[i] = (uint8_t)(v >> (i * 8));
+  24  }
+  25  static inline uint32_t i3ca_check(const uint8_t *p)
+  26  {
+  27      uint32_t v = 2166136261U;
+  28      for (unsigned i = 0; i < 12; ++i) v = (v ^ p[i]) * 16777619U;
+  29      return v;
+  30  }
+  31  static inline void i3ca_frame(uint8_t *p, uint8_t op, uint16_t run, uint8_t step, uint32_t generation)
+  32  {
+  33      p[0] = 'A'; p[1] = 'U'; p[2] = I3CA_VERSION; p[3] = op;
+  34      p[4] = (uint8_t)run; p[5] = (uint8_t)(run >> 8); p[6] = step; p[7] = I3CA_TABLE;
+  35      i3ca_put32(p + 8, generation); i3ca_put32(p + 12, i3ca_check(p));
+  36  }
+  37  static inline int i3ca_valid(const uint8_t *p)
+  38  {
+  39      return p[0] == 'A' && p[1] == 'U' && p[2] == I3CA_VERSION && p[7] == I3CA_TABLE &&
+  40             (p[4] || p[5]) && i3ca_get32(p + 12) == i3ca_check(p);
+  41  }
+  42  #endif
+
+T5 | all 的范围声明与阶段推进 | i3c_target_all.c
+
+--- 原文件行 275–304 ---
+ 275  int i3c_target_all_run(void)
+ 276  {
+ 277      i3c_target_status_t s;
+ 278      int ret;
+ 279      if (smoke.active || i3c_target_full_active() || i3c_target_auto_active() ||
+ 280          i3c_target_irq_check_active() || i3c_target_early_read_recovery_active(smoke_target()) ||
+ 281          i3c_target_reset_active(smoke_target()) || i3c_target_mrl_active(smoke_target())) {
+ 282          return -EBUSY;
+ 283      }
+ 284      ret = i3c_target_get_status(smoke_target(), &s);
+ 285      if (ret) { return ret; }
+ 286      if (s.state != I3C_TARGET_CLOSED) { return -EBUSY; }
+ 287      memset(&smoke, 0, sizeof(smoke));
+ 288      smoke.valid = smoke.active = true;
+ 289      smoke.ret = -EINPROGRESS;
+ 290      printf("I3C_ALL_NOTICE: profile=smoke not_stress=1 not_benchmark=1 i2c=EXCLUDED dma=EXCLUDED "
+ 291             "long_rx=32x1 long_tx=32x1 early_read=5 long_write=256x1x2 verify=16 "
+ 292             "bandwidth=16x1_per_direction warmup=1 full_steps=33 hotjoin_rounds=2\n");
+ 293      ret = i3c_target_register_check_confirmed();
+ 294      if (!ret) { smoke.registers = true; ret = i3c_target_set_hotjoin(smoke_target(), false); }
+ 295      if (!ret) { ret = i3c_target_open_begin(smoke_target()); }
+ 296      if (ret == -EINPROGRESS) {
+ 297          printf("I3C_ALL_START: phase=WAIT_ENABLE host_start_required=1 timeout_ms=60000\n");
+ 298          deadline();
+ 299          do {
+ 300              ret = i3c_target_get_status(smoke_target(), &s);
+ 301              if (ret && ret != -EAGAIN) { break; }
+ 302              if (!ret && s.last_error) { ret = s.last_error; break; }
+ 303              if (!ret && s.state == I3C_TARGET_IDLE && s.enumerated && s.da_valid && s.enable_ack) { break; }
+ 304              ret = budget();
+--- 原文件行 340–352 ---
+ 340          }
+ 341      }
+ 342      for (unsigned stage = 1; !ret && stage <= I3CS_STAGES; ++stage) {
+ 343          smoke.stage = stage;
+ 344          smoke.ready = false;
+ 345          ret = control(stage);
+ 346          if (!ret) { ret = one_case(stage); }
+ 347          if (!ret) { ret = quiet(); }
+ 348          if (!ret) { ret = i3c_target_rx_begin_length(smoke_target(), 16); }
+ 349          if (!ret) { ret = notify(I3CS_DONE); }
+ 350          if (!ret) { ++smoke.completed; }
+ 351          printf("I3C_ALL_CASE: profile=smoke stage=%u name=%s generation=%u ret=%d result=%s\n",
+ 352                 stage, i3cs_names[stage], smoke.generation, ret, ret ? "FAIL" : "LOCAL_PASS");
+T6 | Target DMA RX 的缓存所有权与完成检查 | i3c_target_dma_rx.c
+--- 原文件行 14–24 ---
+  14  /* Entire cache line belongs to this transfer. Guard bytes surround the DMA range. */
+  15  static uint8_t buffer[64] __attribute__((aligned(64)));
+  16  static struct {
+  17      bool valid, owned, dma_done, protocol_done, compared, guard_ok;
+  18      unsigned channel, length;
+  19      uint32_t generation, da, response, dma_status;
+  20      uint32_t rx_level, response_level;
+  21      int ret, cleanup;
+  22      const char *phase;
+  23  } r;
+  24
+--- 原文件行 165–184 ---
+ 165      r.generation = status.generation;
+ 166      r.da = status.da;
+ 167      r.ret = -EINPROGRESS;
+ 168      r.phase = "ARMING";
+ 169      ret = io(0x1cc, &value, false);
+ 170      if (!ret && (value & 7U) != 1U) {
+ 171          ret = -EOPNOTSUPP;
+ 172      }
+ 173      memset(buffer, 0xa5, sizeof(buffer));
+ 174      memset(buffer + 16, 0xcc, length);
+ 175      axidma_bsp_sync_for_device(buffer, sizeof(buffer));
+ 176      struct axidma_periph_param cfg = {
+ 177          .direction = AXIDMA_TT_FC_P2M_DMA, .src_handshake_id = AXIDMA_HS_I3C_RX,
+ 178          .src_tr_width = AXIDMA_TR_WIDTH_32, .dst_tr_width = AXIDMA_TR_WIDTH_32,
+ 179          .src_inc = AXIDMA_ADDR_FIXED, .dst_inc = AXIDMA_ADDR_INCREMENT,
+ 180          .src_msize = AXIDMA_MSIZE_1, .dst_msize = AXIDMA_MSIZE_1,
+ 181          .src_addr = MANAGEMENT_NOC_S12_2MB_I3C0_S_BASE + 0x14U,
+ 182          .dst_addr = axidma_bsp_memory_dma_address(buffer + 16),
+ 183          .block_size = length / 4U,
+ 184      };
+--- 原文件行 204–221 ---
+ 204          r.cleanup = -ETIMEDOUT;
+ 205      }
+ 206      if (!r.cleanup) {
+ 207          axidma_periph_close_ex(channel);
+ 208          axidma_bsp_sync_for_cpu(buffer, sizeof(buffer));
+ 209          r.guard_ok = true;
+ 210          for (unsigned i = 0; i < sizeof(buffer); ++i) {
+ 211              if ((i < 16 || i >= 16 + length) && buffer[i] != 0xa5) {
+ 212                  r.guard_ok = false;
+ 213              }
+ 214          }
+ 215          if (!ret) {
+ 216              r.compared = true;
+ 217              for (unsigned i = 0; i < length; ++i) {
+ 218                  if (buffer[16 + i] != 0x20 + i) {
+ 219                      r.compared = false;
+ 220                  }
+ 221              }
