@@ -20,7 +20,23 @@ html[data-theme="dark"] {
   --eng-muted: #b1bdb0; --eng-line: #3b4a40; --eng-soft: #2a3a31;
   --eng-teal: #9acabb; --eng-copper: #dbb988;
 }
-body { background: var(--eng-bg); }
+body {
+  background: radial-gradient(ellipse at 6% 10%, #71978c12, transparent 46%),
+    radial-gradient(ellipse at 96% 18%, #b18c6010, transparent 42%),
+    var(--eng-bg);
+}
+/* The landscape stays outside the reading surface; no fixed layer or motion. */
+.l_body:not(.index) .l_main { background: var(--eng-bg); border-radius: 20px; }
+.l_left .sidebg { background: linear-gradient(155deg, var(--eng-soft), var(--eng-bg) 75%); filter: none; }
+.l_left .leftbar-container::before { background: none; box-shadow: none; backdrop-filter: none; }
+.home-intro { position: relative; isolation: isolate; }
+.home-intro::before {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  inset: -24px -18px -16px; border-radius: 20px;
+  background: url('/images/evening-landscape.svg') center 65% / cover no-repeat;
+  mask-image: linear-gradient(transparent, black 20%, black 70%, transparent);
+  opacity: .5;
+}
 .l_main { min-width: 0; }
 a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:focus-visible { outline: 2px solid var(--eng-teal); outline-offset: 4px; }
 .engineering-nav { display: flex; align-items: center; gap: 4px; margin: 0 0 24px; padding: 5px; border: 1px solid var(--eng-line); border-radius: 14px; background: var(--eng-surface); }
@@ -126,6 +142,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:foc
   .home-topics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 667px) {
+  body { background: linear-gradient(160deg, #71978c0b, transparent 440px), var(--eng-bg); }
+  .home-intro::before { display: none; }
   .engineering-nav { gap: 1px; margin: 12px 12px 22px; padding: 4px; }
   .engineering-nav a, .engineering-nav button { padding: 7px; min-height: 40px; font-size: 12px; }
   .home-intro { display: block; margin: 25px 20px 22px; }

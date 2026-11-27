@@ -47,5 +47,5 @@ hexo.extend.filter.register('before_generate', () => {
   }
 });
 
-hexo.extend.injector.register('head_end', '<link rel="stylesheet" href="/css/engineering.css?v=20261127-1">');
+hexo.extend.injector.register('head_end', '<link rel="stylesheet" href="/css/engineering.css?v=20261127-2">');
 hexo.extend.injector.register('body_end', '<script defer src="/js/engineering.js?v=20261127-1"></script>');
