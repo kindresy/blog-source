@@ -6,7 +6,7 @@ categories: ["嵌入式开发", "MCTP 与 PLDM", "移植与回归"]
 tags: ["mctp", "pldm", "i3c", "linux", "baremetal", "testing", "tutorial"]
 toc: true
 max_depth: 3
-description: 按 Host 和 Target 两侧整理准备条件、操作步骤、预期结果和通过判据，覆盖基础查询、69B 边界、分包、异常处理与恢复，作为待执行的功能验收表。
+description: 按 Host 和 Target 两侧整理七项功能验收用例，并列出当前对 MIPI、DMTF 协议规范及常见管理工具的实现范围、验证证据和支持边界。
 ---
 
 前面的[架构文档](/2026/11/27/mctp-pldm-porting-software-architecture/)说明了两端移植了什么。接下来需要回答一个更实际的问题：拿着现在这套软件，怎样判断主要功能已经可以用了？
@@ -182,3 +182,72 @@ Host 的 `sendto()` 返回值也不是全部证据：实际 I3C 发送可能在�
 每轮至少留下用例编号、双端版本、实际配置、Host 命令与退出码、响应字段，以及对应的 Target 日志或截图。出现超时、PEC 错误、地址 NACK 或异常状态时，先停下来保存现场，再决定下一步。
 
 源码合入 master、重新构建、部署到板上和实际回归是四件事。即使工具已经安装、查询曾经通过，也要把这轮 testcase 的结果单独填清楚。
+
+## 8. 当前能力与标准支持清单
+
+如果现在有人问“你们已经支持哪些业界协议，可以接什么应用”，我会先回答：**我们已经用标准协议完成了一组基础管理查询，正在补齐通信边界和恢复验收；目前能交付的业务范围仍是设备识别与能力发现。**
+
+下表按 2026 年 11 月 27 日的源码、产物和已有日志整理。“标准”指 MIPI、DMTF 发布的规范；Linux API、OpenBMC 工具和 NVIDIA 工具分别注明来源，不把社区软件或厂商协议统称为国际标准。表中的规范用于说明功能归属，除明确写出的实现版本外，不代表工程已符合链接版本的全部条款。
+
+### 8.1 先看支持程度，再看协议名称
+
+| 支持程度 | 在本文中代表什么 | 当前例子 |
+|---|---|---|
+| 局部功能已有实板证据 | 指定版本和配置下，真实 Host 与 Target 完成过对应交互 | 原 requester 的 3 项 Control、4 项 PLDM Base 查询 |
+| 已实现，尚缺实板验收 | 源码或离线测试中有该能力，不能沿用其他用例的 PASS | Target SetTID；MCTP 分包重组的组件实现 |
+| 工具已部署，实链路待回归 | 程序能在板端启动，相关编码解析有离线检查；尚未用它对当前 Target 发请求 | 新独立版 `pldmtool` |
+| 本链路未集成 | 尚无对应业务 handler、服务或端到端流程 | 传感器管理、固件更新、Redfish、SPDM、NSM |
+
+这里不填写“标准支持百分比”。没有先固定规范版本、角色、必选条款和测试集合，百分比没有可比较的含义；实现几个命令也不等于完成一致性认证。
+
+### 8.2 协议、规范及我们实际做到的位置
+
+| 协议或功能 | 标准组织与规范 | 当前实现范围 | 能验证到什么程度 | 还不能据此宣称什么 |
+|---|---|---|---|---|
+| I3C SDR 基础通信 | MIPI：[I3C / I3C Basic](https://www.mipi.org/specifications/i3c-sensor-specification) | 当前管理链路使用枚举、Private Transfer、IBI 和相关 CCC；Host 为 Controller，Target 为目标设备 | 历史查询已经实际经过这条 I3C 链路；TC-01、TC-03 用于本轮复核 | 没有据此完成整个 I3C 规范、电气时序、HDR 或多 Controller 的一致性验证 |
+| MCTP 基础传输与 Control | DMTF：[DSP0236](https://www.dmtf.org/sites/default/files/standards/documents/DSP0236_1.3.3.pdf) | Host 内核 MCTP、Target libmctp；已有 EID、消息类型、Tag、包头与分包重组实现，当前按固定 EID 手工配置 | GetEID、GetVersion、GetMessageTypeSupport 有实板结果；连续分包、恢复等仍按各用例验收 | 不能写成完整 MCTP 功能通过；没有部署自动 bus-owner 管理，也没有完成桥接、多端点或跨网络互通 |
+| MCTP over I3C | DMTF：[DSP0233 1.0.0](https://www.dmtf.org/sites/default/files/standards/documents/DSP0233_1.0.0.pdf)；这是当前回移驱动注释引用的版本 | Linux v6.8 binding 回移到当前 6.6.36 工程；使用软件 PEC、实际长度和 MDB `0xAE` 通知；本轮固定 68B MTU / 69B 含 PEC 数据区 | 单包查询链路已有证据；TC-04、TC-05 专门检查满包及分包 | 69B 是当前 binding 的容量边界，不是所有业务消息的固定长度；不能宣称已完成该规范的全部发现、协商与异常条款验证 |
+| PLDM over MCTP | DMTF：[DSP0241 1.0.0](https://www.dmtf.org/sites/default/files/standards/documents/DSP0241_1.0.0.pdf) | 使用 MCTP Message Type `0x01` 传递 PLDM 请求和响应，当前端点路径使用 IC=0 | 四项 Base 查询已有实板结果；新工具的 AF_MCTP 封装与匹配经过离线检查 | 不代表所有 PLDM Type、所有消息长度和所有端点均已互通 |
+| PLDM Base / Type 0 | DMTF：[DSP0240 1.1.0](https://www.dmtf.org/sites/default/files/standards/documents/DSP0240_1.1.0.pdf) | 当前 Target handler 实现 SetTID、GetTID、GetPLDMTypes、GetPLDMVersion、GetPLDMCommands；返回 Base 1.1.0 | 四项只读查询有历史实板结果；SetTID 有组件实现和离线测试，尚不记为本轮实板通过 | 不能用命令位图代替逐项验证；没有据此实现新版本的全部协商和 PLDM 跨命令 multipart 功能 |
+| PLDM 平台监控 / Type 2 | DMTF：[DSP0248](https://www.dmtf.org/sites/default/files/standards/documents/DSP0248_1.3.0.pdf) | 当前链路未集成 PDR 仓库、真实 sensor / effecter provider 和事件业务 | 可以据 Target 的类型声明判断该业务不在当前范围；还不能读取真实温度、功耗或控制执行器 | 不能说已实现服务器级传感器监控、功耗控制或告警 |
+| PLDM FRU / Type 4 | DMTF：[DSP0257，见规范目录](https://www.dmtf.org/standards/published_documents) | 当前链路没有 FRU 记录表服务 | 尚无板卡序列号、部件号等 FRU 业务查询结果 | 不能把 EID、TID 或芯片 PID 当成已经实现 FRU 资产管理 |
+| PLDM Firmware Update / Type 5 | DMTF：[DSP0267](https://www.dmtf.org/sites/default/files/standards/documents/DSP0267_1.2.0.pdf) | Host `pldmtool` 有 QueryDeviceIdentifiers、GetFirmwareParameters、GetStatus 查询前端；当前 Target 没有 Type 5 handler，双方没有完整更新流程 | Host 的查询编码和模拟响应解析可离线验证；没有对当前 Target 的 Type 5 成功互通记录 | 不能说已经支持刷固件；镜像匹配、拉取、校验、激活、取消和失败恢复均未交付 |
+| PLDM RDE / Type 6 | DMTF：[DSP0218](https://www.dmtf.org/sites/default/files/standards/documents/DSP0218_1.2.0.pdf) | 当前链路未集成设备资源模型、字典与 RDE 操作 | 没有设备通过 RDE 向 BMC 提供 Redfish 资源的结果 | 不能将 PLDM Base 查询成功写成 Redfish Device Enablement 已完成 |
+| SPDM 认证与度量 | DMTF：[DSP0274 / SPDM](https://www.dmtf.org/standards/spdm) | 当前链路没有 requester / responder、证书或度量流程 | 尚无本设备的身份认证、度量或会话验证结果 | PEC、版本 CRC32 都不是设备身份认证，也不能据此宣称安全会话已建立 |
+| Redfish 管理 API | DMTF：[DSP0266 / Redfish](https://www.dmtf.org/standards/redfish) | 当前工程没有把这张 Target 的资产、传感器或更新能力接入 Redfish 服务 | 没有本设备对应的 Redfish 管理资源可用于验收 | 不能因为 Host 能运行 Linux 工具，就把它视为已经具有完整 BMC 北向管理接口 |
+| 其他 MCTP binding | DMTF：SMBus/I²C DSP0237、PCIe VDM DSP0238、USB DSP0283；见[规范目录](https://www.dmtf.org/standards/published_documents) | 本轮实际集成与验证对象只有 I3C | 这些通道需各自的硬件连接、驱动和配置，再单独验证 | 不能把 I3C 查询结果外推为 SMBus、PCIe VDM 或 USB 兼容 |
+| NVIDIA NSM 遥测 | NVIDIA：[NSM 开源实现](https://github.com/NVIDIA/nsmd)，属于厂商协议，不是 PLDM Type 2 | 当前 Host/Target 链路未集成 NSM handler 或 `nsmd` | 尚无本设备的 NSM 发现和遥测结果 | MCTP 能承载厂商消息，不代表当前 Target 已能响应 NVIDIA GPU 管理命令 |
+
+上表中最容易混淆的是 Type 5：**我们能准备标准查询请求，但当前设备没有提供相应业务。** 这与“已经能给当前设备升级固件”之间，还隔着完整的双向更新状态机和实际固件存储、激活、恢复实现。
+
+### 8.3 常见 App、服务和库的支持程度
+
+下面把可运行的工具、常驻服务和底层库分开标明。工具的参数与源码来自开源项目，不属于 DMTF 强制规定的统一 CLI；没有安装某个工具，也不直接等于协议不符合标准。
+
+| App / 组件 | 来源与类别 | 当前工程的支持程度 | 现在可以怎样验证 | 需要注意的范围 |
+|---|---|---|---|---|
+| `mctp` | [CodeConstruct/mctp](https://github.com/CodeConstruct/mctp)，社区命令行工具 | 已集成，当前使用固定版本 `34900256b183811b25ff4046aa9702cef54befc9` | 查看 link、address、route、neigh；已有本地配置和实际查询链路记录 | show 查看的是本地状态，不替 Target 设置 EID，不是完整端点管理服务 |
+| `pldmtool` | [OpenBMC pldm](https://github.com/openbmc/pldm)，社区 PLDM requester | OpenBMC 2.14 固定基线的独立 Host 适配已安装；包含 Base 四项查询、Type 5 三项信息查询与 raw | 原生及 AArch64 仿真各 36 项离线检查通过；板端文件校验和 help 通过；真实查询回归待执行 | 这是明确裁剪的适配版，不是最新版完整前端；不包含 Type 2 前端、常驻管理或升级流程 |
+| `mctp-pldm-request` | 本项目自研测试工具，不是行业通用 CLI | 已集成并用于历史联调，支持所列 Control 和 Base 请求 | 11 月 26 日七项只读查询有实板日志，可与新工具串行对照 | 当前 Base GetCommands 固定查询 1.1.0；不是通用的全部 PLDM 业务客户端 |
+| Linux `AF_MCTP` | [Linux 内核接口](https://www.kernel.org/doc/html/latest/networking/mctp.html)，不是一个 App | 当前 Host 内核已恢复该接口，工具直接使用它收发 | 已有 socket、路由和真实查询记录；新工具的 socket 契约有离线检查 | 需要对应 binding、路由、邻居和 Target 准备；socket 创建成功不能证明对端可达 |
+| `libmctp` / `libpldm` | [OpenBMC libmctp](https://github.com/openbmc/libmctp)、[libpldm](https://github.com/openbmc/libpldm)，协议实现库 | Target 使用 libmctp 与 Base codec；Host requester 使用 libpldm，Host 的 MCTP 核心在内核中 | 可核对固定源码、组件测试以及已走通的 Base 数据 | Host 没有因此部署用户态 libmctp；库中存在其他类型的编解码，不等于平台已有对应 handler 或业务 provider |
+| `mctpd` | [CodeConstruct/mctp](https://github.com/CodeConstruct/mctp)，端点管理服务 | 当前 Host 未部署 | 现阶段使用固定 EID 和手工拓扑配置 | 尚无自动 bus-owner 发现、地址管理与服务级恢复结果 |
+| `pldmd` | [OpenBMC pldm](https://github.com/openbmc/pldm)，常驻 PLDM 服务 | 当前 Host 未部署；独立 `pldmtool` 不依赖它 | 目前使用一次请求、一次等待的手动工具 | 没有常驻设备发现、传感器轮询、D-Bus 资产发布或更新代理服务 |
+| `bmcweb` / Redfish 客户端 | [OpenBMC bmcweb](https://github.com/openbmc/bmcweb) 提供服务；HTTP 客户端用于访问服务 | 当前链路没有集成本设备的 Redfish 服务端 | 后续需先有设备资源和实际 API，再用客户端验收 | 客户端能发 HTTP 请求，与设备是否提供 Redfish 是两件事 |
+| `ipmitool` | [ipmitool 项目](https://github.com/ipmitool/ipmitool)，IPMI 客户端 | 当前 Target 链路没有 IPMI 管理服务或适配 | 不能直接用它替代当前 PLDM Base 验收 | IPMI 是另一套管理接口，安装客户端不会让 MCTP/PLDM 设备自动成为 IPMI 设备 |
+| `nsmd` / `nsmtool` | [NVIDIA/nsmd](https://github.com/NVIDIA/nsmd)，厂商管理服务与客户端 | 当前工程未集成 | 等 Target 真正实现 NSM 并接入服务后，再安排互通 | 不能把 NVIDIA 工具的可用性当作通用 PLDM 兼容判据 |
+
+### 8.4 这些结论可以回查什么
+
+“标准定义了什么”和“我们实际做到了什么”使用不同证据：前者看上表的官方规范，后者看对应源码、产物和运行记录。
+
+| 当前结论 | 可回查的依据 | 它证明到哪里 |
+|---|---|---|
+| I3C binding、地址和路由已建立过 | [绑定与本地配置日志](/2026/11/27/mctp-pldm-porting-software-architecture/evidence/mctp-binding-and-route.log) | 当时配置下的绑定与本地状态，不是完整标准认证 |
+| 原 requester 的 Control / Base 查询能往返 | [GetEID](/2026/11/27/mctp-pldm-porting-software-architecture/evidence/get-eid.log)、[GetTID](/2026/11/27/mctp-pldm-porting-software-architecture/evidence/03-base-get-tid.log)、[版本与 CRC](/2026/11/27/mctp-pldm-porting-software-architecture/evidence/05-base-get-version.log)、[Base 命令位图](/2026/11/27/mctp-pldm-porting-software-architecture/evidence/06-base-get-commands.log) | 已记录的具体查询；位图声明包含 SetTID，不等于 SetTID 已完成实板测试 |
+| 分包还需单独验收 | [连续分包原始记录](/2026/11/27/mctp-pldm-porting-software-architecture/evidence/fragment-no-delay.log) | 历史第二包 NACK 的实际停点，不能沿用查询 PASS 覆盖它 |
+| 新 pldmtool 已完成集成准备 | [集成验证摘要](/2026/11/27/mctp-pldm-porting-acceptance-testcases/pldmtool-validation-summary.txt) | 固定版本、离线检查、板端安装与 help；摘要明确未做真实 Target 查询 |
+
+对外介绍时，我会使用这样的表述：**当前已打通基于 Linux AF_MCTP 的 MCTP over I3C 基础管理链路，完成过三项 MCTP Control 和四项 PLDM Base 查询；新工具已部署，完整通信验收仍按本文用例推进。**
+
+等后续补上真实传感器、PDR、更新状态机或 Redfish 服务，再逐项更新表格。没有新的实现和同轮证据，就不把支持范围往上加。

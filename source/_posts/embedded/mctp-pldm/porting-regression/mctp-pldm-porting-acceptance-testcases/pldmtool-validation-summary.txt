@@ -1,0 +1,25 @@
+pldmtool 集成验证摘要（非完整原始日志）
+状态日期：2026-11-27
+
+工具范围：OpenBMC 2.14 固定基线的独立 Host 适配；Base 四项只读查询，Type 5 三项信息查询，raw 入口。
+上游 pldm commit：25c999c98fbcf5142aefccf99790ce8b6ec99153
+配套 libpldm commit：3a6a001b6c1d755df762868a686adf57daefb8e1
+Host 工程基底：c58292616eeed014c605d572ae3f58a5c7095b43
+集成状态：未提交工作树；并非已经完成 master 合入与硬件回归的正式基线。
+编译器：GCC/G++ 11.4.0 Ubuntu 22.04.3cross1
+最终静态 AArch64 二进制 SHA256：35f02e703422c16b353e6cae5c41da95823cb8592549758d50280f8931df3702
+
+原生离线检查日志摘录：
+PASS: 36 offline checks; no hardware syscalls executed
+
+AArch64 QEMU 用户态仿真检查日志摘录：
+PASS: 36 offline checks; no hardware syscalls executed
+
+检查通过：静态交叉编译、上游补丁重放、源码和交付包校验、脚本语法检查。
+板端验证：运行内核 6.6.36-slim-mctp；文件 SHA256 校验以及工具、Base、fw_update 帮助输出成功。
+板端执行范围：仅文件检查、help 与脚本语法检查，没有创建协议请求，没有发 I3C 管理查询。
+硬件协议回归：PENDING。
+Target 固件：本次工具引入没有改动；没有因此增加 Type 5 支持。
+
+证据来源：Host 工程 evidence/pldmtool/manifest.json、offline-check.log、aarch64-offline-check.log、board-install.log、board-final-check.log。
+本摘要只供回查集成与验证范围，不作为完整原始日志、协议一致性认证或第三方服务器互通结果。
