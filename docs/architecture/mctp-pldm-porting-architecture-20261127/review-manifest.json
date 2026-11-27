@@ -1,0 +1,35 @@
+{
+  "review_date": "2026-11-27",
+  "latest_hardware_evidence_date": "2026-11-26",
+  "host_base_commit": "c58292616eeed014c605d572ae3f58a5c7095b43",
+  "host_changes_uncommitted": true,
+  "host_files": [
+    {
+      "path": "linux/net/mctp/af_mctp.c",
+      "sha256": "84db02d3916be17d3005f920ca2e3c39bfefa268c85e72c0fde914bb3b3c5460"
+    },
+    {
+      "path": "linux/net/mctp/route.c",
+      "sha256": "06275001f1f1486755b1dbd23736cdcc9f3866e84eb87ba24a396f6ca9e8c795"
+    },
+    {
+      "path": "linux/drivers/net/mctp/mctp-i3c.c",
+      "sha256": "3482b275086b1d4472074cb2be7b5ed45fddfd95ac4016cf8dccc6390843dc32"
+    },
+    {
+      "path": "linux/drivers/i3c/master.c",
+      "sha256": "75c7b19518fa8afe4f47c4ccd43cab2d0b80a0e3f8a1921c8ae0825a9471b86b"
+    },
+    {
+      "path": "linux/vendor/intellif/tools/mctp-host/mctp-pldm-request.c",
+      "sha256": "e49de458013a23a66c2a0b4d1d08f7a4b72c82e76426c525799d3e821b58bff7"
+    },
+    {
+      "path": "linux/vendor/intellif/configs/mctp-lab.config",
+      "sha256": "63f913baf904e565b5ae946bc8dc223484ca46b8166ce9d37aa1756015d0c1f4"
+    }
+  ],
+  "target_archive_sha256": "2e1d46969d0d0430f623039c35b24486f244fcb96f0e91a270f765de6b569c8d",
+  "target_current_firmware_identity": "unknown",
+  "target_reference_is_delivered_component_not_running_firmware": true
+}

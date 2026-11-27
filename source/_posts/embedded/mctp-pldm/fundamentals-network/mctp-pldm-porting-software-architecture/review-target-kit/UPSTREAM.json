@@ -1,0 +1,11 @@
+{
+  "libmctp": {
+    "url": "https://github.com/openbmc/libmctp",
+    "commit": "ab58506f08dbda562fccaa66340faad9c2e96fa4"
+  },
+  "libpldm": {
+    "url": "https://github.com/openbmc/libpldm",
+    "tag": "v0.13.0",
+    "commit": "af271b8247d22935c062cacd578d74cc35b6ec45"
+  }
+}
