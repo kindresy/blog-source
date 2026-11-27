@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess
 import xml.etree.ElementTree as ET
 
-OUT = Path(__file__).resolve().parents[1] / 'source/_posts/i3c/mctp-pldm-topologies-from-simple-to-complex'
+OUT = Path(__file__).resolve().parents[1] / 'source/_posts/embedded/mctp-pldm/fundamentals-network/mctp-pldm-topologies-from-simple-to-complex'
 STYLE = '''graph [rankdir=TB, bgcolor="white", pad="0.25", nodesep="0.4", ranksep="0.55", fontname="Noto Sans CJK SC", fontsize=17, labelloc=t];
 node [shape=box, style="rounded,filled", fillcolor="#f2f6fa", color="#64748b", fontcolor="#172b3a", fontname="Noto Sans CJK SC", fontsize=15, margin="0.18,0.14", penwidth=1.1];
 edge [color="#52728c", fontcolor="#334b5f", fontname="Noto Sans CJK SC", fontsize=13, arrowsize=0.7, dir=both];

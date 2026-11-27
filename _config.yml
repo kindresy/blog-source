@@ -71,12 +71,31 @@ category_map:
   PCIe: pcie
   I2C: i2c
   I3C: i3c
+  MCTP 与 PLDM: mctp-pldm
   DMA: dma
   SD: sd
   AI: AI
   Claude Code: claude-code
   OpenClaw: openclaw
   生活记录: life-record
+  协议基础: protocol-basics
+  控制器与裸机开发: controller-baremetal
+  Linux 驱动: linux-driver
+  原理与网络: fundamentals-network
+  移植与回归: porting-regression
+  基础架构: architecture
+  枚举与系统流程: enumeration-system
+  驱动实例: driver-examples
+  Endpoint 固件: endpoint-firmware
+  协议与时序: protocol-timing
+  控制器与驱动: controller-driver
+  AXIDMA 硬件与裸机: axidma-baremetal
+  Linux DMAEngine: linux-dmaengine
+  核心概念: concepts
+  技能与插件: skills-plugins
+  使用排障: troubleshooting
+  身心与状态: wellbeing
+  旅行与见闻: travel
 tag_map:
 
 # Metadata elements

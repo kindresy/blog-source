@@ -1,0 +1,45 @@
+<%
+page.title = '文章分类';
+page.layout = 'categories';
+page.menu_id = 'post';
+const taxonomy = article_taxonomy();
+function findCategory(name, parent) {
+  return site.categories.toArray().find(c => c.name === name && (c.parent || null) === parent);
+}
+function showBranch(branch, parent) {
+  let out = '<ul>';
+  for (const [name, children] of Object.entries(branch)) {
+    const category = findCategory(name, parent);
+    if (!category) continue;
+    out += '<li><a href="' + url_for(category.path) + '">' + escape_html(name) + '</a> <span>(' + category.posts.length + ' 篇)</span>';
+    if (children) out += showBranch(children, category._id);
+    out += '</li>';
+  }
+  return out + '</ul>';
+}
+%>
+<%- partial('_partial/main/navbar/nav_tabs_blog') %>
+<article class="md-text content" id="article-taxonomy">
+  <h1>文章分类</h1>
+  <p>按主题寻找知识，按文章类型选择原理讲解、源码分析或工程过程。共 <%= site.posts.length %> 篇文章。</p>
+  <% for (const [name, children] of Object.entries(taxonomy.categories)) {
+    const category = findCategory(name, null);
+    if (!category) continue;
+  %>
+    <section aria-label="<%= name %>">
+      <h2><a href="<%= url_for(category.path) %>"><%= name %></a>（<%= category.posts.length %> 篇）</h2>
+      <%- showBranch(children, category._id) %>
+    </section>
+  <% } %>
+  <section aria-label="按文章类型阅读">
+    <h2>按文章类型阅读</h2>
+    <ul>
+      <% for (const [slug, title] of Object.entries(taxonomy.articleTypes)) {
+        const tag = site.tags.toArray().find(t => t.name === slug);
+        if (!tag) continue;
+      %>
+        <li><a href="<%= url_for(tag.path) %>"><%= title %></a>（<%= tag.posts.length %> 篇）</li>
+      <% } %>
+    </ul>
+  </section>
+</article>
