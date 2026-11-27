@@ -90,12 +90,17 @@ if __name__ == '__main__':
  for name, body in DIAGRAMS.items():
   source = ('digraph topology {\n' + STYLE + body + '\n}\n').encode()
   for fmt in ('svg', 'png'):
-   result = subprocess.run(['dot', '-T' + fmt, '-Gdpi=150'], input=source, capture_output=True, check=True)
+   # Graphviz 2.43 scales SVG geometry for dpi without enlarging its viewBox.
+   # Only raster output needs a DPI override; leave SVG in native coordinates.
+   command = ['dot', '-T' + fmt] + (['-Gdpi=150'] if fmt == 'png' else [])
+   result = subprocess.run(command, input=source, capture_output=True, check=True)
    (OUT / (name + '.' + fmt)).write_bytes(result.stdout)
    if fmt == 'svg':
     tree = ET.fromstring(result.stdout)
     assert tree.tag.endswith('svg')
     assert any('EID' in (n.text or '') for n in tree.iter())
+    graph = tree.find('{http://www.w3.org/2000/svg}g')
+    assert graph is not None and graph.attrib['transform'].startswith('scale(1 1)'), 'SVG geometry must match its viewBox'
    else:
     assert result.stdout.startswith(b'\x89PNG\r\n\x1a\n')
   print(name + ': SVG / PNG generated')

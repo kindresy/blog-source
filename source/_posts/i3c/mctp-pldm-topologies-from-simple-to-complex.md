@@ -29,7 +29,7 @@ description: 用六幅拓扑图，从单 Host 单 Target、同总线多设备，
 
 ## 1. 两端直连：先让一条管理消息走完
 
-![拓扑一：i.MX93 Host 与 Current Proj Target 经一条 I3C 总线直连，属于同一个 MCTP network](topology-01-direct.svg)
+![拓扑一：i.MX93 Host 与 Current Proj Target 经一条 I3C 总线直连，属于同一个 MCTP network](topology-01-direct.svg?v=20261127-2)
 
 [查看 PNG](topology-01-direct.png)
 
@@ -54,7 +54,7 @@ Target 响应时用 IBI 通知 Host 读取，成功返回 TID 1。TID 是 PLDM �
 
 ## 2. 同一总线加多个 Target：EID 开始显出价值
 
-![拓扑二：同一条 I3C 总线上有三个 Target，各自具有不同 EID、PID、DA 和 PLDM TID](topology-02-multi-target.svg)
+![拓扑二：同一条 I3C 总线上有三个 Target，各自具有不同 EID、PID、DA 和 PLDM TID](topology-02-multi-target.svg?v=20261127-2)
 
 [查看 PNG](topology-02-multi-target.png)
 
@@ -84,7 +84,7 @@ EID 11 → mctpi3c0 → PID-C → DA 0x46
 
 ## 3. Host 接两条总线：多接口可以属于同一个 network
 
-![拓扑三：一个 Host 的两条 MCTP 接口处于同一 network，分别连接不同 I3C 总线和端点](topology-03-multi-interface.svg)
+![拓扑三：一个 Host 的两条 MCTP 接口处于同一 network，分别连接不同 I3C 总线和端点](topology-03-multi-interface.svg?v=20261127-2)
 
 [查看 PNG](topology-03-multi-interface.png)
 
@@ -114,7 +114,7 @@ Linux 允许一个 network 关联多个接口，路由负责选择出口。[Linu
 
 ## 4. 加入一个 MCTP bridge：目的地址与下一跳分开
 
-![拓扑四：Host 通过 MCTP bridge 访问下游 I3C Target，端到端 EID 保持不变，每跳使用各自 DA](topology-04-bridge.svg)
+![拓扑四：Host 通过 MCTP bridge 访问下游 I3C Target，端到端 EID 保持不变，每跳使用各自 DA](topology-04-bridge.svg?v=20261127-2)
 
 [查看 PNG](topology-04-bridge.png)
 
@@ -156,7 +156,7 @@ bridge 实际访问：Target 在下游 I3C 总线的 DA 0x30
 
 ## 5. 多级 bridge、跨介质：同一条 PLDM 请求经过不同 binding
 
-![拓扑五：同一 MCTP network 中，PLDM 请求经 I3C、SMBus 和 PCIe VDM 及两级 bridge 到达最终端点](topology-05-multi-hop.svg)
+![拓扑五：同一 MCTP network 中，PLDM 请求经 I3C、SMBus 和 PCIe VDM 及两级 bridge 到达最终端点](topology-05-multi-hop.svg?v=20261127-2)
 
 [查看 PNG](topology-05-multi-hop.png)
 
@@ -206,7 +206,7 @@ bridge B 的上行端点 9 由上层另行分配。这份数字规划没有把�
 
 ## 6. 两个独立 network：相同 EID 可以分别存在
 
-![拓扑六：一个 Linux Host 连接两个独立 MCTP network，两个网络各有 EID 9，通过 network ID 区分](topology-06-independent-networks.svg)
+![拓扑六：一个 Linux Host 连接两个独立 MCTP network，两个网络各有 EID 9，通过 network ID 区分](topology-06-independent-networks.svg?v=20261127-2)
 
 [查看 PNG](topology-06-independent-networks.png)
 
